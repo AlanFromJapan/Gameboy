@@ -1,9 +1,8 @@
 #include <gb/gb.h>
 #include <gb/drawing.h>
-#include <rand.h>
 
 #include "my_lib01.c"
-#include "Map_01.c"
+#include "Map_01.h"
 
 void main() 
 {  
@@ -17,11 +16,9 @@ void main()
   SHOW_SPRITES;
 
   wait_vbl_done();
-  //resetGame();
-
+  
   while (1) {
     wait_vbl_done();
-    //vFrameCount++;
-
+  
   }
 }

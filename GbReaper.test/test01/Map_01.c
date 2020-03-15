@@ -1,10 +1,6 @@
 
-#ifndef Map_01_C
-#define Map_01_C
 
-
-#define Map_01_WIDTH   20
-#define Map_01_HEIGHT  18
+#include "Map_01.h"
 
 
 unsigned char Map_01[] =
@@ -31,4 +27,3 @@ unsigned char Map_01[] =
 
 };
 
-#endif //Map_01_C
