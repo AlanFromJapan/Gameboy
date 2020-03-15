@@ -1,0 +1,135 @@
+<!--?xml version="1.0" encoding="utf-8" ?-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <title>EMS Flasher for Mac / Linux</title>
+    <link rel="stylesheet" href="EMS%20Flasher%20for%20Mac%20_%20Linux_files/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width">
+    
+<style>@media print {#ghostery-purple-box {display:none !important}}</style></head>
+
+<body>
+
+
+
+<h1>EMS Flasher for Mac / Linux</h1>
+
+<p><a href="#download">download</a> — <a href="#runit">how2use</a> — <a href="#git">git</a> — <a href="#doc">documentation</a> — <a href="#thanks">thanks</a> </p>
+
+<div class="section">
+    <h2>overview</h2>
+
+    <p>ems-flasher is software for flashing the EMS Gameboy USB cart on Mac OS X, Linux, and others.</p>
+
+    <p>The <a href="http://store.kitsch-bent.com/product/usb-64m-smart-card">EMS USB Cart</a> (also available from the fine folks at <a href="http://www.nonelectronics.com/catalog/index.php?main_page=product_info&amp;cPath=2&amp;products_id=112">nonfinite electronics</a>) for Game Boy is pretty fantastic: it's big (64 Mbit), cheap (~US$40), and has a replaceable battery.</p>
+
+    <p>BUT the software only works in Windows!</p>
+
+    <p>This project aims to provide <b>portable flasher software</b> for use on operating systems such as <b>Linux</b> and <b>Mac OS X</b>. In theory it runs anywhere libusb runs, so someone out there in BSD land should totally try it out.</p>
+
+    <p>So far it has been tested on:</p>
+
+    <ul>
+        <li><b>Linux</b></li>
+        <li><b>Mac OS X</b></li>
+        <li><b>OpenBSD</b></li>
+        <li><b>FreeBSD</b> in the ports tree comms/ems-flasher</li>
+    </ul>
+
+    <p>Please let me know if you run it on another platform!</p>
+
+    <p>Please note that this is <span class="important">alpha</span>-quality
+ code. I've done all I can to ensure it won't permanently damage your 
+cart, but please don't hold me responsible if something goes wrong.</p>
+</div>
+
+<div class="section">
+    <h2><a name="download">download</a></h2>
+
+    <ul>
+        <li>Latest version: 0.03, released 2011-08-25
+        <ul>
+            <li><a href="http://lacklustre.net/projects/ems-flasher/ems-flasher-0.03.tgz">ems-flasher 0.03 - source</a></li>
+            <li><a href="http://lacklustre.net/projects/ems-flasher/ems-flasher-0.03_macos_10.6.zip">ems-flasher 0.03 - binary for Mac OS 10.6</a></li>
+        </ul></li>
+        <li><a href="http://lacklustre.net/projects/ems-flasher/download.html">Older versions</a></li>
+    </ul>
+
+    <p>Build source by running</p>
+    
+    <pre>make</pre>
+
+    <p>On Mac OS X, prior to building you must install pkconfig and libusb from ports, like so:</p>
+
+    <pre>sudo port install pkconfig
+sudo port install libusb</pre>
+</div>
+
+<div class="section">
+    <h2><a name="runit">running it</a></h2>
+
+    <p><b>Mac Users:</b> please see this excellent <a href="http://chainsaw.musho.org/stuff/ems-on-mac/">tutorial on using ems-flasher on Mac</a>.</p>
+
+    <pre># write the ROM to the cart
+./ems-flasher --write totally_legit_rom.gb
+
+# saves the contents of bank 2 into the file; print some extra info
+./ems-flasher --verbose --bank 2 --read not_warez.gb
+
+# read the SRAM from bank 1
+./ems-flasher --read my_pokeymans.sav
+
+# print out the headers
+./ems-flasher --title</pre>
+
+    <p>The --write flag will flash the ROM or SRAM to the specified bank of the cart. Use the --verbose flag to get more output.</p>
+</div>
+
+<div class="section">
+    <h2><a name="git">git</a></h2>
+
+    <p>ems-flasher is developed using git, the most awesome version control software ever made. Clone the repo at:</p>
+
+    <pre>git clone git://lacklustre.net/ems-flasher</pre>
+
+    <p><a href="http://lacklustre.net/gitweb/?p=ems-flasher">browse ems-flasher source online</a></p>
+</div>
+
+<div class="section">
+    <h2><a name="doc">documentation</a></h2>
+
+    <p><a href="http://lacklustre.net/projects/ems-flasher/documentation.html">ems-flasher documentation</a></p>
+    <p><a href="http://lacklustre.net/projects/ems-flasher/faq.html">frequently asked questions</a></p>
+</div>
+
+<div class="section">
+    <h2><a name="thanks">thanks</a></h2>
+
+    <p>Thanks go to hyarion for build info and binary for Mac OS 10.6.</p>
+
+    <p>Major thanks go to David Wendt JR. for reverse engineering SRAM 
+and implementing SRAM read/write, full ROM header dump, and multiple 
+bank support.</p>
+
+    <p>Thanks to lostd for testing on OpenBSD.</p>
+
+    <p>Big ol' thanks to Mick Charles Beaver for making device detection way cleaner and giving us better error messages.</p>
+
+    <p>Mega thanks to Nicole Reid for maintaining the FreeBSD port.</p>
+
+    <p>Thanks to Joshua Merriman AKA <a href="http://chainsaw.musho.org/">Chainsaw Police</a> for writing a Mac OS X tutorial. Go check out his tracks!</p>
+
+    <p>And thank YOU!</p>
+</div>
+
+
+
+<hr>
+
+<p class="footer">
+    Email me: web ... lacklustre ... net <br>
+    <span class="updated">Last updated: 2013-01-19</span>
+</p>
+
+
+</body></html>

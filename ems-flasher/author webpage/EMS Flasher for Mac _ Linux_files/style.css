@@ -1,0 +1,71 @@
+/* last modified: 2013-01-15 */
+
+body {
+    font-family: sans-serif;
+    background: #ddd;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    width: 75%;
+    margin: 1em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+pre {
+    /* heavily inspired by redmine */
+    margin: 1em 1em 1em 1.6em;
+    padding: 0.3em;
+    background-color: #fff;
+    border: 1px solid #777;
+}
+
+.section {
+    margin: 40px 0 0 0;
+    padding: 0.3em;
+    position: relative;
+    border: 1px solid black;
+}
+
+/* put the h2 in a box above the section */
+.section h2 {
+    max-width: 20em;
+    font-size: 80%;
+    margin: -22px 1.07em 1em 1.07em;
+    padding: 0.5em;
+    border: 1px solid black;
+    border-style: solid solid solid solid;
+    background: #eee;
+}
+
+/* footer stuff */
+.footer {
+    text-align: right;
+}
+
+.updated {
+    background: #eee;
+    font-style: italic;
+    margin: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+/* random crap */
+.warning {
+    font-weight: bold;
+    color: red;
+}
+
+.important {
+    font-weight: bold;
+    text-decoration: underline;
+}
