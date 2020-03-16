@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <gbProject format="1.0">
-	<palette name="Green">
+	<palette name="Equilibrated">
 	</palette>
 	<libraries>
 		<library name="my lib01">
@@ -735,8 +735,8 @@
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="8" y="16" />
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="9" y="16" />
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="10" y="16" />
-			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="11" y="16" />
-			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="12" y="16" />
+			<cell tileID="9ec1f1c8-d81f-4149-8159-8386b4c8fade" x="11" y="16" />
+			<cell tileID="1df54334-ef4c-477f-aaed-845efd5e8a03" x="12" y="16" />
 			<cell tileID="3658c683-f358-4a72-b869-98cd139ec32d" x="13" y="16" />
 			<cell tileID="e47183f8-dceb-4bb9-83d0-89e34a35efa3" x="14" y="16" />
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="15" y="16" />
@@ -755,8 +755,8 @@
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="8" y="17" />
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="9" y="17" />
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="10" y="17" />
-			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="11" y="17" />
-			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="12" y="17" />
+			<cell tileID="67f06957-bd07-424a-b614-8fdb6fe40461" x="11" y="17" />
+			<cell tileID="c2997c36-9522-4bb0-af14-268fe573afe2" x="12" y="17" />
 			<cell tileID="389262cd-6243-4748-b4de-606e45d73ce1" x="13" y="17" />
 			<cell tileID="ba712385-4be0-40aa-9f87-1d0887769ea7" x="14" y="17" />
 			<cell tileID="ab40298b-cfc8-4867-b529-eafa151221ad" x="15" y="17" />
