@@ -1,6 +1,9 @@
 # temp and test folders
 test-not-save/
 
+#emacs
+*~
+
 # Prerequisites
 *.d
 
