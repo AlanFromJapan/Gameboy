@@ -11,14 +11,14 @@
 #include <gb/drawing.h>
 
 #include "my_lib01.c"
-#include "Map_01.h"
+#include "Map_02.h"
 
 void main() {
     SPRITES_8x8;
 
     set_sprite_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
-    set_bkg_tiles(0, 0, Map_01_WIDTH, Map_01_HEIGHT, Map_01);
+    set_bkg_tiles(0, 0, Map_02_WIDTH, Map_02_HEIGHT, Map_02);
 
     SHOW_BKG;
     SHOW_SPRITES;
