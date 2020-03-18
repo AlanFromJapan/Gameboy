@@ -1,5 +1,6 @@
 # temp and test folders
 test-not-save/
+.vs/
 
 # Prerequisites
 *.d
