@@ -75,6 +75,7 @@ void main() {
             move4sprite(0, x, y);
             delay(10);
         }
+        wait_vbl_done();
     }
 }
 

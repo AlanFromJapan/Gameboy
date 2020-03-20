@@ -28,3 +28,6 @@ cleaner: clean
 
 flash:
 	sudo $(FLASHER)/ems-flasher --bank 1 --verbose --write $(ROM_NAME)
+
+run:
+	vba $(ROM_NAME)
