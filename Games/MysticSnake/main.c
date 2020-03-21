@@ -11,23 +11,57 @@
 #include <gb/drawing.h>
 
 #include "my_lib01.c"
-#include "Map_20200321065221.h"
+#include "Map_Intro.h"
+#include "Map_Room1.h"
+
+#define MV_HERO(x,y) move_sprite(0, x, y); move_sprite(1, x+8, y);
+
 
 void main() {
-    SPRITES_8x8;
+  int x = 50;
+  int y = 50;
+  
+    SPRITES_8x16;
 
     set_sprite_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
-    set_bkg_tiles(0, 0, Map_20200321065221_WIDTH, Map_20200321065221_HEIGHT, Map_20200321065221);
 
+    set_bkg_tiles(0, 0, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
+
+    set_sprite_tile(0, TILE_HERO_NW);
+    set_sprite_tile(1, TILE_HERO_NE);
+    
+    MV_HERO(x, y);
+    
     SHOW_BKG;
     SHOW_SPRITES;
 
     wait_vbl_done();
 
-    while (1) {
-        wait_vbl_done();
 
+    while(1) {
+        if(joypad() & J_RIGHT) {
+            x++;
+            MV_HERO(x, y);
+            delay(10);
+        }
+        if(joypad() & J_LEFT) {
+            x--;
+            MV_HERO(x, y);
+            delay(10);
+        }
+        if(joypad() & J_UP) {
+            y--;
+            MV_HERO(x, y);
+            delay(10);
+        }
+        if(joypad() & J_DOWN) {
+            y++;
+            MV_HERO(x, y);
+            delay(10);
+        }
+
+	wait_vbl_done();
     }
 }
 

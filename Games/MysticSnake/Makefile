@@ -9,7 +9,8 @@ FLASHER = /home/alan/Git/Gameboy/ems-flasher
 ROM_FILE = $(ROM_NAME)
 OBJ_FILES = main.o \
 	my_lib01.o \
-	Map_A.o 
+	Map_Intro.o \
+	Map_Room1.o
 
 all: $(ROM_FILE)
 
