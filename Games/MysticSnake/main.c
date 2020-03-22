@@ -14,19 +14,33 @@
 #include "Map_Intro.h"
 #include "Map_Room1.h"
 
+#define SCREENW         160
+#define SCREENH         144
+#define HSCROLLLEFT     32
+#define HSCROLLRIGHT    128
+
+
 #define MV_HERO(x,y) move_sprite(0, x, y); move_sprite(1, x+8, y);
+unsigned int x = 50;
+unsigned int y = 50;
+
+unsigned int bgx = 0;
+unsigned int bgy = 0;
+
+unsigned int lastJoypad = 0;
+
+unsigned int currentMapW = SCREENW;
 
 
 void main() {
-  int x = 50;
-  int y = 50;
   
     SPRITES_8x16;
 
     set_sprite_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
 
-    set_bkg_tiles(0, 0, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
+    set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
+    currentMapW = Map_Intro_WIDTH * 8;
 
     set_sprite_tile(0, TILE_HERO_NW);
     set_sprite_tile(1, TILE_HERO_NE);
@@ -38,30 +52,44 @@ void main() {
 
     wait_vbl_done();
 
-
     while(1) {
-        if(joypad() & J_RIGHT) {
+        lastJoypad = joypad();
+        if(lastJoypad & J_RIGHT && x < SCREENW-8) {
             x++;
-            MV_HERO(x, y);
-            delay(10);
         }
-        if(joypad() & J_LEFT) {
+        if(lastJoypad & J_LEFT && x > 8) {
             x--;
-            MV_HERO(x, y);
-            delay(10);
         }
-        if(joypad() & J_UP) {
+        if(lastJoypad & J_UP && y > 16) {
             y--;
-            MV_HERO(x, y);
-            delay(10);
         }
-        if(joypad() & J_DOWN) {
+        if(lastJoypad & J_DOWN && y < SCREENH) {
             y++;
-            MV_HERO(x, y);
-            delay(10);
         }
 
-	wait_vbl_done();
+
+        //move bg Left ? only on big maps
+        if (currentMapW > SCREENW && bgx < (currentMapW - SCREENW) &&  x > HSCROLLRIGHT) {
+            x--;
+            bgx ++;
+            SCX_REG = bgx;
+        }
+        /*
+        else {
+            //move bg Right ? only on big maps
+            if (currentMapW > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
+                x++;
+                bgx --;
+                SCX_REG = bgx;
+            }
+        }
+        */
+
+
+        MV_HERO(x, y);
+//        delay(10);
+
+	    wait_vbl_done();
     }
 }
 
