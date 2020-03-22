@@ -31,7 +31,18 @@ unsigned int lastJoypad = 0;
 
 unsigned int currentMapW = SCREENW;
 
+/**
+ * Vertical blank interrupt: where we "draw" memory while screen is not updated
+ */
+void vblint(){
+    SCX_REG = bgx;
 
+    MV_HERO(x, y);
+}
+
+/**
+ * MAIN method
+ */
 void main() {
   
     SPRITES_8x16;
@@ -51,6 +62,8 @@ void main() {
     SHOW_SPRITES;
 
     wait_vbl_done();
+    //branch interrup handler for VBlank
+    add_VBL(vblint);
 
     while(1) {
         lastJoypad = joypad();
@@ -72,7 +85,7 @@ void main() {
         if (currentMapW > SCREENW && bgx < (currentMapW - SCREENW) &&  x > HSCROLLRIGHT) {
             x--;
             bgx ++;
-            SCX_REG = bgx;
+
         }
         /*
         else {
@@ -86,10 +99,8 @@ void main() {
         */
 
 
-        MV_HERO(x, y);
-//        delay(10);
-
-	    wait_vbl_done();
+        //debouncing on the cheap
+        delay(10);
     }
 }
 
