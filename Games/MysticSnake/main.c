@@ -10,9 +10,8 @@
 #include <gb/gb.h>
 #include <gb/drawing.h>
 
-#include "my_lib01.c"
+#include "my_lib01.h"
 #include "Map_Intro.h"
-#include "Map_Room1.h"
 
 #define SCREENW         160
 #define SCREENH         144
@@ -29,7 +28,38 @@ unsigned int bgy = 0;
 
 unsigned int lastJoypad = 0;
 
-unsigned int currentMapW = SCREENW;
+unsigned char *currentMap;
+unsigned int currentMapW_Px = SCREENW;
+unsigned int currentMapW_Tile = 20;
+unsigned int currentMapH_Tile = 18;
+
+#define COLLISION_TILE_LEN  8
+UINT8 COLLISION_TILE[] = {TILE_SAPIN_NW, TILE_SAPIN_NE, TILE_SAPIN_SW, TILE_SAPIN_SE, 
+TILE_PALMTREE_NW, TILE_PALMTREE_NE, TILE_PALMTREE_SW,TILE_PALMTREE_SE};
+
+
+/**
+ * Check if collision, return 0 if no collision and edits the delta x & y
+ */
+UINT8 checkCollision (INT8 *dx, INT8 *dy){
+    //x,y are in the bottom-middle of the Sprite
+    UINT8 nx = bgx + x + (*dx * (INT8)8); //+8 because x is in the middle of the 16x16
+    UINT8 ny = bgy + y + *dy;
+
+    UINT8 tile = currentMap[(ny / 8) * currentMapW_Tile + (nx / 8)];
+
+    unsigned int i =0;
+    for (; i < COLLISION_TILE_LEN; i++){
+        if (tile == COLLISION_TILE[i]){
+            //collision
+            *dx = 0;
+            *dy = 0;
+            return 1;
+        }
+    }
+    //all good
+    return 0;
+}
 
 /**
  * Vertical blank interrupt: where we "draw" memory while screen is not updated
@@ -51,7 +81,10 @@ void main() {
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
 
     set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
-    currentMapW = Map_Intro_WIDTH * 8;
+    currentMap = Map_Intro;
+    currentMapW_Tile = Map_Intro_WIDTH;
+    currentMapH_Tile = Map_Intro_HEIGHT;
+    currentMapW_Px = currentMapW_Tile * 8;
 
     set_sprite_tile(0, TILE_HERO_NW);
     set_sprite_tile(1, TILE_HERO_NE);
@@ -66,31 +99,40 @@ void main() {
     add_VBL(vblint);
 
     while(1) {
+        INT8 dx = 0;
+        INT8 dy = 0;
+
         lastJoypad = joypad();
         if(lastJoypad & J_RIGHT && x < SCREENW-8) {
-            x++;
+            dx=1;
         }
         if(lastJoypad & J_LEFT && x > 8) {
-            x--;
+            dx = -1;
         }
         if(lastJoypad & J_UP && y > 16) {
-            y--;
+            dy = -1;
         }
         if(lastJoypad & J_DOWN && y < SCREENH) {
-            y++;
+            dy = 1;
         }
+
+        checkCollision (&dx, &dy);
+        x += dx;
+        y += dy;
 
 
         //move bg Left ? only on big maps
-        if (currentMapW > SCREENW && bgx < (currentMapW - SCREENW) &&  x > HSCROLLRIGHT) {
+        if (dx > 0 && currentMapW_Px > SCREENW && bgx < (currentMapW_Px - SCREENW) &&  x > HSCROLLRIGHT) {
             x--;
             bgx ++;
 
         }
+
+
         /*
         else {
             //move bg Right ? only on big maps
-            if (currentMapW > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
+            if (currentMapW_Px > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
                 x++;
                 bgx --;
                 SCX_REG = bgx;

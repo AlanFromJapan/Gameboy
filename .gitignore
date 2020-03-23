@@ -1,6 +1,7 @@
 # temp and test folders
 test-not-save/
 .vs/
+obj/
 
 #emacs
 *~

@@ -1,34 +1,14 @@
-# ROM name
-ROM_NAME = mysticsnake.gb
+BIN = /home/alan/Git/gbdk-n/bin
+OBJ=./obj
 
-# Binaries
-CC	= $(GBDKDIR)bin/lcc
-FLASHER = /home/alan/Git/Gameboy/ems-flasher
-
-# Files
-ROM_FILE = $(ROM_NAME)
-OBJ_FILES = main.o \
-	my_lib01.o \
-	Map_Intro.o \
-	Map_Room1.o
-
-all: $(ROM_FILE)
-
-$(ROM_FILE): $(OBJ_FILES)
-	$(CC) -o $@ $^
-
-%.o : %.c
-	$(CC) -c -o $@ $<
-
+build:
+	mkdir -p $(OBJ)
+	$(BIN)/gbdk-n-compile.sh Map_Intro.c -o $(OBJ)/Map_Intro.rel
+	$(BIN)/gbdk-n-compile.sh my_lib01.c -o $(OBJ)/my_lib01.rel
+	$(BIN)/gbdk-n-compile.sh main.c -o $(OBJ)/main.rel
+	$(BIN)/gbdk-n-link.sh $(OBJ)/main.rel $(OBJ)/my_lib01.rel $(OBJ)/Map_Intro.rel  -o $(OBJ)/MysticSnake-n.ihx 
+	$(BIN)/gbdk-n-make-rom.sh $(OBJ)/MysticSnake-n.ihx MysticSnake-n.gb
 
 clean:
-	rm *.o
-
-cleaner: clean
-	rm *.gb
-
-flash:
-	sudo $(FLASHER)/ems-flasher --bank 1 --verbose --write $(ROM_NAME)
-
-run:
-	vba $(ROM_NAME)
+	rm -rf $(OBJ)
+	rm -f *.gb
