@@ -19,3 +19,5 @@ clean:
 
 run:
 	vba MysticSnake-n.gb
+
+full: clean build run

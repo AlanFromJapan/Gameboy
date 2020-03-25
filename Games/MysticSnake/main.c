@@ -34,17 +34,17 @@ unsigned int currentMapW_Tile = 20;
 unsigned int currentMapH_Tile = 18;
 
 #define COLLISION_TILE_LEN  8
-UINT8 COLLISION_TILE[] = {TILE_SAPIN_NW, TILE_SAPIN_NE, TILE_SAPIN_SW, TILE_SAPIN_SE, 
+UINT8 const COLLISION_TILE[] = {TILE_SAPIN_NW, TILE_SAPIN_NE, TILE_SAPIN_SW, TILE_SAPIN_SE, 
 TILE_PALMTREE_NW, TILE_PALMTREE_NE, TILE_PALMTREE_SW,TILE_PALMTREE_SE};
 
 
 /**
  * Check if collision, return 0 if no collision and edits the delta x & y
  */
-UINT8 checkCollision (INT8 *dx, INT8 *dy){
+UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
     //x,y are in the bottom-middle of the Sprite
     UINT8 nx = bgx + x + (*dx * (INT8)8); //+8 because x is in the middle of the 16x16
-    UINT8 ny = bgy + y + *dy;
+    UINT8 ny = bgy + y + *dy -8 ; //-8 to put the collision detection center of the body
 
     UINT8 tile = currentMap[(ny / 8) * currentMapW_Tile + (nx / 8)];
 
@@ -127,8 +127,6 @@ void main() {
             bgx ++;
 
         }
-
-
         else {
             //move bg Right ? only on big maps
             if (currentMapW_Px > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {

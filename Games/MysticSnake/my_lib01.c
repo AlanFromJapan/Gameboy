@@ -2,7 +2,7 @@
 
 #include "my_lib01.h"
 
-unsigned char my_lib01[] =
+const unsigned char my_lib01[] =
 {
 
 //0: coffre NW [11e494c8-59e2-4b7d-afab-3a4919d2793a]

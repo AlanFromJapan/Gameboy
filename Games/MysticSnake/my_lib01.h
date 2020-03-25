@@ -127,6 +127,6 @@
 #define TILE_TOWER_4   120
 #define TILE_TOWER_5   121
 
-extern unsigned char my_lib01[];
+extern const unsigned char my_lib01[];
 
 #endif //__MY_LIB01_H__
