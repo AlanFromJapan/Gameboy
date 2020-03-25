@@ -16,3 +16,6 @@ $(OBJ_DIR)/%.rel : ./%.c
 clean:
 	rm -rf $(OBJ_DIR)
 	rm -f *.gb
+
+run:
+	vba MysticSnake-n.gb

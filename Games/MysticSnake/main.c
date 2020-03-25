@@ -129,16 +129,13 @@ void main() {
         }
 
 
-        /*
         else {
             //move bg Right ? only on big maps
             if (currentMapW_Px > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
                 x++;
                 bgx --;
-                SCX_REG = bgx;
             }
         }
-        */
 
 
         //debouncing on the cheap
