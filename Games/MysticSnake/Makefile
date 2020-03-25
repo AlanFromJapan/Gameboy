@@ -1,15 +1,18 @@
 BIN = /home/alan/Git/gbdk-n/bin
-OBJ=./obj
+OBJ_DIR=./obj
 
-build:
-	mkdir -p $(OBJ)
-	$(BIN)/gbdk-n-compile-4.sh Map_Intro.c -o $(OBJ)/Map_Intro.rel
-	$(BIN)/gbdk-n-compile-4.sh my_lib01.c -o $(OBJ)/my_lib01.rel
-	$(BIN)/gbdk-n-compile-4.sh main.c -o $(OBJ)/main.rel
-	$(BIN)/gbdk-n-link.sh $(OBJ)/*.rel  -o $(OBJ)/MysticSnake-n.ihx 
-	$(BIN)/gbdk-n-make-rom.sh $(OBJ)/MysticSnake-n.ihx MysticSnake-n.gb
+OBJ_FILES = $(OBJ_DIR)/Map_Intro.rel \
+			$(OBJ_DIR)/my_lib01.rel \
+			$(OBJ_DIR)/main.rel
 
+build: $(OBJ_FILES)
+	$(BIN)/gbdk-n-link.sh $(OBJ_DIR)/*.rel  -o $(OBJ_DIR)/MysticSnake-n.ihx 
+	$(BIN)/gbdk-n-make-rom.sh $(OBJ_DIR)/MysticSnake-n.ihx MysticSnake-n.gb
+
+$(OBJ_DIR)/%.rel : ./%.c
+	mkdir -p $(OBJ_DIR)
+	$(BIN)/gbdk-n-compile-4.sh $^ -o $(OBJ_DIR)/$^.rel
 
 clean:
-	rm -rf $(OBJ)
+	rm -rf $(OBJ_DIR)
 	rm -f *.gb
