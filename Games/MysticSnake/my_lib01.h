@@ -1,8 +1,8 @@
 
-#ifndef __MY_LIB01_H__
-#define __MY_LIB01_H__
+#ifndef __my_lib01_H__
+#define __my_lib01_H__
 
-#define my_lib01_COUNT   122
+#define my_lib01_COUNT   134
 
 
 #define TILE_COFFRE_NW   0
@@ -126,7 +126,22 @@
 #define TILE_TOWER_3   119
 #define TILE_TOWER_4   120
 #define TILE_TOWER_5   121
+#define TILE_HERO2_NW   122
+#define TILE_HERO2_SW   123
+#define TILE_HERO2_NE   124
+#define TILE_HERO2_SE   125
+#define TILE_WINDOW_1   126
+#define TILE_WINDOW_2   127
+#define TILE_WINDOW_3   128
+#define TILE_WINDOW_4   129
+#define TILE_WINDOW_5   130
+#define TILE_WINDOW_6   131
+#define TILE_WINDOW_7   132
+#define TILE_WINDOW_8   133
 
-extern const unsigned char my_lib01[];
 
-#endif //__MY_LIB01_H__
+//declared as const to save compile and execution time/space
+extern const unsigned char my_lib01[]; 
+
+#endif //__my_lib01_H__
+
