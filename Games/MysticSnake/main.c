@@ -33,6 +33,7 @@ unsigned int currentMapW_Px = SCREENW;
 unsigned int currentMapW_Tile = 20;
 unsigned int currentMapH_Tile = 18;
 
+//List of tiles that are considered as not-walkable (should be the first ones or the last ones for performance sake)
 #define COLLISION_TILE_LEN  8
 UINT8 const COLLISION_TILE[] = {TILE_SAPIN_NW, TILE_SAPIN_NE, TILE_SAPIN_SW, TILE_SAPIN_SE, 
 TILE_PALMTREE_NW, TILE_PALMTREE_NE, TILE_PALMTREE_SW,TILE_PALMTREE_SE};
