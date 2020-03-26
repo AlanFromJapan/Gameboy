@@ -1,131 +1,8 @@
 
-#define my_lib01_COUNT   122
+#include "my_lib01.h"
 
-
-#define TILE_COFFRE_NW   0
-#define TILE_COFFRE_SW   1
-#define TILE_COFFRE_NE   2
-#define TILE_COFFRE_SE   3
-#define TILE_HERO_NW   4
-#define TILE_HERO_SW   5
-#define TILE_HERO_NE   6
-#define TILE_HERO_SE   7
-#define TILE_SAND   8
-#define TILE_SAPIN_NW   9
-#define TILE_SAPIN_SW   10
-#define TILE_SAPIN_NE   11
-#define TILE_SAPIN_SE   12
-#define TILE_PALMTREE_NW   13
-#define TILE_PALMTREE_SW   14
-#define TILE_PALMTREE_NE   15
-#define TILE_PALMTREE_SE   16
-#define TILE_EMPTY   17
-#define TILE_DOOR_NW   18
-#define TILE_DOOR_SW   19
-#define TILE_DOOR_NE   20
-#define TILE_DOOR_SE   21
-#define TILE_PENTAGRAM_NW   22
-#define TILE_PENTAGRAM_SW   23
-#define TILE_PENTAGRAM_NE   24
-#define TILE_PENTAGRAM_SE   25
-#define TILE_STAIRS_UP_NW   26
-#define TILE_STAIRS_UP_SW   27
-#define TILE_STAIRS_UP_NE   28
-#define TILE_STAIRS_UP_SE   29
-#define TILE_TABLE_NW   30
-#define TILE_TABLE_SW   31
-#define TILE_TABLE_NE   32
-#define TILE_TABLE_SE   33
-#define TILE_STAIRS_DOWN_NW   34
-#define TILE_STAIRS_DOWN_SW   35
-#define TILE_STAIRS_DOWN_NE   36
-#define TILE_STAIRS_DOWN_SE   37
-#define TILE_MARBLE_STELE_NW   38
-#define TILE_MARBLE_STELE_SW   39
-#define TILE_MARBLE_STELE_NE   40
-#define TILE_MARBLE_STELE_SE   41
-#define TILE_WEAPON_WALL_SW   43
-#define TILE_WEAPON_WALL_NE   44
-#define TILE_WEAPON_WALL_SE   45
-#define TILE_TORCH_NW   46
-#define TILE_TORCH_SW   47
-#define TILE_TORCH_NE   48
-#define TILE_TORCH_SE   49
-#define TILE_BUSH_NW   50
-#define TILE_BUSH_SW   51
-#define TILE_BUSH_NE   52
-#define TILE_BUSH_SE   53
-#define TILE_ROCK_NW   54
-#define TILE_ROCK_SW   55
-#define TILE_ROCK_NE   56
-#define TILE_ROCK_SE   57
-#define TILE_FLOWER_NW   58
-#define TILE_FLOWER_SW   59
-#define TILE_FLOWER_NE   60
-#define TILE_FLOWER_SE   61
-#define TILE_COLUMN_NW   62
-#define TILE_COLUMN_SW   63
-#define TILE_COLUMN_NE   64
-#define TILE_COLUMN_SE   65
-#define TILE_SKELETON_NW   66
-#define TILE_SKELETON_SW   67
-#define TILE_SKELETON_NE   68
-#define TILE_SKELETON_SE   69
-#define TILE_WMAGE_NW   70
-#define TILE_WMAGE_SW   71
-#define TILE_WMAGE_NE   72
-#define TILE_WMAGE_SE   73
-#define TILE_GIRL_NW   74
-#define TILE_GIRL_SW   75
-#define TILE_GIRL_NE   76
-#define TILE_GIRL_SE   77
-#define TILE_DWARF_NW   78
-#define TILE_DWARF_SW   79
-#define TILE_DWARF_NE   80
-#define TILE_DWARF_SE   81
-#define TILE_CRANE_NW   82
-#define TILE_CRANE_SW   83
-#define TILE_CRANE_NE   84
-#define TILE_CRANE_SE   85
-#define TILE_FIRE_NW   86
-#define TILE_FIRE_SW   87
-#define TILE_FIRE_NE   88
-#define TILE_FIRE_SE   89
-#define TILE_SNOWMAN_NW   90
-#define TILE_SNOWMAN_SW   91
-#define TILE_SNOWMAN_NE   92
-#define TILE_SNOWMAN_SE   93
-#define TILE_GRASS_1   94
-#define TILE_GRASS_2   95
-#define TILE_TILE   96
-#define TILE_BIGTILE_NW   97
-#define TILE_BIGTILE_SW   98
-#define TILE_BIGTILE_NE   99
-#define TILE_BIGTILE_SE   100
-#define TILE_GROUND1_NW   101
-#define TILE_GROUND1_SW   102
-#define TILE_GROUND1_NE   103
-#define TILE_GROUND1_SE   104
-#define TILE_CRYSTAL_NW   105
-#define TILE_CRYSTAL_SW   106
-#define TILE_CRYSTAL_NE   107
-#define TILE_CRYSTAL_SE   108
-#define TILE_REMAINS_NW   109
-#define TILE_REMAINS_SW   110
-#define TILE_REMAINS_NE   111
-#define TILE_REMAINS_SE   112
-#define TILE_TUMBSTONE_NW   113
-#define TILE_TUMBSTONE_SW   114
-#define TILE_TUMBSTONE_NE   115
-#define TILE_TUMBSTONE_SE   116
-#define TILE_TOWER_1   117
-#define TILE_TOWER_2   118
-#define TILE_TOWER_3   119
-#define TILE_TOWER_4   120
-#define TILE_TOWER_5   121
-
-
-unsigned char my_lib01[] =
+//declared as const to save compile and execution time/space
+const unsigned char my_lib01[] = 
 {
 
 //0: coffre NW [11e494c8-59e2-4b7d-afab-3a4919d2793a]
@@ -371,6 +248,30 @@ unsigned char my_lib01[] =
 //120: tower 4 [172e2a0e-63e8-41f7-a510-6215aec1a009]
 0xFF,0xFF,0x1F,0x04,0xEC,0x17,0xD4,0x2F,0xFF,0xFF,0x67,0x20,0xF4,0x2B,0xFA,0x25,
 //121: tower 5 [05d4c520-3c30-4487-9344-6e3f8243e13c]
-0xFF,0xFF,0xF5,0x2F,0x25,0xFF,0x25,0xFF,0xFF,0xFF,0xE9,0x9F,0xC9,0xBF,0xC9,0xBF
+0xFF,0xFF,0xF5,0x2F,0x25,0xFF,0x25,0xFF,0xFF,0xFF,0xE9,0x9F,0xC9,0xBF,0xC9,0xBF,
+//122: hero2 NW [82db7cfa-4754-4ca4-8185-9f2829c188a6]
+0x07,0x07,0x0F,0x0F,0x0F,0x0F,0x1F,0x1B,0x1F,0x1B,0x09,0x0F,0x0F,0x0E,0x7F,0x7A,
+//123: hero2 SW [d5238e77-6ef4-468f-9f2d-3b7742ccd873]
+0x87,0xFC,0x6B,0x7F,0x79,0x4F,0x6C,0x57,0x3F,0x27,0x19,0x1F,0x07,0x07,0x0F,0x0F,
+//124: hero2 NE [8906265c-1776-4c39-bd48-1bc89c1afeac]
+0xE0,0xE0,0xF8,0xF8,0xFC,0xFC,0xF8,0xF8,0xFC,0x7C,0x38,0xF8,0xF0,0xF0,0xFE,0x5E,
+//125: hero2 SE [4b08c6f0-eaf6-4434-a8fc-83f983e89946]
+0xFF,0x3F,0xF9,0xE7,0xBD,0xEF,0x3D,0xEF,0xFD,0xEF,0x1A,0xF6,0x3C,0xFC,0xF0,0xF0,
+//126: Window 1 [fac61afa-9fea-4a7d-b19c-7ee95b59d3b5]
+0x1F,0x1F,0x3F,0x20,0x70,0x40,0xE0,0x87,0xC3,0x8F,0xC4,0x9C,0xC8,0x98,0xC8,0x98,
+//127: Window 2 [77999184-53d6-4644-9f0e-0ba71b52313e]
+0xFF,0xFF,0xFF,0x00,0x00,0x00,0x00,0xFF,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,
+//128: Window 3 [9de94ebe-1b97-4b2a-97b3-5e79292c1599]
+0xF8,0xF8,0xFC,0x04,0x0E,0x02,0x07,0xE1,0xC3,0xF1,0x39,0x23,0x09,0x13,0x09,0x13,
+//129: Window 4 [0e00f8d2-adc8-4f52-b287-6aa0b8c364f8]
+0xC8,0x98,0xC8,0x98,0xC8,0x98,0xC8,0x98,0xC8,0x98,0xC8,0x98,0xC8,0x98,0xC8,0x98,
+//130: Window 5 [fb47fabb-0a97-439d-8833-ac5eb718a964]
+0x09,0x13,0x09,0x13,0x09,0x13,0x09,0x13,0x09,0x13,0x09,0x13,0x09,0x13,0x09,0x13,
+//131: Window 6 [36541604-9827-4633-8f2a-f23aaf0a081e]
+0xC8,0x98,0xC8,0x98,0xC8,0x94,0xCC,0x83,0xE7,0x80,0x70,0x40,0x30,0x2F,0x1F,0x1F,
+//132: Window 7 [580cc511-2ebd-4fe9-ae33-32fb31dfc1e7]
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0xFF,0xFF,0xFF,
+//133: Window 8 [cf7a8011-acf9-4c1d-9d10-ea53c4a7b46e]
+0x09,0x13,0x09,0x13,0x19,0x23,0x31,0xC3,0xE1,0x07,0x02,0x0E,0x04,0xFC,0xF8,0xF8
 };
 
