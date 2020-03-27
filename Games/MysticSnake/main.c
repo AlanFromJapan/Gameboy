@@ -12,6 +12,8 @@
 
 #include "my_lib01.h"
 #include "Map_Intro.h"
+#include "transitions.h"
+
 
 #define SCREENW         GRAPHICS_WIDTH
 #define SCREENH         GRAPHICS_HEIGHT
@@ -100,6 +102,16 @@ UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
 }
 
 /**
+ * Vertical blank interrupt: where we "draw" memory while screen is not updated
+ */
+void vblint(){
+    move_bkg(bgx, 0);
+
+    MV_HERO(x, y);
+
+}
+
+/**
  * Map transition: small anim and load new bg
  * 
  */
@@ -110,11 +122,17 @@ void doMapTransition(){
     delay (500);
 
     //LOAD!
+    mapTransition(
+        &currentMap, 
+        &x, 
+        &y, 
+        &currentMapW_Tile, 
+        &currentMapH_Tile
+        );
 
-    x=16;
-    y=16;
     bgx =0;
     bgy =0;
+    currentMapW_Px = currentMapW_Tile * 8;
 
     vblint();
 
@@ -126,15 +144,7 @@ void doMapTransition(){
 }
 
 
-/**
- * Vertical blank interrupt: where we "draw" memory while screen is not updated
- */
-void vblint(){
-    move_bkg(bgx, 0);
 
-    MV_HERO(x, y);
-
-}
 
 /**
  * MAIN method
