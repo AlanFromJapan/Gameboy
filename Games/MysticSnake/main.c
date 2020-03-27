@@ -13,8 +13,8 @@
 #include "my_lib01.h"
 #include "Map_Intro.h"
 
-#define SCREENW         160
-#define SCREENH         144
+#define SCREENW         GRAPHICS_WIDTH
+#define SCREENH         GRAPHICS_HEIGHT
 #define HSCROLLLEFT     32
 #define HSCROLLRIGHT    128
 
@@ -27,6 +27,7 @@ unsigned int bgx = 0;
 unsigned int bgy = 0;
 
 unsigned int lastJoypad = 0;
+unsigned int stepCount = 0;
 
 unsigned char *currentMap;
 unsigned int currentMapW_Px = SCREENW;
@@ -66,9 +67,10 @@ UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
  * Vertical blank interrupt: where we "draw" memory while screen is not updated
  */
 void vblint(){
-    SCX_REG = bgx;
+    move_bkg(bgx, 0);
 
     MV_HERO(x, y);
+
 }
 
 /**
@@ -139,6 +141,21 @@ void main() {
 
         //debouncing on the cheap
         delay(10);
+
+        //moved? change appearance
+        if (dx != 0 || dy != 0){
+            stepCount++;    
+
+            if ((stepCount & 0x01) == 0){
+                set_sprite_tile(0, TILE_HERO_NW);
+                set_sprite_tile(1, TILE_HERO_NE);
+            }
+            else {
+                set_sprite_tile(0, TILE_HERO2_NW);
+                set_sprite_tile(1, TILE_HERO2_NE);
+            }
+
+        }
     }
 }
 
