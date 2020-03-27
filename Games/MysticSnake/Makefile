@@ -15,7 +15,7 @@ OBJ_FILES = $(OBJ_DIR)/Map_Intro.rel \
 
 build: $(OBJ_FILES)
 	$(BIN)/gbdk-n-link-4.sh $(OBJ_DIR)/*.rel  -o $(OBJ_DIR)/MysticSnake-n.ihx 
-	$(BIN)/gbdk-n-make-rom-4.sh $(OBJ_DIR)/MysticSnake-n.ihx $(ROM_NAME)
+	$(BIN)/gbdk-n-make-rom-4.sh -yn "Mystic Snake" $(OBJ_DIR)/MysticSnake-n.ihx $(ROM_NAME)
 
 $(OBJ_DIR)/%.rel : ./%.c
 	mkdir -p $(OBJ_DIR)
