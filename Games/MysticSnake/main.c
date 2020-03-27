@@ -19,7 +19,6 @@
 #define HSCROLLRIGHT    128
 
 
-#define MV_HERO(x,y) move_sprite(0, x, y); move_sprite(1, x+8, y);
 unsigned int x = 50;
 unsigned int y = 50;
 
@@ -35,20 +34,42 @@ unsigned int currentMapW_Tile = 20;
 unsigned int currentMapH_Tile = 18;
 
 //List of tiles that are considered as not-walkable (should be the first ones or the last ones for performance sake)
-#define COLLISION_TILE_LEN  8
-UINT8 const COLLISION_TILE[] = {TILE_SAPIN_NW, TILE_SAPIN_NE, TILE_SAPIN_SW, TILE_SAPIN_SE, 
-TILE_PALMTREE_NW, TILE_PALMTREE_NE, TILE_PALMTREE_SW,TILE_PALMTREE_SE};
+#define COLLISION_TILE_LEN  25
+UINT8 const COLLISION_TILE[] = {
+TILE_SAPIN_NW, TILE_SAPIN_NE, TILE_SAPIN_SW, TILE_SAPIN_SE, 
+TILE_PALMTREE_NW, TILE_PALMTREE_NE, TILE_PALMTREE_SW, TILE_PALMTREE_SE,
+TILE_PALMTREE_NW, TILE_PALMTREE_NE, TILE_PALMTREE_SW, TILE_PALMTREE_SE,
+TILE_ROCK_NW, TILE_ROCK_NE, TILE_ROCK_SW, TILE_ROCK_SE, 
+TILE_COLUMN_NW, TILE_COLUMN_NE, TILE_COLUMN_SW, TILE_COLUMN_SE, 
+TILE_TOWER_1, TILE_TOWER_2, TILE_TOWER_3, TILE_TOWER_4, TILE_TOWER_5
+};
 
+//List of transition tiles: walk on it but do something special
+#define TRANSITION_TILE_LEN     12
+UINT8 const TRANSITION_TILE[] = {
+TILE_DOOR_NW, TILE_DOOR_NE, TILE_DOOR_SW, TILE_DOOR_SE,
+TILE_STAIRS_UP_NW, TILE_STAIRS_UP_NE, TILE_STAIRS_UP_SW, TILE_STAIRS_UP_SE, 
+TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_SE
+};
+
+
+//Move the Hero to x,y
+#define MV_HERO(x,y)    move_sprite(0, x, y); move_sprite(1, x+8, y);
+//Returns the background tile at XX,YY
+#define GET_BG_TILE(XX, YY)     (currentMap[(YY / 8) * currentMapW_Tile + (XX / 8)])
+//Returns the position of the player on the map (different than on the screen!)
+#define GET_MAP_X(dx)   (bgx + x + (dx * (INT8)8)) /* +8 because x is in the middle of the 16x16 */
+#define GET_MAP_Y(dy)   (bgy + y + dy -8) /* -8 to put the collision detection center of the body */
 
 /**
  * Check if collision, return 0 if no collision and edits the delta x & y
  */
 UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
     //x,y are in the bottom-middle of the Sprite
-    UINT8 nx = bgx + x + (*dx * (INT8)8); //+8 because x is in the middle of the 16x16
-    UINT8 ny = bgy + y + *dy -8 ; //-8 to put the collision detection center of the body
+    UINT8 nx = GET_MAP_X(*dx);
+    UINT8 ny = GET_MAP_Y(*dy);
 
-    UINT8 tile = currentMap[(ny / 8) * currentMapW_Tile + (nx / 8)];
+    UINT8 tile = GET_BG_TILE(nx, ny);
 
     unsigned int i =0;
     for (; i < COLLISION_TILE_LEN; i++){
