@@ -61,8 +61,15 @@ TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_
 #define GET_MAP_X(dx)   (bgx + x + (dx * (INT8)8)) /* +8 because x is in the middle of the 16x16 */
 #define GET_MAP_Y(dy)   (bgy + y + dy -8) /* -8 to put the collision detection center of the body */
 
+//Results of the checkCollision()
+#define MOVE_CHECK_OK           0
+#define MOVE_CHECK_COLLISION    1
+#define MOVE_CHECK_TRANSITION   2
+UINT8 lastMoveCheck = MOVE_CHECK_OK;
+
+
 /**
- * Check if collision, return 0 if no collision and edits the delta x & y
+ * Check if collision, return 0 if no collision and edits the delta x & y, 1 if collision, 2 if transition
  */
 UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
     //x,y are in the bottom-middle of the Sprite
@@ -77,12 +84,47 @@ UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
             //collision
             *dx = 0;
             *dy = 0;
-            return 1;
+            return MOVE_CHECK_COLLISION;
+        }
+
+        if (i < TRANSITION_TILE_LEN){
+            //not sure optimizer left-right
+            if (tile == TRANSITION_TILE[i]){
+                return MOVE_CHECK_TRANSITION;
+            }
+
         }
     }
     //all good
-    return 0;
+    return MOVE_CHECK_OK;
 }
+
+/**
+ * Map transition: small anim and load new bg
+ * 
+ */
+void doMapTransition(){
+    HIDE_BKG;
+    delay (500);
+    HIDE_SPRITES;
+    delay (500);
+
+    //LOAD!
+
+    x=16;
+    y=16;
+    bgx =0;
+    bgy =0;
+
+    vblint();
+
+    SHOW_SPRITES;
+    delay (500);
+    SHOW_BKG;
+    delay (500);
+
+}
+
 
 /**
  * Vertical blank interrupt: where we "draw" memory while screen is not updated
@@ -140,43 +182,51 @@ void main() {
             dy = 1;
         }
 
-        checkCollision (&dx, &dy);
-        x += dx;
-        y += dy;
+        lastMoveCheck = checkCollision (&dx, &dy);
 
-
-        //move bg Left ? only on big maps
-        if (dx > 0 && currentMapW_Px > SCREENW && bgx < (currentMapW_Px - SCREENW) &&  x > HSCROLLRIGHT) {
-            x--;
-            bgx ++;
-
+        if (lastMoveCheck == MOVE_CHECK_TRANSITION){
+            //transition!
+            doMapTransition();
         }
         else {
-            //move bg Right ? only on big maps
-            if (currentMapW_Px > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
-                x++;
-                bgx --;
+            //move or collide
+            x += dx;
+            y += dy;
+
+            //move bg Left ? only on big maps
+            if (dx > 0 && currentMapW_Px > SCREENW && bgx < (currentMapW_Px - SCREENW) &&  x > HSCROLLRIGHT) {
+                x--;
+                bgx ++;
+
+            }
+            else {
+                //move bg Right ? only on big maps
+                if (currentMapW_Px > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
+                    x++;
+                    bgx --;
+                }
+            }
+
+            //moved? change appearance
+            if (dx != 0 || dy != 0){
+                stepCount++;    
+
+                if ((stepCount & 0x01) == 0){
+                    set_sprite_tile(0, TILE_HERO_NW);
+                    set_sprite_tile(1, TILE_HERO_NE);
+                }
+                else {
+                    set_sprite_tile(0, TILE_HERO2_NW);
+                    set_sprite_tile(1, TILE_HERO2_NE);
+                }
+
             }
         }
-
 
         //debouncing on the cheap
         delay(10);
 
-        //moved? change appearance
-        if (dx != 0 || dy != 0){
-            stepCount++;    
 
-            if ((stepCount & 0x01) == 0){
-                set_sprite_tile(0, TILE_HERO_NW);
-                set_sprite_tile(1, TILE_HERO_NE);
-            }
-            else {
-                set_sprite_tile(0, TILE_HERO2_NW);
-                set_sprite_tile(1, TILE_HERO2_NE);
-            }
-
-        }
     }
 }
 
