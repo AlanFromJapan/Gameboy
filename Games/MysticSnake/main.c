@@ -12,6 +12,7 @@
 
 #include "my_lib01.h"
 #include "Map_Intro.h"
+#include "Map_Title.h"
 #include "transitions.h"
 
 
@@ -144,6 +145,21 @@ void doMapTransition(){
 }
 
 
+/**
+ * Shows title screen
+ * 
+ */
+void showTitle(){
+    set_bkg_tiles(0, 0, Map_Title_WIDTH, Map_Title_HEIGHT, Map_Title);
+    SHOW_BKG;
+
+    while(1) {
+        lastJoypad = joypad();
+        if(lastJoypad & J_START) {
+            break;
+        }
+    }
+}
 
 
 /**
@@ -155,6 +171,9 @@ void main() {
 
     set_sprite_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
+
+    //Shows the title screen
+    showTitle();
 
     set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
     currentMap = Map_Intro;
