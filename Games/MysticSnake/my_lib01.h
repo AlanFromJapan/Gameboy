@@ -2,7 +2,7 @@
 #ifndef __my_lib01_H__
 #define __my_lib01_H__
 
-#define my_lib01_COUNT   134
+#define my_lib01_COUNT   138
 
 
 #define TILE_COFFRE_NW   0
@@ -138,10 +138,15 @@
 #define TILE_WINDOW_6   131
 #define TILE_WINDOW_7   132
 #define TILE_WINDOW_8   133
+#define TILE_SNAKE_NW   134
+#define TILE_SNAKE_SW   135
+#define TILE_SNAKE_NE   136
+#define TILE_SNAKE_SE   137
 
 
 //declared as const to save compile and execution time/space
 extern const unsigned char my_lib01[]; 
 
 #endif //__my_lib01_H__
+
 
