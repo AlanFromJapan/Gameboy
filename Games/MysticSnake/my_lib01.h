@@ -2,7 +2,7 @@
 #ifndef __my_lib01_H__
 #define __my_lib01_H__
 
-#define my_lib01_COUNT   138
+#define my_lib01_COUNT   181
 
 
 #define TILE_COFFRE_NW   0
@@ -47,6 +47,7 @@
 #define TILE_MARBLE_STELE_SW   39
 #define TILE_MARBLE_STELE_NE   40
 #define TILE_MARBLE_STELE_SE   41
+#define TILE_WEAPON_WALL_NW   42
 #define TILE_WEAPON_WALL_SW   43
 #define TILE_WEAPON_WALL_NE   44
 #define TILE_WEAPON_WALL_SE   45
@@ -142,6 +143,49 @@
 #define TILE_SNAKE_SW   135
 #define TILE_SNAKE_NE   136
 #define TILE_SNAKE_SE   137
+#define TILE_LETTER_1   138
+#define TILE_LETTER_2   139
+#define TILE_LETTER_3   140
+#define TILE_LETTER_4   141
+#define TILE_LETTER_5   142
+#define TILE_LETTER_6   143
+#define TILE_LETTER_7   144
+#define TILE_LETTER_8   145
+#define TILE_LETTER_9   146
+#define TILE_LETTER_10   147
+#define TILE_LETTER_11   148
+#define TILE_LETTER_12   149
+#define TILE_LETTER_13   150
+#define TILE_LETTER_14   151
+#define TILE_LETTER_15   152
+#define TILE_LETTER_16   153
+#define TILE_LETTER_17   154
+#define TILE_LETTER_18   155
+#define TILE_LETTER_19   156
+#define TILE_LETTER_20   157
+#define TILE_LETTER_21   158
+#define TILE_LETTER_22   159
+#define TILE_LETTER_23   160
+#define TILE_LETTER_24   161
+#define TILE_LETTER_25   162
+#define TILE_LETTER_26   163
+#define TILE_LETTER_COMMA   164
+#define TILE_LETTER_DOT   165
+#define TILE_LETTER_EXCL   166
+#define TILE_LETTER_QUESTION   167
+#define TILE_CLE   168
+#define TILE_POTION   169
+#define TILE_BONBON   170
+#define TILE_BOURSE   171
+#define TILE_NUMBER_2   172
+#define TILE_NUMBER_3   173
+#define TILE_NUMBER_4   174
+#define TILE_NUMBER_5   175
+#define TILE_NUMBER_6   176
+#define TILE_NUMBER_7   177
+#define TILE_NUMBER_8   178
+#define TILE_NUMBER_9   179
+#define TILE_NUMBER_10   180
 
 
 //declared as const to save compile and execution time/space
