@@ -14,6 +14,7 @@
 #include "Map_Intro.h"
 #include "Map_Title.h"
 #include "transitions.h"
+#include "graphics.h"
 
 
 #define SCREENW         GRAPHICS_WIDTH
@@ -162,62 +163,23 @@ void showTitle(){
     
 }
 
-unsigned char dynmap[18*20];
-
-void writetext (UINT8 px, UINT8 py, char* msg){
-
-    for (UINT8 i =0; msg[i] != 0; i++){
-        UINT8 c = msg[i];
-
-        if (c >='a' && c <= 'z'){
-            dynmap[py * 20 + px] = (UINT8)c - (UINT8)'A' - ('a' - 'A') + (UINT8)TILE_LETTER_1;
-        }
-        else 
-            if (c >='A' && c <= 'Z'){
-                dynmap[py * 20 + px] = (UINT8)c - (UINT8)'A' + (UINT8)TILE_LETTER_1;
-            }
-            else {
-                switch(c){
-                    case ' ':
-                        dynmap[py * 20 + px] = TILE_EMPTY;
-                        break;
-                    case '.':
-                        dynmap[py * 20 + px] = TILE_LETTER_DOT;
-                        break;
-                    case '?':
-                        dynmap[py * 20 + px] = TILE_LETTER_QUESTION;
-                        break;
-                    case '!':
-                        dynmap[py * 20 + px] = TILE_LETTER_EXCL;
-                        break;
-                }
-            }
-
-        px++;
-        if (px >= 20){
-            px = 0;
-            py ++;
-        }
-    }
-
-}
 
 void test_text(){
-    for (UINT16 i = 0 ; i < 18*20; i++){
+    for (UINT16 i = 0 ; i < DynMap_MAX_HEIGHT*DynMap_MAX_WIDTH; i++){
         dynmap[i] = TILE_EMPTY;
     }
 
-    dynmap[20] = TILE_LETTER_1;
-    dynmap[21] = TILE_LETTER_20;
-    dynmap[22] = TILE_NUMBER_2;
+    dynmap[4 * DynMap_MAX_WIDTH + 3] = TILE_LETTER_1;
+    dynmap[4 * DynMap_MAX_WIDTH + 4] = TILE_LETTER_20;
+    dynmap[4 * DynMap_MAX_WIDTH + 5] = TILE_NUMBER_2;
 
     writetext(4, 5, "Alexandre TROP MIGNON CHOUPINOU!!");
-    writetext(4, 10, "ABCD");
+    writetext(4, 10, "ABCD 0123");
 
     bgx = 0;
     bgy = 0;
 
-    set_bkg_tiles(0, 0, 20, 18, dynmap);
+    set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
 
     SHOW_BKG;
 
