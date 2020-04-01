@@ -13,6 +13,8 @@ OBJ_FILES = $(OBJ_DIR)/Map_Intro.rel \
 			$(OBJ_DIR)/my_lib01.rel \
 			$(OBJ_DIR)/graphics.rel \
 			$(OBJ_DIR)/transitions.rel \
+			$(OBJ_DIR)/tests.rel \
+			$(OBJ_DIR)/inputs.rel \
 			$(OBJ_DIR)/main.rel
 
 build: $(OBJ_FILES)

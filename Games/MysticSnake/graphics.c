@@ -1,5 +1,6 @@
 #include "graphics.h"
 #include "my_lib01.h"
+#include "inputs.h"
 
 /**
  *  THE dynamic map to use and reuse
@@ -9,6 +10,12 @@ unsigned char dynmap[DynMap_MAX_WIDTH * DynMap_MAX_HEIGHT];
 UINT8 dynmapW =20;
 UINT8 dynmapH =18;
 
+/**
+ * The shift of the background compared to origin (top left = 0,0)
+ */
+unsigned int bgx = 0;
+unsigned int bgy = 0;
+
 
 
 /**
@@ -16,7 +23,7 @@ UINT8 dynmapH =18;
  * Works only with the dynamic background.
  * Accepts [a-zA-Z.,?!]
  */
-void writetext (UINT8 px, UINT8 py, char* msg){
+void writetextBG (UINT8 px, UINT8 py, char* msg){
 
     for (UINT8 i =0; msg[i] != 0; i++){
         UINT8 c = msg[i];

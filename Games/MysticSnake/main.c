@@ -15,6 +15,7 @@
 #include "Map_Title.h"
 #include "transitions.h"
 #include "graphics.h"
+#include "inputs.h"
 
 
 #define SCREENW         GRAPHICS_WIDTH
@@ -26,14 +27,9 @@
 unsigned int x = 50;
 unsigned int y = 50;
 
-unsigned int bgx = 0;
-unsigned int bgy = 0;
-
-unsigned int lastJoypad = 0;
 unsigned int stepCount = 0;
 
 unsigned char *currentMap;
-unsigned int currentMapW_Px = SCREENW;
 unsigned int currentMapW_Tile = 20;
 unsigned int currentMapH_Tile = 18;
 
@@ -134,7 +130,6 @@ void doMapTransition(){
 
     bgx =0;
     bgy =0;
-    currentMapW_Px = currentMapW_Tile * 8;
 
     vblint();
 
@@ -164,34 +159,15 @@ void showTitle(){
 }
 
 
-void test_text(){
-    for (UINT16 i = 0 ; i < DynMap_MAX_HEIGHT*DynMap_MAX_WIDTH; i++){
-        dynmap[i] = TILE_EMPTY;
-    }
 
-    dynmap[4 * DynMap_MAX_WIDTH + 3] = TILE_LETTER_1;
-    dynmap[4 * DynMap_MAX_WIDTH + 4] = TILE_LETTER_20;
-    dynmap[4 * DynMap_MAX_WIDTH + 5] = TILE_NUMBER_2;
-
-    writetext(4, 5, "Alexandre TROP MIGNON CHOUPINOU!!");
-    writetext(4, 10, "ABCD 0123");
-
-    bgx = 0;
-    bgy = 0;
-
-    set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
-
-    SHOW_BKG;
-
-    delay(500);
-
-    while(1) {
-        lastJoypad = joypad();
-        if(lastJoypad & J_START) {
-            break;
-        }
-    }
-
+/**
+ * Shows the first map at beginning, after is all transitions
+ */
+inline void showInitialMap(){
+    set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
+    currentMap = Map_Intro;
+    currentMapW_Tile = Map_Intro_WIDTH;
+    currentMapH_Tile = Map_Intro_HEIGHT;
 }
 
 /**
@@ -210,12 +186,11 @@ void main() {
     //TEST
     test_text();
 
-    set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
-    currentMap = Map_Intro;
-    currentMapW_Tile = Map_Intro_WIDTH;
-    currentMapH_Tile = Map_Intro_HEIGHT;
-    currentMapW_Px = currentMapW_Tile * 8;
+    //show the landing map
+    showInitialMap();
 
+
+    //make the hero and move to start point
     set_sprite_tile(0, TILE_HERO_NW);
     set_sprite_tile(1, TILE_HERO_NE);
     
@@ -258,14 +233,14 @@ void main() {
             y += dy;
 
             //move bg Left ? only on big maps
-            if (dx > 0 && currentMapW_Px > SCREENW && bgx < (currentMapW_Px - SCREENW) &&  x > HSCROLLRIGHT) {
+            if (dx > 0 && currentMapW_Tile * 8 > SCREENW && bgx < (currentMapW_Tile * 8 - SCREENW) &&  x > HSCROLLRIGHT) {
                 x--;
                 bgx ++;
 
             }
             else {
                 //move bg Right ? only on big maps
-                if (currentMapW_Px > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
+                if (currentMapW_Tile * 8 > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
                     x++;
                     bgx --;
                 }

@@ -7,6 +7,9 @@
 #define DynMap_MAX_HEIGHT  32
 
 
+extern unsigned int bgx ;
+extern unsigned int bgy ;
+
 extern UINT8 dynmapW;
 extern UINT8 dynmapH;
 extern unsigned char dynmap[];
@@ -17,6 +20,6 @@ extern unsigned char dynmap[];
  * Works only with the dynamic background.
  *
  */
-void writetext (UINT8 px, UINT8 py, char* msg);
+void writetextBG (UINT8 px, UINT8 py, char* msg);
 
 #endif //__GRAPHICS_H__
