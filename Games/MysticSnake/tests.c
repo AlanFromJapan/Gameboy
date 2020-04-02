@@ -8,6 +8,9 @@ void test_text(){
         dynmap[i] = TILE_EMPTY;
     }
 
+    dynmapW = 20;
+    dynmapH = 18;
+
     dynmap[4 * DynMap_MAX_WIDTH + 3] = TILE_LETTER_1;
     dynmap[4 * DynMap_MAX_WIDTH + 4] = TILE_LETTER_20;
     dynmap[4 * DynMap_MAX_WIDTH + 5] = TILE_NUMBER_2;

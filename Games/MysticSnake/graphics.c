@@ -7,8 +7,8 @@
  */
 unsigned char dynmap[DynMap_MAX_WIDTH * DynMap_MAX_HEIGHT];
 //The CURRENT size of the dynamic map (showable space if you want)
-UINT8 dynmapW =20;
-UINT8 dynmapH =18;
+UINT8 dynmapW = DynMap_MAX_WIDTH;
+UINT8 dynmapH = DynMap_MAX_HEIGHT;
 
 /**
  * The shift of the background compared to origin (top left = 0,0)
@@ -70,4 +70,12 @@ void writetextBG (UINT8 px, UINT8 py, char* msg){
         }
     }
 
+}
+
+/**
+ * Fills the Dynmap with the parameter tile 
+ */
+void clearDynmap(UINT8 tile){
+    for (UINT16 i = 0; i < DynMap_MAX_WIDTH * DynMap_MAX_HEIGHT; i++)
+        dynmap[i] = tile;
 }

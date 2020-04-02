@@ -17,6 +17,8 @@
 #include "graphics.h"
 #include "inputs.h"
 
+#include "tests.h"
+
 
 #define SCREENW         GRAPHICS_WIDTH
 #define SCREENH         GRAPHICS_HEIGHT
@@ -219,6 +221,11 @@ void main() {
         }
         if(lastJoypad & J_DOWN && y < SCREENH) {
             dy = 1;
+        }
+
+        //TEST
+        if(lastJoypad & J_SELECT) {
+            doMapTransition();
         }
 
         lastMoveCheck = checkCollision (&dx, &dy);
