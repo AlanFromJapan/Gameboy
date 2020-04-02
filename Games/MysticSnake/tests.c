@@ -4,9 +4,7 @@
 #include "inputs.h"
 
 void test_text(){
-    for (UINT16 i = 0 ; i < DynMap_MAX_HEIGHT*DynMap_MAX_WIDTH; i++){
-        dynmap[i] = TILE_EMPTY;
-    }
+    clearDynmap(TILE_EMPTY);
 
     dynmapW = 20;
     dynmapH = 18;
@@ -21,7 +19,7 @@ void test_text(){
     bgx = 0;
     bgy = 0;
 
-    set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
+    set_bkg_tiles(0, 0, dynmapW, dynmapH, dynmap);
 
     SHOW_BKG;
 

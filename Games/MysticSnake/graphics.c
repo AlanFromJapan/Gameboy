@@ -27,35 +27,35 @@ void writetextBG (UINT8 px, UINT8 py, char* msg){
 
     for (UINT8 i =0; msg[i] != 0; i++){
         UINT8 c = msg[i];
-        UINT16 pos = px + py * DynMap_MAX_HEIGHT;
 
         if (c >='a' && c <= 'z'){
-            dynmap[pos] = (UINT8)c - (UINT8)'A' - ('a' - 'A') + (UINT8)TILE_LETTER_1;
+            DYNMAP_PUT_TILE((UINT8)c - (UINT8)'A' - ('a' - 'A') + (UINT8)TILE_LETTER_1, px, py);
         }
         else {
             if (c >='1' && c <= '9'){ //zero is special below
-                dynmap[pos] = (UINT8)c - (UINT8)'1' + (UINT8)TILE_NUMBER_2; //2 is '1' in fact ... don't ask
+                DYNMAP_PUT_TILE((UINT8)c - (UINT8)'1' + (UINT8)TILE_NUMBER_2, px, py);
+                //2 is '1' in fact ... don't ask
             }
             else {
                 if (c >='A' && c <= 'Z'){
-                    dynmap[pos] = (UINT8)c - (UINT8)'A' + (UINT8)TILE_LETTER_1;
+                    DYNMAP_PUT_TILE((UINT8)c - (UINT8)'A' + (UINT8)TILE_LETTER_1, px, py);                    
                 }
                 else {
                     switch(c){
                         case ' ':
-                            dynmap[pos] = TILE_EMPTY;
+                            DYNMAP_PUT_TILE(TILE_EMPTY, px, py);
                             break;
                         case '.':
-                            dynmap[pos] = TILE_LETTER_DOT;
+                            DYNMAP_PUT_TILE(TILE_LETTER_DOT, px, py);
                             break;
                         case '?':
-                            dynmap[pos] = TILE_LETTER_QUESTION;
+                            DYNMAP_PUT_TILE(TILE_LETTER_QUESTION, px, py);
                             break;
                         case '!':
-                            dynmap[pos] = TILE_LETTER_EXCL;
+                            DYNMAP_PUT_TILE(TILE_LETTER_EXCL, px, py);
                             break;
                         case '0':
-                            dynmap[pos] = TILE_LETTER_15; //capital O is the zero
+                            DYNMAP_PUT_TILE(TILE_LETTER_15, px, py); //capital O is the zero
                             break;
                     }
                 }
