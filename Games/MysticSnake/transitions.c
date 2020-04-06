@@ -26,10 +26,10 @@ void makeRandomMap(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
     *map = dynmap;
     //W: up to 32, min 6
     dynmapW = ((UINT8)(_rand() & 0x1f));
-    dynmapW = MAX(6, dynmapW);
+    dynmapW = MAX(10, dynmapW);
     //H: up to 8 min 6
-    dynmapH = 2 + ((UINT8)(_rand() & 0x0f));//max 18
-    dynmapH = MAX(6, dynmapH);
+    dynmapH = 3 + ((UINT8)(_rand() & 0x0f));//max 18
+    dynmapH = MAX(9, dynmapH);
 
     *wtile = dynmapW;
     *htile = dynmapH;

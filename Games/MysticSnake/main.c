@@ -105,7 +105,7 @@ UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
  * Vertical blank interrupt: where we "draw" memory while screen is not updated
  */
 void vblint(){
-    move_bkg(bgx, 0);
+    move_bkg(bgx, bgy);
 
     MV_HERO(x, y);
 
@@ -130,8 +130,18 @@ void doMapTransition(){
         &currentMapH_Tile
         );
 
-    bgx =0;
-    bgy =0;
+    /* That doesn't work and I don't know why, but I guess that watching TV and coding don't help
+    bgx = (SCREENW - currentMapW_Tile * 8) / 2 ;
+    x += bgx;
+    bgx = 32*8 - bgx; 
+    */
+    bgx = 0;
+
+    //centers the new map vertically in the screen (no vertical scroll)
+    bgy = (SCREENH - currentMapH_Tile * 8) / 2 ;
+    y += bgy;
+    bgy = 32*8 - bgy; 
+    
 
     vblint();
 

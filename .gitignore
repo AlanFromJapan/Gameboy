@@ -2,6 +2,7 @@
 test-not-save/
 .vs/
 obj/
+.vscode/
 
 #emacs
 *~
