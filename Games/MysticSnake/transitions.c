@@ -7,7 +7,8 @@
 
 #include "graphics.h"
 
-#include <gb/rand.h>
+//#include <gb/rand.h>
+#include <stdlib.h>
 
 UINT8 mLastMapId=0;
 
@@ -25,10 +26,10 @@ void makeRandomMap(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
     //Map size
     *map = dynmap;
     //W: up to 32, min 6
-    dynmapW = ((UINT8)(_rand() & 0x1f));
+    dynmapW = ((UINT8)(rand() & 0x1f));
     dynmapW = MAX(10, dynmapW);
     //H: up to 8 min 6
-    dynmapH = 3 + ((UINT8)(_rand() & 0x0f));//max 18
+    dynmapH = 3 + ((UINT8)(rand() & 0x0f));//max 18
     dynmapH = MAX(9, dynmapH);
 
     *wtile = dynmapW;
@@ -142,6 +143,7 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
 
         //initarand(DIV_REG); 
         //initrand(DIV_REG); 
+        srand(DIV_REG);
     }
     else {
         //clear the full dynmap, refresh the screen
