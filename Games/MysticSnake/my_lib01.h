@@ -2,7 +2,7 @@
 #ifndef __my_lib01_H__
 #define __my_lib01_H__
 
-#define my_lib01_COUNT   181
+#define my_lib01_COUNT   182
 
 
 #define TILE_COFFRE_NW   0
@@ -186,6 +186,7 @@
 #define TILE_NUMBER_8   178
 #define TILE_NUMBER_9   179
 #define TILE_NUMBER_10   180
+#define TILE_ARROW_DOWN   181
 
 
 //declared as const to save compile and execution time/space
