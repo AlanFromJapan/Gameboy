@@ -15,6 +15,7 @@ OBJ_FILES = $(OBJ_DIR)/Map_Intro.rel \
 			$(OBJ_DIR)/transitions.rel \
 			$(OBJ_DIR)/tests.rel \
 			$(OBJ_DIR)/inputs.rel \
+			$(OBJ_DIR)/windows.rel \
 			$(OBJ_DIR)/main.rel
 
 build: $(OBJ_FILES)

@@ -19,6 +19,12 @@ extern unsigned char dynmap[];
 #define DYNMAP_PUT_TILE(T,X,Y) dynmap[(Y) * dynmapW + (X)] = T;
 
 /**
+ * Fill in the tiles array with the tile representation of the text.
+ * YOU MUST INIT THE ARRAY AND FREE IT BEFORE.
+ */
+void string2tile(char* msg, UINT8* tiles);
+
+/**
  * Writes a string on the background at (x.y) in Tiles.
  * Works only with the dynamic background.
  *

@@ -3,5 +3,7 @@
 
 void test_text();
 
+void test_windows();
+
 #endif //__TESTS_H__
 

@@ -1,6 +1,8 @@
 #include "graphics.h"
 #include "my_lib01.h"
 #include "inputs.h"
+#include <stdlib.h>
+#include <string.h>
 
 /**
  *  THE dynamic map to use and reuse
@@ -17,6 +19,52 @@ unsigned int bgx = 0;
 unsigned int bgy = 0;
 
 
+/**
+ * Fill in the tiles array with the tile representation of the text.
+ * YOU MUST INIT THE ARRAY AND FREE IT BEFORE.
+ */
+void string2tile(char* msg, UINT8* tiles){
+
+    for (UINT8 i =0; msg[i] != 0; i++){
+        UINT8 c = msg[i];
+
+        if (c >='a' && c <= 'z'){
+            tiles[i] = (UINT8)c - (UINT8)'A' - ('a' - 'A') + (UINT8)TILE_LETTER_1;
+        }
+        else {
+            if (c >='1' && c <= '9'){ //zero is special below
+                tiles[i] = (UINT8)c - (UINT8)'1' + (UINT8)TILE_NUMBER_2;
+                //2 is '1' in fact ... don't ask
+            }
+            else {
+                if (c >='A' && c <= 'Z'){
+                    tiles[i] = (UINT8)c - (UINT8)'A' + (UINT8)TILE_LETTER_1;              
+                }
+                else {
+                    switch(c){
+                        case ' ':
+                            tiles[i] = TILE_EMPTY;
+                            break;
+                        case '.':
+                            tiles[i] = TILE_LETTER_DOT;
+                            break;
+                        case '?':
+                            tiles[i] = TILE_LETTER_QUESTION;
+                            break;
+                        case '!':
+                            tiles[i] = TILE_LETTER_EXCL;
+                            break;
+                        case '0':
+                            tiles[i] = TILE_LETTER_15; //capital O is the zero
+                            break;
+                    }
+                }
+            }
+        }
+
+        
+    }
+}
 
 /**
  * Writes a string on the background at (x.y) in Tiles.
@@ -24,43 +72,14 @@ unsigned int bgy = 0;
  * Accepts [a-zA-Z.,?!]
  */
 void writetextBG (UINT8 px, UINT8 py, char* msg){
+    UINT8* tiles = (UINT8*)malloc(strlen(msg));
+
+    string2tile(msg, tiles);
 
     for (UINT8 i =0; msg[i] != 0; i++){
-        UINT8 c = msg[i];
+        UINT8 c = tiles[i];
 
-        if (c >='a' && c <= 'z'){
-            DYNMAP_PUT_TILE((UINT8)c - (UINT8)'A' - ('a' - 'A') + (UINT8)TILE_LETTER_1, px, py);
-        }
-        else {
-            if (c >='1' && c <= '9'){ //zero is special below
-                DYNMAP_PUT_TILE((UINT8)c - (UINT8)'1' + (UINT8)TILE_NUMBER_2, px, py);
-                //2 is '1' in fact ... don't ask
-            }
-            else {
-                if (c >='A' && c <= 'Z'){
-                    DYNMAP_PUT_TILE((UINT8)c - (UINT8)'A' + (UINT8)TILE_LETTER_1, px, py);                    
-                }
-                else {
-                    switch(c){
-                        case ' ':
-                            DYNMAP_PUT_TILE(TILE_EMPTY, px, py);
-                            break;
-                        case '.':
-                            DYNMAP_PUT_TILE(TILE_LETTER_DOT, px, py);
-                            break;
-                        case '?':
-                            DYNMAP_PUT_TILE(TILE_LETTER_QUESTION, px, py);
-                            break;
-                        case '!':
-                            DYNMAP_PUT_TILE(TILE_LETTER_EXCL, px, py);
-                            break;
-                        case '0':
-                            DYNMAP_PUT_TILE(TILE_LETTER_15, px, py); //capital O is the zero
-                            break;
-                    }
-                }
-            }
-        }
+        DYNMAP_PUT_TILE(c,px, py);
 
         px++;
         //Trick is here since the showable map is SMALLER than the full map, this allows proper line wrap.
@@ -70,6 +89,7 @@ void writetextBG (UINT8 px, UINT8 py, char* msg){
         }
     }
 
+    free(tiles);
 }
 
 /**

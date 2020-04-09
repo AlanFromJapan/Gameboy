@@ -16,9 +16,14 @@
 #include "transitions.h"
 #include "graphics.h"
 #include "inputs.h"
+#include "windows.h"
 
+
+#define RUN_TESTS
+
+#ifdef RUN_TESTS
 #include "tests.h"
-
+#endif //RUN_TESTS
 
 #define SCREENW         GRAPHICS_WIDTH
 #define SCREENH         GRAPHICS_HEIGHT
@@ -196,11 +201,12 @@ void main() {
     showTitle();
 
     //TEST
+#ifdef RUN_TESTS    
     test_text();
+#endif
 
     //show the landing map
     showInitialMap();
-
 
     //make the hero and move to start point
     set_sprite_tile(0, TILE_HERO_NW);
@@ -234,9 +240,14 @@ void main() {
         }
 
         //TEST
+#ifdef RUN_TESTS    
         if(lastJoypad & J_SELECT) {
             doMapTransition();
         }
+        if(lastJoypad & J_START) {
+            test_windows();
+        }
+#endif 
 
         lastMoveCheck = checkCollision (&dx, &dy);
 

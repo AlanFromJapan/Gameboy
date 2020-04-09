@@ -2,6 +2,7 @@
 #include "graphics.h"
 #include "my_lib01.h"
 #include "inputs.h"
+#include "windows.h"
 
 void test_text(){
     clearDynmap(TILE_EMPTY);
@@ -32,4 +33,12 @@ void test_text(){
         }
     }
 
+}
+
+
+void test_windows() {
+    windowShowText("Bonjour 2sec", 2);    
+    windowShowText("un message long   qui se coupe bien", 0);
+    windowShowText("un message tres    long qui depasse  mais passe a la   page suivante !", 0);
+    windowShowText("Alors du delire   un message sur 3  pages carement    c est fou fou fou et tres beau.", 0);
 }
