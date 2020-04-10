@@ -125,6 +125,19 @@ void makeRandomMap(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
 
 }
 
+/**
+ * Makes a map 20w x 32h filled with bgTile
+ * 
+ */
+inline void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile){
+
+    *map = dynmap;
+    dynmapW = 20;
+    dynmapH = 32;
+
+    clearDynmap(bgTile);
+
+}
 
 /**
  * When transition from a given map, by a transition at point x,y (MAP coordinate)

@@ -8,7 +8,9 @@
 #include "Map_Room1.h"
 
 
-extern void mapTransition(UINT8 * * map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile);
+void mapTransition(UINT8 * * map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile);
+void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile);
+
 
 #endif // __TRANSITION_H__
 

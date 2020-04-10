@@ -57,6 +57,9 @@ void string2tile(char* msg, UINT8* tiles){
                         case '0':
                             tiles[i] = TILE_LETTER_15; //capital O is the zero
                             break;
+                        case ',':
+                            tiles[i] = TILE_LETTER_COMMA;
+                            break;
                     }
                 }
             }
@@ -83,8 +86,8 @@ void writetextBG (UINT8 px, UINT8 py, char* msg){
 
         px++;
         //Trick is here since the showable map is SMALLER than the full map, this allows proper line wrap.
-        if (px >= dynmapW){
-            px = 0;
+        if (px >= dynmapW-1){ //-1 and +1 below to leave a 1 char space on left and right
+            px = 1;
             py ++;
         }
     }

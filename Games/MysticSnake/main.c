@@ -171,8 +171,9 @@ void showTitle(){
         if(lastJoypad & J_START) {
             break;
         }
+        delay(10);
     }
-    
+
     //debouncing
     delay(200);
 }
@@ -188,6 +189,40 @@ inline void showInitialMap(){
     currentMapW_Tile = Map_Intro_WIDTH;
     currentMapH_Tile = Map_Intro_HEIGHT;
 }
+
+/**
+ * Displays a fullscreen scroller for the story intro.
+ * 
+ */
+inline void showStartupScroller(){
+    HIDE_BKG;
+
+    mapMakeVerticalMessage(&currentMap, TILE_EMPTY);
+    currentMapW_Tile = 20;
+    currentMapH_Tile = 32;
+
+    writetextBG(1,1, "Dans un future    lointain, le monde a ete ravage par une etrange maladie.Tous les humains ont disparu peu apeu, laissant une terre vide qui retomba petit a petitdans un monde moyenageux ou la  technologie a ete oubliee.");
+    writetextBG(1,14, "Notre hero part a la recherche de laverite, se basant sur des legendes  parlant d un mage qui vivait dans   une tour cachee   dans la foret...");
+
+    set_bkg_tiles(bgx, bgy, currentMapW_Tile, currentMapH_Tile, currentMap);
+
+    SHOW_BKG;
+    UINT8 vy =180;
+
+    while(1) {
+        
+        if (vy >= 180 || vy <100) {
+            move_bkg(0, vy++);
+            delay(100);
+        }
+        else {
+            delay(3000);
+            break;
+        }
+    }
+
+}
+
 
 /**
  * MAIN method
@@ -206,6 +241,9 @@ void main() {
 #ifdef RUN_TESTS    
     //test_text();
 #endif
+
+    //Intro scroller
+    showStartupScroller();
 
     //show the landing map
     showInitialMap();

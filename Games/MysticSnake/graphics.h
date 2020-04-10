@@ -5,7 +5,7 @@
 
 //32x18 (could be 32x32)
 #define DynMap_MAX_WIDTH   32
-#define DynMap_MAX_HEIGHT  18 
+#define DynMap_MAX_HEIGHT  32 
 
 
 extern unsigned int bgx ;
