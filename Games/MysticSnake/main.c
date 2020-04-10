@@ -135,12 +135,17 @@ void doMapTransition(){
         &currentMapH_Tile
         );
 
-    /* That doesn't work and I don't know why, but I guess that watching TV and coding don't help
-    bgx = (SCREENW - currentMapW_Tile * 8) / 2 ;
-    x += bgx;
-    bgx = 32*8 - bgx; 
-    */
-    bgx = 0;
+    if (currentMapW_Tile >= 20) {
+        //if wider than a screen, align left
+        bgx=0;
+    }
+    else {
+
+        bgx = (SCREENW - currentMapW_Tile * 8) / 2 ;
+        x += bgx;
+        bgx = 255 - bgx;        
+    }
+    
 
     //centers the new map vertically in the screen (no vertical scroll)
     bgy = (SCREENH - currentMapH_Tile * 8) / 2 ;
@@ -243,7 +248,7 @@ void main() {
 #endif
 
     //Intro scroller
-    showStartupScroller();
+//    showStartupScroller();
 
     //show the landing map
     showInitialMap();

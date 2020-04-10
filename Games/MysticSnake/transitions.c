@@ -22,7 +22,7 @@ UINT8 mLastMapId=0;
 void makeRandomMap(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
     //hero start point
     *x=16;
-    *y=32;
+    *y=16;
 
     //Map size
     *map = dynmap;
@@ -145,11 +145,11 @@ inline void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile){
  */
 void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
     if (mLastMapId == 0) {
-        *x=16;
-        *y=32;
 
         if (*map == Map_Room1) {
             //Room1 -> BigRoom1
+            *x=16;
+            *y=16;
             *map = Map_BigRoom1;
             *wtile = Map_BigRoom1_WIDTH;
             *htile = Map_BigRoom1_HEIGHT;
@@ -157,6 +157,8 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
         }
         else {
             //enter in Room1
+            *x=16;
+            *y=32;
             *map = Map_Room1;
             *wtile = Map_Room1_WIDTH;
             *htile = Map_Room1_HEIGHT;
