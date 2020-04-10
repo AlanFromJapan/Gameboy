@@ -4,6 +4,7 @@
 #include "my_lib01.h"
 #include "Map_Intro.h"
 #include "Map_Room1.h"
+#include "Map_BigRoom1.h"
 
 #include "graphics.h"
 
@@ -130,19 +131,25 @@ void makeRandomMap(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
  * 
  */
 void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
-
-    
     if (mLastMapId == 0) {
         *x=16;
         *y=32;
 
-        *map = Map_Room1;
-        *wtile = Map_Room1_WIDTH;
-        *htile = Map_Room1_HEIGHT;
-        mLastMapId = 1;
+        if (*map == Map_Room1) {
+            //Room1 -> BigRoom1
+            *map = Map_BigRoom1;
+            *wtile = Map_BigRoom1_WIDTH;
+            *htile = Map_BigRoom1_HEIGHT;
+            mLastMapId = 1;
+        }
+        else {
+            //enter in Room1
+            *map = Map_Room1;
+            *wtile = Map_Room1_WIDTH;
+            *htile = Map_Room1_HEIGHT;
+            //mLastMapId = 1; //stay out of the random map loop
+        }
 
-        //initarand(DIV_REG); 
-        //initrand(DIV_REG); 
         srand(DIV_REG);
     }
     else {

@@ -173,6 +173,8 @@ void showTitle(){
         }
     }
     
+    //debouncing
+    delay(200);
 }
 
 
@@ -202,7 +204,7 @@ void main() {
 
     //TEST
 #ifdef RUN_TESTS    
-    test_text();
+    //test_text();
 #endif
 
     //show the landing map

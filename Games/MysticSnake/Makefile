@@ -10,6 +10,7 @@ FLASHER = /home/alan/Git/Gameboy/ems-flasher
 OBJ_FILES = $(OBJ_DIR)/Map_Intro.rel \
 			$(OBJ_DIR)/Map_Room1.rel \
 			$(OBJ_DIR)/Map_Title.rel \
+			$(OBJ_DIR)/Map_BigRoom1.rel \
 			$(OBJ_DIR)/my_lib01.rel \
 			$(OBJ_DIR)/graphics.rel \
 			$(OBJ_DIR)/transitions.rel \
