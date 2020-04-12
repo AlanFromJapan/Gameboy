@@ -11,12 +11,137 @@
 //#include <gb/rand.h>
 #include <stdlib.h>
 
-UINT8 mLastMapId=0;
+//memory of what time of room was the previous one. Default is 0 (fixed rooms)
+UINT8 mLastMapId=1;
 
 #define MAX(A,B)    ((A) > (B)? (A): (B))
+#define MIN(A,B)    ((A) < (B)? (A): (B))
+
+
 
 /**
- * Generates a random map
+ * Generates a random map with rooms
+ * 
+ */
+void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
+    UINT8 gnd = 0;
+    UINT8 vx ;
+    UINT8 vy ;
+    UINT8 wx ;
+    UINT8 wy ;
+
+    UINT8 prevCenterX;
+    UINT8 prevCenterY;
+
+    //hero start point
+    *x=16;
+    *y=16;
+
+    //Map size
+    *map = dynmap;
+    dynmapW = 32;
+    dynmapH = 18;
+
+    *wtile = dynmapW;
+    *htile = dynmapH;
+
+    //fill with walls
+    clearDynmap(TILE_TOWER_3);
+
+    //make the ground
+    switch (rand() & 0x03) {
+        case 0:
+            gnd = TILE_SAND;
+            break;
+        case 1:
+            gnd = TILE_GRASS_1;
+            break;
+        default:
+            gnd = TILE_EMPTY;
+            break;        
+    }
+
+    //Make start room
+    for (UINT8 i = 1; i <= 5; i++){
+        for (UINT8 j = 1; j <= 5; j++){
+            DYNMAP_PUT_TILE(gnd, i, j);
+        }
+    }
+
+    prevCenterX= 3;
+    prevCenterY= 3;
+
+    //make a few rooms
+    UINT8 rmax = (rand() & 0x03) + 1;
+    for (UINT8 r =0; r < rmax; r++){
+        vx = 1 + (rand() & 0x1f);
+        vy = 1 + (rand() & 0x0f);
+
+        wx = vx + 4 + (rand() & 0x08);
+        wy = vy + 4 + (rand() & 0x08);
+
+        wx = MIN(wx, 30);//max -1 -1 
+        wy = MIN(wy, 16);
+
+        for (UINT8 i = vx; i <= wx; i++){
+            for (UINT8 j = vy; j <= wy; j++){
+                DYNMAP_PUT_TILE(gnd, i, j);
+            }
+        }
+
+        //room is created. link to previous room
+        vx += (wx - vx)/2;
+        vy += (wy - vy)/2;
+
+        //try to make corridor between room centers.
+        //prevCenter is the cursor. Can start X first or Y first, X code is copy paste with a rand() to allow to start X first or not
+        //same code and the cursor moves so no wasted circle (at worse we do X, then Y, then X again but we're already here so leaves immediately)
+        if ((rand() & 0x01) == 0) {
+            while (prevCenterX != vx){
+                DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY);
+                if (vx > prevCenterX)
+                    prevCenterX++;
+                else
+                    prevCenterX--;            
+            }
+        }
+
+        while (prevCenterY != vy){
+            DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY);
+            if (vy > prevCenterY)
+                prevCenterY++;
+            else
+                prevCenterY--;            
+        }
+
+        while (prevCenterX != vx){
+            DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY);
+            if (vx > prevCenterX)
+                prevCenterX++;
+            else
+                prevCenterX--;            
+        }
+
+    }
+
+    //make a stair anywhere as long as it's not a wall
+    while (1){
+        vx = 1 + (rand() & 0x1f);
+        vy = 1 + (rand() & 0x0f);
+
+        if (DYNMAP_GET_TILE(vx,vy) == gnd){
+            //ok!
+            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_NW, vx, vy);
+            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_NE, vx+1, vy);
+            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SW, vx, vy+1);
+            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SE, vx+1, vy+1);
+            break;
+        }
+    }
+}
+
+/**
+ * Generates a random map EMPTY
  * 
  */
 void makeRandomMap(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
@@ -144,38 +269,46 @@ inline void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile){
  * 
  */
 void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
-    if (mLastMapId == 0) {
+    switch(mLastMapId){
+        /* ---------------------------------------------------------------------------------------------- */
+        case 0:
+            if (*map == Map_Room1) {
+                //Room1 -> BigRoom1
+                *x=16;
+                *y=16;
+                *map = Map_BigRoom1;
+                *wtile = Map_BigRoom1_WIDTH;
+                *htile = Map_BigRoom1_HEIGHT;
+                mLastMapId = 1;
+            }
+            else {
+                //enter in Room1
+                *x=16;
+                *y=32;
+                *map = Map_Room1;
+                *wtile = Map_Room1_WIDTH;
+                *htile = Map_Room1_HEIGHT;
+                //mLastMapId = 1; //stay out of the random map loop
+            }
 
-        if (*map == Map_Room1) {
-            //Room1 -> BigRoom1
-            *x=16;
-            *y=16;
-            *map = Map_BigRoom1;
-            *wtile = Map_BigRoom1_WIDTH;
-            *htile = Map_BigRoom1_HEIGHT;
-            mLastMapId = 1;
-        }
-        else {
-            //enter in Room1
-            *x=16;
-            *y=32;
-            *map = Map_Room1;
-            *wtile = Map_Room1_WIDTH;
-            *htile = Map_Room1_HEIGHT;
-            //mLastMapId = 1; //stay out of the random map loop
-        }
+            srand(DIV_REG);
+            break;
+        /* ---------------------------------------------------------------------------------------------- */
+        case 1:
+            //make a new map with rooms
+            makeRandomMapRooms (map, x, y, wtile, htile);        
+            //mLastMapId = 2;
+            break;
+        /* ---------------------------------------------------------------------------------------------- */
+        default:
+            //clear the full dynmap, refresh the screen
+            clearDynmap(TILE_EMPTY);
+            set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
 
-        srand(DIV_REG);
+            //make a new map
+            makeRandomMap (map, x, y, wtile, htile);        
+            break;
     }
-    else {
-        //clear the full dynmap, refresh the screen
-        clearDynmap(TILE_EMPTY);
-        set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
-
-        //make a new map
-        makeRandomMap (map, x, y, wtile, htile);        
-    }
-
 
     set_bkg_tiles(0, 0, *wtile, *htile, *map );
 }
