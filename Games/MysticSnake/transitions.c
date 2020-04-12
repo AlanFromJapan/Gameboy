@@ -12,12 +12,15 @@
 #include <stdlib.h>
 
 //memory of what time of room was the previous one. Default is 0 (fixed rooms)
-UINT8 mLastMapId=1;
+UINT8 mLastMapId=0;
 
 #define MAX(A,B)    ((A) > (B)? (A): (B))
 #define MIN(A,B)    ((A) < (B)? (A): (B))
 
-#define RAND_ROOM_MIN_WIDTH     4
+#define RAND_ROOM_MIN_WIDTH     6
+
+//const UINT8 _RoomDecorationsCount = 8;
+const UINT8 _RoomDecorations[] = {TILE_PENTAGRAM_NW, TILE_TABLE_NW, TILE_MARBLE_STELE_NW, TILE_TORCH_NW, TILE_CRANE_NW, TILE_CRYSTAL_NW, TILE_REMAINS_NW, TILE_REMAINS_NW};
 
 /**
  * Generates a random map with rooms
@@ -72,7 +75,7 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
     prevCenterY= 3;
 
     //make a few rooms
-    UINT8 rmax = (rand() & 0x03) + 1;
+    UINT8 rmax = (rand() & 0x03) + 2;
     for (UINT8 r =0; r < rmax; r++){
         vx = 1 + (rand() & 0x1f);
         vy = 1 + (rand() & 0x1f);
@@ -92,7 +95,7 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
             }
         }
 
-        //room is created. link to previous room
+        //room is created. link to previous room. 
         vx += (wx - vx)/2;
         vy += (wy - vy)/2;
 
@@ -102,6 +105,7 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
         if ((rand() & 0x01) == 0) {
             while (prevCenterX != vx){
                 DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY);
+                DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY+1);
                 if (vx > prevCenterX)
                     prevCenterX++;
                 else
@@ -111,6 +115,7 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
 
         while (prevCenterY != vy){
             DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY);
+            DYNMAP_PUT_TILE(gnd, prevCenterX+1, prevCenterY);
             if (vy > prevCenterY)
                 prevCenterY++;
             else
@@ -119,6 +124,7 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
 
         while (prevCenterX != vx){
             DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY);
+            DYNMAP_PUT_TILE(gnd, prevCenterX, prevCenterY+1);
             if (vx > prevCenterX)
                 prevCenterX++;
             else
@@ -134,6 +140,29 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
     DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SW, prevCenterX, prevCenterY+1);
     DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SE, prevCenterX+1, prevCenterY+1);
 
+
+    //decorate the rooms
+    rmax = (rand() & 0x03) + 1;
+    for (UINT8 r =0; r < rmax; ){
+        vx = 1 + (rand() & 0x1f);
+        vy = 1 + (rand() & 0x1f);
+
+        if (
+            DYNMAP_GET_TILE(vx, vy) == gnd && 
+            DYNMAP_GET_TILE(vx+1, vy) == gnd &&
+            DYNMAP_GET_TILE(vx, vy+1) == gnd &&
+            DYNMAP_GET_TILE(vx+1, vy+1) == gnd ){
+
+            UINT8 t = _RoomDecorations[rand() & 0x07];
+            DYNMAP_PUT_TILE(t++, vx, vy);
+            DYNMAP_PUT_TILE(t++, vx, vy+1);
+            DYNMAP_PUT_TILE(t++, vx+1, vy);
+            DYNMAP_PUT_TILE(t, vx+1, vy+1);
+
+            //one done
+            r++;
+        }
+    }    
 
 }
 
@@ -294,9 +323,11 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
         case 1:
             //make a new map with rooms
             makeRandomMapRooms (map, x, y, wtile, htile);        
-            //mLastMapId = 2;
+            //stay on this type of map or alternate
+            mLastMapId = 1 + (rand() & 0x01);
             break;
         /* ---------------------------------------------------------------------------------------------- */
+        case 2:
         default:
             //clear the full dynmap, refresh the screen
             clearDynmap(TILE_EMPTY);
@@ -304,6 +335,9 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
 
             //make a new map
             makeRandomMap (map, x, y, wtile, htile);        
+
+            //stay on this type of map or alternate
+            mLastMapId = 1 + (rand() & 0x01);
             break;
     }
 
