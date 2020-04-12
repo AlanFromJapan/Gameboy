@@ -17,7 +17,7 @@ UINT8 mLastMapId=1;
 #define MAX(A,B)    ((A) > (B)? (A): (B))
 #define MIN(A,B)    ((A) < (B)? (A): (B))
 
-
+#define RAND_ROOM_MIN_WIDTH     4
 
 /**
  * Generates a random map with rooms
@@ -40,7 +40,7 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
     //Map size
     *map = dynmap;
     dynmapW = 32;
-    dynmapH = 18;
+    dynmapH = 32;
 
     *wtile = dynmapW;
     *htile = dynmapH;
@@ -75,13 +75,16 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
     UINT8 rmax = (rand() & 0x03) + 1;
     for (UINT8 r =0; r < rmax; r++){
         vx = 1 + (rand() & 0x1f);
-        vy = 1 + (rand() & 0x0f);
+        vy = 1 + (rand() & 0x1f);
 
-        wx = vx + 4 + (rand() & 0x08);
-        wy = vy + 4 + (rand() & 0x08);
+        vx = MIN(vx, dynmapW- 2 - RAND_ROOM_MIN_WIDTH);
+        vy = MIN(vy, dynmapH- 2 - RAND_ROOM_MIN_WIDTH);
 
-        wx = MIN(wx, 30);//max -1 -1 
-        wy = MIN(wy, 16);
+        wx = vx + RAND_ROOM_MIN_WIDTH + (rand() & 0x08);
+        wy = vy + RAND_ROOM_MIN_WIDTH + (rand() & 0x08);
+
+        wx = MIN(wx, dynmapW-2);//max -1 -1 
+        wy = MIN(wy, dynmapH-2);
 
         for (UINT8 i = vx; i <= wx; i++){
             for (UINT8 j = vy; j <= wy; j++){
@@ -124,20 +127,14 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
 
     }
 
-    //make a stair anywhere as long as it's not a wall
-    while (1){
-        vx = 1 + (rand() & 0x1f);
-        vy = 1 + (rand() & 0x0f);
 
-        if (DYNMAP_GET_TILE(vx,vy) == gnd){
-            //ok!
-            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_NW, vx, vy);
-            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_NE, vx+1, vy);
-            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SW, vx, vy+1);
-            DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SE, vx+1, vy+1);
-            break;
-        }
-    }
+    //Draw the stairs in the center of the LAST room drawn
+    DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_NW, prevCenterX, prevCenterY);
+    DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_NE, prevCenterX+1, prevCenterY);
+    DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SW, prevCenterX, prevCenterY+1);
+    DYNMAP_PUT_TILE(TILE_STAIRS_DOWN_SE, prevCenterX+1, prevCenterY+1);
+
+
 }
 
 /**

@@ -13,6 +13,7 @@
 #include "my_lib01.h"
 #include "Map_Intro.h"
 #include "Map_Title.h"
+//#include "Map_Outside1.h"
 #include "transitions.h"
 #include "graphics.h"
 #include "inputs.h"
@@ -27,8 +28,10 @@
 
 #define SCREENW         GRAPHICS_WIDTH
 #define SCREENH         GRAPHICS_HEIGHT
-#define HSCROLLLEFT     32
-#define HSCROLLRIGHT    128
+#define HSCROLLLEFT         32
+#define HSCROLLRIGHT        128
+#define VSCROLLTOP          32
+#define VSCROLLBOTTOM       128
 
 
 unsigned int x = 50;
@@ -146,12 +149,16 @@ void doMapTransition(){
         bgx = 255 - bgx;        
     }
     
-
-    //centers the new map vertically in the screen (no vertical scroll)
-    bgy = (SCREENH - currentMapH_Tile * 8) / 2 ;
-    y += bgy;
-    bgy = 32*8 - bgy; 
-    
+    if (currentMapW_Tile >= 20) {
+        //if wider than a screen, align left
+        bgy=0;
+    }
+    else {
+        //centers the new map vertically in the screen (no vertical scroll)
+        bgy = (SCREENH - currentMapH_Tile * 8) / 2 ;
+        y += bgy;
+        bgy = 255 - bgy; 
+    }
 
     vblint();
 
@@ -195,6 +202,18 @@ inline void showInitialMap(){
     currentMapH_Tile = Map_Intro_HEIGHT;
 }
 
+
+/**
+ * Shows the Big map 
+ */
+// inline void showBigMap(){
+//     set_bkg_tiles(bgx, bgy, Map_Outside1_WIDTH, Map_Outside1_HEIGHT, Map_Outside1);
+//     currentMap = Map_Outside1;
+//     currentMapW_Tile = Map_Outside1_WIDTH;
+//     currentMapH_Tile = Map_Outside1_HEIGHT;
+// }
+
+
 /**
  * Displays a fullscreen scroller for the story intro.
  * 
@@ -229,8 +248,10 @@ inline void showStartupScroller(){
 }
 
 
-/**
+/*
+ ***********************************************************************************************
  * MAIN method
+ ***********************************************************************************************
  */
 void main() {
   
@@ -252,6 +273,7 @@ void main() {
 
     //show the landing map
     showInitialMap();
+    //showBigMap();
 
     //make the hero and move to start point
     set_sprite_tile(0, TILE_HERO_NW);
@@ -289,9 +311,11 @@ void main() {
         if(lastJoypad & J_SELECT) {
             doMapTransition();
         }
+        /*
         if(lastJoypad & J_START) {
             test_windows();
         }
+        */
 #endif 
 
         lastMoveCheck = checkCollision (&dx, &dy);
@@ -318,6 +342,22 @@ void main() {
                     bgx --;
                 }
             }
+
+
+            //move bg Up ? only on big maps
+            if (dy > 0 && currentMapH_Tile * 8 > SCREENH && bgy < (currentMapH_Tile * 8 - SCREENH) &&  y > VSCROLLBOTTOM) {
+                y--;
+                bgy ++;
+
+            }
+            else {
+                //move bg Down ? only on big maps
+                if (currentMapH_Tile * 8 > SCREENH && bgy > 0  &&  y < VSCROLLBOTTOM) {
+                    y++;
+                    bgy --;
+                }
+            }
+
 
             //moved? change appearance
             if (dx != 0 || dy != 0){
