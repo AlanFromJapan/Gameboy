@@ -29,9 +29,9 @@
 #define SCREENW         GRAPHICS_WIDTH
 #define SCREENH         GRAPHICS_HEIGHT
 #define HSCROLLLEFT         32
-#define HSCROLLRIGHT        128
+#define HSCROLLRIGHT        (GRAPHICS_WIDTH - 32)
 #define VSCROLLTOP          32
-#define VSCROLLBOTTOM       128
+#define VSCROLLBOTTOM       (GRAPHICS_HEIGHT -32)
 
 
 unsigned int x = 50;
