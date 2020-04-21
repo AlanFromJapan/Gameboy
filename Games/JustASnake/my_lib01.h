@@ -1,0 +1,119 @@
+
+#ifndef __my_lib01_H__
+#define __my_lib01_H__
+
+#define my_lib01_COUNT   104
+
+
+#define TILE_NUMBER_1   0
+#define TILE_NUMBER_2   1
+#define TILE_NUMBER_3   2
+#define TILE_NUMBER_4   3
+#define TILE_NUMBER_5   4
+#define TILE_NUMBER_6   5
+#define TILE_NUMBER_7   6
+#define TILE_NUMBER_8   7
+#define TILE_NUMBER_9   8
+#define TILE_NUMBER_10   9
+#define TILE_DIAGBRICK   10
+#define TILE_PUIT_NW   11
+#define TILE_PUIT_SW   12
+#define TILE_PUIT_NE   13
+#define TILE_PUIT_SE   14
+#define TILE_BIGSKULL_NW   15
+#define TILE_BIGSKULL_SW   16
+#define TILE_BIGSKULL_NE   17
+#define TILE_BIGSKULL_SE   18
+#define TILE_DIAGBRICK2   19
+#define TILE_BIGGEM_NW   20
+#define TILE_BIGGEM_SW   21
+#define TILE_BIGGEM_NE   22
+#define TILE_BIGGEM_SE   23
+#define TILE_LETTER_UPPER_1   24
+#define TILE_LETTER_UPPER_2   25
+#define TILE_LETTER_UPPER_3   26
+#define TILE_LETTER_UPPER_4   27
+#define TILE_LETTER_UPPER_5   28
+#define TILE_LETTER_UPPER_6   29
+#define TILE_LETTER_UPPER_7   30
+#define TILE_LETTER_UPPER_8   31
+#define TILE_LETTER_UPPER_9   32
+#define TILE_LETTER_UPPER_10   33
+#define TILE_LETTER_UPPER_11   34
+#define TILE_LETTER_UPPER_12   35
+#define TILE_LETTER_UPPER_13   36
+#define TILE_LETTER_UPPER_14   37
+#define TILE_LETTER_UPPER_15   38
+#define TILE_LETTER_UPPER_16   39
+#define TILE_LETTER_UPPER_17   40
+#define TILE_LETTER_UPPER_18   41
+#define TILE_LETTER_UPPER_19   42
+#define TILE_LETTER_UPPER_20   43
+#define TILE_LETTER_UPPER_21   44
+#define TILE_LETTER_UPPER_22   45
+#define TILE_LETTER_UPPER_23   46
+#define TILE_LETTER_UPPER_24   47
+#define TILE_LETTER_UPPER_25   48
+#define TILE_LETTER_UPPER_26   49
+#define TILE_LETTER_LOWER_1   50
+#define TILE_LETTER_LOWER_2   51
+#define TILE_LETTER_LOWER_3   52
+#define TILE_LETTER_LOWER_4   53
+#define TILE_LETTER_LOWER_5   54
+#define TILE_LETTER_LOWER_6   55
+#define TILE_LETTER_LOWER_7   56
+#define TILE_LETTER_LOWER_8   57
+#define TILE_LETTER_LOWER_9   58
+#define TILE_LETTER_LOWER_10   59
+#define TILE_LETTER_LOWER_11   60
+#define TILE_LETTER_LOWER_12   61
+#define TILE_LETTER_LOWER_13   62
+#define TILE_LETTER_LOWER_14   63
+#define TILE_LETTER_LOWER_15   64
+#define TILE_LETTER_LOWER_16   65
+#define TILE_LETTER_LOWER_17   66
+#define TILE_LETTER_LOWER_18   67
+#define TILE_LETTER_LOWER_19   68
+#define TILE_LETTER_LOWER_20   69
+#define TILE_LETTER_LOWER_21   70
+#define TILE_LETTER_LOWER_22   71
+#define TILE_LETTER_LOWER_23   72
+#define TILE_LETTER_LOWER_24   73
+#define TILE_LETTER_LOWER_25   74
+#define TILE_LETTER_LOWER_26   75
+#define TILE_LETTER_DOT   76
+#define TILE_LETTER_COMA   77
+#define TILE_LETTER_EXCLAMATION   78
+#define TILE_LETTER_APOSTROPHE   79
+#define TILE_PLAYER_SMALL   80
+#define TILE_HEART_0   81
+#define TILE_HEART_HALF   82
+#define TILE_HEART_FULL   83
+#define TILE_SNAKE_HEAD   84
+#define TILE_SNAKE_BODY   85
+#define TILE_WALL_1   86
+#define TILE_WALL_2   87
+#define TILE_WALL_3   88
+#define TILE_WALL_4   89
+#define TILE_WALL_5   90
+#define TILE_BLACK   91
+#define TILE_EMPTY   92
+#define TILE_NUMBER_BLACK_1   93
+#define TILE_NUMBER_BLACK_2   94
+#define TILE_NUMBER_BLACK_3   95
+#define TILE_NUMBER_BLACK_4   96
+#define TILE_NUMBER_BLACK_5   97
+#define TILE_NUMBER_BLACK_6   98
+#define TILE_NUMBER_BLACK_7   99
+#define TILE_NUMBER_BLACK_8   100
+#define TILE_NUMBER_BLACK_9   101
+#define TILE_NUMBER_BLACK_10   102
+#define TILE_SMALLGEM   103
+
+
+//declared as const to save compile and execution time/space
+extern const unsigned char my_lib01[]; 
+
+#endif //__my_lib01_H__
+
+
