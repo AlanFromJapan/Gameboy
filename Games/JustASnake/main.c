@@ -10,8 +10,10 @@
 #include <gb/gb.h>
 #include <gb/drawing.h>
 
-#include "my_lib01.c"
+#include "my_lib01.h"
 #include "Map_SplashScreen.h"
+#include "Map_About.h"
+#include "Map_Arene.h"
 
 void main() {
     SPRITES_8x8;
