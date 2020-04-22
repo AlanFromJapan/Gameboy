@@ -2,7 +2,7 @@
 #ifndef __my_lib01_H__
 #define __my_lib01_H__
 
-#define my_lib01_COUNT   104
+#define my_lib01_COUNT   112
 
 
 #define TILE_NUMBER_1   0
@@ -109,6 +109,14 @@
 #define TILE_NUMBER_BLACK_9   101
 #define TILE_NUMBER_BLACK_10   102
 #define TILE_SMALLGEM   103
+#define TILE_GOLD   104
+#define TILE_LEAF   105
+#define TILE_BOURSE   106
+#define TILE_POTION   107
+#define TILE_BONBON   108
+#define TILE_CLE   109
+#define TILE_SHIELD   110
+#define TILE_ROUND2   111
 
 
 //declared as const to save compile and execution time/space
