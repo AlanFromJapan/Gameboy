@@ -14,7 +14,7 @@
 #include "Map_SplashScreen.h"
 #include "Map_About.h"
 #include "Map_Arene.h"
-
+#include "window.h"
 
 #define SPEED_START 250
 #define SPEED_MIN   60
@@ -126,7 +126,7 @@ void moveTo(UINT8 x, UINT8 y){
 
             //remove the bonbon
             arena[y * Map_Arene_WIDTH + x] = 0;
-            
+
             //speedup
             speed = speed - (speed/8);
 
@@ -142,6 +142,12 @@ void moveTo(UINT8 x, UINT8 y){
     SETX(HEAD, x);
 }
 
+/**
+ * Shows gameover
+ */
+void gameOver(){
+    windowShowText("Game Over!", 0);
+}
 
 /**
  * Voids all the arena cells
@@ -197,8 +203,9 @@ void main() {
     placeItem(TILE_BONBON, 4, 6);
     placeItem(TILE_BONBON, 4, 7);
 
-
     updateScore();
+
+    
 
     //branch interrup handler for VBlank
     add_VBL(vblint);
@@ -236,13 +243,19 @@ void main() {
             moveTo(newx, GETY(HEAD));
         }
         else {
-            //TODO HIT A WALL
+            if (dx != 0) {
+                //TODO HIT A WALL
+                gameOver();
+            }
         }
         if (dy != 0 && newy > 0 && newy < Map_Arene_HEIGHT -2){
             moveTo(GETX(HEAD), newy);
         }
         else {
-            //TODO HIT A WALL
+            if (dy != 0) {
+                //TODO HIT A WALL
+                gameOver();
+            }
         }
 
     }
