@@ -23,7 +23,13 @@ inline void windowClean(){
             _winBuffer[WINDOW_W * wy + wx] = TILE_BLACK;
         }
     }
-    
+
+    // UINT8 z = TILE_BLACK;
+    // for (UINT8 wx2 = 0; wx2 < 32; wx2++){
+    //     for (UINT8 wy2 = 0; wy2 < 32; wy2++){
+    //         set_win_tiles(wx2, wy2, 1, 1, &z);
+    //     }
+    // }    
 }
 
 inline void windowWaitForCloseCondition (UINT8 timeoutSec){

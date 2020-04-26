@@ -216,19 +216,19 @@ void main() {
         UINT8 t = 0;
         while (t < speed) {
             UINT8 lastJoypad = joypad();
-            if(lastJoypad & J_RIGHT ) {
+            if(dx == 0 && lastJoypad & J_RIGHT ) {
                 dx=1;
                 dy=0;
             }
-            if(lastJoypad & J_LEFT ) {
+            if(dx == 0 && lastJoypad & J_LEFT ) {
                 dx=-1;
                 dy=0;
             }
-            if(lastJoypad & J_UP ) {
+            if(dy == 0 && lastJoypad & J_UP ) {
                 dy=-1;
                 dx=0;
             }
-            if(lastJoypad & J_DOWN) {
+            if(dy == 0 && lastJoypad & J_DOWN) {
                 dy=1;
                 dx=0;
             }
