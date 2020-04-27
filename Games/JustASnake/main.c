@@ -43,6 +43,10 @@ UINT8 snakeLen = 1;
 #define ITEMS_PER_LEVEL     4
 UINT8 currentItemNumber = 1;
 
+#define HEART_DEFAULT   3
+#define HEART_MAX   5
+UINT8 heartsCount = HEART_DEFAULT;
+
 UINT8 backgroundTile = TILE_EMPTY;
 UINT8* currentArenaMap = Map_Arene;
 
@@ -107,6 +111,21 @@ void updateScore(){
 
 
 /**
+ * Update the hearts display
+ */
+void updateHearts(){
+    
+    UINT8 i = 0;
+    for (i=0; i < HEART_MAX; i++){
+        putTile(TILE_HEART_0, 2+i, Map_Arene_HEIGHT-1);
+    }
+    for (i=0; i < heartsCount; i++){
+        putTile(TILE_HEART_FULL, 2+i, Map_Arene_HEIGHT-1);
+    }
+
+}
+
+/**
  * Puts a bonbon somewhere on the map randomly
  */
 void drop_bonbon(){
@@ -154,6 +173,7 @@ void nextArena(UINT8 pReinit){
     set_bkg_tiles(0, 0, Map_Arene_WIDTH, Map_Arene_HEIGHT, currentArenaMap);
 
     updateScore();
+    updateHearts();
 
     drop_bonbon();
 
@@ -254,13 +274,6 @@ void moveTo(UINT8 x, UINT8 y){
 
 
 
-/**
- * Voids all the arena cells
- */
-void initArena(){
-
-}
-
 
 
 /**
@@ -291,7 +304,6 @@ void main() {
 
     showTitle();
 
-    initArena();
     showArena();
     SHOW_SPRITES;
 
@@ -303,6 +315,7 @@ void main() {
     snakeLen = 1;
 
     drop_bonbon();
+    updateHearts();
 
     //init random generator
     srand(DIV_REG);
