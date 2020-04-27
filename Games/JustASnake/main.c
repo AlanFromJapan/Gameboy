@@ -38,7 +38,7 @@ UINT8 snakeLen = 1;
 
 #define ITEMS_SIZE  10
 
-UINT8 arena[Map_Arene_WIDTH * Map_Arene_HEIGHT];
+
 UINT8 backgroundTile = TILE_EMPTY;
 UINT8* currentArenaMap = Map_Arene;
 
@@ -86,7 +86,7 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y){
 
 
 void placeItem(UINT8 tile, UINT8 x, UINT8 y){
-    arena[y * Map_Arene_WIDTH + x] = tile;
+    
     putTile(tile, x ,y);
 
 }
@@ -117,7 +117,8 @@ void moveTo(UINT8 x, UINT8 y){
         SETY (snake[i-1], GETY(snake[i-2]));
     }
 
-    UINT8 nextTile = arena[y * Map_Arene_WIDTH + x];
+    UINT8 nextTile = 0;
+    get_bkg_tiles(x, y, 1, 1, &nextTile);
     switch (nextTile) {
 
         case TILE_BONBON:
@@ -131,7 +132,7 @@ void moveTo(UINT8 x, UINT8 y){
             snakeLen ++;
 
             //remove the bonbon
-            arena[y * Map_Arene_WIDTH + x] = 0;
+            putTile(backgroundTile, x, y);
 
             //speedup
             speed = speed - (speed/8);
@@ -159,9 +160,7 @@ void gameOver(){
  * Voids all the arena cells
  */
 void initArena(){
-    for (UINT8 i = 0; i < Map_Arene_WIDTH; i++)    
-        for (UINT8 j = 0; j < Map_Arene_HEIGHT; j++)    
-            arena[i*j] = 0;
+
 }
 
 
