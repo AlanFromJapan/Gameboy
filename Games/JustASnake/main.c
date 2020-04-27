@@ -108,6 +108,8 @@ void updateScore(){
 
 void moveTo(UINT8 x, UINT8 y){
 
+    disable_interrupts();
+
     //erase tail
     putTile(backgroundTile, GETX(TAIL), GETY(TAIL));
 
@@ -147,6 +149,9 @@ void moveTo(UINT8 x, UINT8 y){
 
     SETY(HEAD, y);
     SETX(HEAD, x);
+
+
+    enable_interrupts();
 }
 
 /**
