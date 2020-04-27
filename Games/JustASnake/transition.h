@@ -4,6 +4,6 @@
 
 #include <gb/gb.h>
 
-void arenaTransition(UINT8** currentArena, UINT8** nextArena, UINT8* backgroundTile);
+void arenaTransition(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY);
 
 #endif // __TRANSITION_H__

@@ -169,8 +169,9 @@ void initArena(){
  */
 void nextArena(){
 
-    arenaTransition(&currentArenaMap, &currentArenaMap, &backgroundTile);
+    arenaTransition(&currentArenaMap, &backgroundTile, &(GETX(HEAD)), &(GETY(HEAD)));
     snakeLen = 1;
+    speed = SPEED_START;
 
     set_bkg_tiles(0, 0, Map_Arene_WIDTH, Map_Arene_HEIGHT, currentArenaMap);
 }
@@ -251,9 +252,11 @@ void main() {
             }
 
 
-            /* TEST MOVE TO NEXT ARENA */
+            /* DEBUG TEST MOVE TO NEXT ARENA */
             if (lastJoypad & J_SELECT){
                 nextArena();
+                //debouncd
+                delay(200);
             }
 
 

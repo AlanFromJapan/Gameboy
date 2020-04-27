@@ -1,22 +1,49 @@
 #include "transition.h"
+
 #include "Map_Arene.h"
 #include "Map_Arene2.h"
 #include "Map_Arene3.h"
+#include "Map_Arene4.h"
+#include "Map_Arene5.h"
+#include "Map_Arene6.h"
+#include "Map_Arene7.h"
+#include "Map_Arene8.h"
+#include "Map_Arene9.h"
+#include "Map_Arene10.h"
+
 #include "my_lib01.h"
 
-void arenaTransition(UINT8** currentArena, UINT8** nextArena, UINT8* backgroundTile) {
-    // switch ((UINT16)*currentArena){
-    //     case (const UINT16)&Map_Arene:
-    //         *nextArena = Map_Arene2;
-    //         *backgroundTile = TILE_SAND;
-    //         break;
-    //     case (const UINT16)&Map_Arene2:
-    //         *nextArena = Map_Arene3;
-    //         *backgroundTile = TILE_SAND;
-    //         break;
+struct ArenaBucket {
+    UINT8*  arena;
+    UINT8   bgTile;
+    UINT8   startX;
+    UINT8   startY;
+};
 
-    // }
 
-            *nextArena = Map_Arene3;
-            *backgroundTile = TILE_SAND;
+const struct ArenaBucket _arenas[] = {
+    {Map_Arene,     TILE_EMPTY,             10, 8},
+    {Map_Arene2,    TILE_EMPTY,             10, 8},
+    {Map_Arene3,    TILE_EMPTY,             3, 3},
+    {Map_Arene4,    TILE_EMPTY,             3, 3},
+    {Map_Arene5,    TILE_EMPTY,             10, 8},
+    {Map_Arene6,    TILE_EMPTY,             10, 8},
+    {Map_Arene7,    TILE_SAND,              10, 8},
+    {Map_Arene8,    TILE_SAND,              10, 8},
+    {Map_Arene9,    TILE_DIAGBRICK2,        10, 4},
+    {Map_Arene10,   TILE_DIAGBRICK2,        10, 4},
+};
+UINT8 _currentArenaId = 1;
+#define ARENAS_COUNT    10
+
+
+void arenaTransition(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY) {
+
+    *nextArena = _arenas[_currentArenaId].arena;
+    *backgroundTile = _arenas[_currentArenaId].bgTile;
+    *startX = _arenas[_currentArenaId].startX;
+    *startY = _arenas[_currentArenaId].startY;
+
+    _currentArenaId = (_currentArenaId +1) % ARENAS_COUNT;
+
 }
