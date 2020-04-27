@@ -11,7 +11,17 @@ FLASHER = /home/alan/Git/Gameboy/ems-flasher
 OBJ_FILES = $(OBJ_DIR)/Map_SplashScreen.rel \
 			$(OBJ_DIR)/window.rel \
 			$(OBJ_DIR)/Map_Arene.rel \
+			$(OBJ_DIR)/Map_Arene2.rel \
+			$(OBJ_DIR)/Map_Arene3.rel \
+			$(OBJ_DIR)/Map_Arene4.rel \
+			$(OBJ_DIR)/Map_Arene5.rel \
+			$(OBJ_DIR)/Map_Arene6.rel \
+			$(OBJ_DIR)/Map_Arene7.rel \
+			$(OBJ_DIR)/Map_Arene8.rel \
+			$(OBJ_DIR)/Map_Arene9.rel \
+			$(OBJ_DIR)/Map_Arene10.rel \
 			$(OBJ_DIR)/Map_About.rel \
+			$(OBJ_DIR)/transition.rel \
 			$(OBJ_DIR)/my_lib01.rel \
 			$(OBJ_DIR)/main.rel
 

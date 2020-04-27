@@ -15,6 +15,8 @@
 #include "Map_About.h"
 #include "Map_Arene.h"
 #include "window.h"
+#include "transition.h"
+
 
 #define SPEED_START 250
 #define SPEED_MIN   60
@@ -37,6 +39,9 @@ UINT8 snakeLen = 1;
 #define ITEMS_SIZE  10
 
 UINT8 arena[Map_Arene_WIDTH * Map_Arene_HEIGHT];
+UINT8 backgroundTile = TILE_EMPTY;
+UINT8* currentArenaMap = Map_Arene;
+
 
 UINT16 score = 1234;
 
@@ -104,7 +109,7 @@ void updateScore(){
 void moveTo(UINT8 x, UINT8 y){
 
     //erase tail
-    putTile(TILE_EMPTY, GETX(TAIL), GETY(TAIL));
+    putTile(backgroundTile, GETX(TAIL), GETY(TAIL));
 
     //slide every items 
     for(UINT8 i =snakeLen; snakeLen > 1 && i > 0; i--){
@@ -114,6 +119,7 @@ void moveTo(UINT8 x, UINT8 y){
 
     UINT8 nextTile = arena[y * Map_Arene_WIDTH + x];
     switch (nextTile) {
+
         case TILE_BONBON:
             //copy the snake content to one more cell backward
             for(UINT8 i =snakeLen; snakeLen > 1 && i > 0; i--){
@@ -156,6 +162,18 @@ void initArena(){
     for (UINT8 i = 0; i < Map_Arene_WIDTH; i++)    
         for (UINT8 j = 0; j < Map_Arene_HEIGHT; j++)    
             arena[i*j] = 0;
+}
+
+
+/**
+ * Transition to next arena
+ */
+void nextArena(){
+
+    arenaTransition(&currentArenaMap, &currentArenaMap, &backgroundTile);
+    snakeLen = 1;
+
+    set_bkg_tiles(0, 0, Map_Arene_WIDTH, Map_Arene_HEIGHT, currentArenaMap);
 }
 
 /**
@@ -232,6 +250,13 @@ void main() {
                 dy=1;
                 dx=0;
             }
+
+
+            /* TEST MOVE TO NEXT ARENA */
+            if (lastJoypad & J_SELECT){
+                nextArena();
+            }
+
 
             t += 10;
             delay(10);
