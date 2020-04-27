@@ -24,7 +24,7 @@ struct ArenaBucket {
 const struct ArenaBucket _arenas[] = {
     {Map_Arene,     TILE_EMPTY,             10, 8},
     {Map_Arene2,    TILE_EMPTY,             10, 8},
-    {Map_Arene3,    TILE_EMPTY,             3, 3},
+    {Map_Arene3,    TILE_EMPTY,             10, 2},
     {Map_Arene4,    TILE_EMPTY,             3, 3},
     {Map_Arene5,    TILE_EMPTY,             10, 8},
     {Map_Arene6,    TILE_EMPTY,             10, 8},
@@ -33,17 +33,30 @@ const struct ArenaBucket _arenas[] = {
     {Map_Arene9,    TILE_DIAGBRICK2,        10, 4},
     {Map_Arene10,   TILE_DIAGBRICK2,        10, 4},
 };
-UINT8 _currentArenaId = 1;
+UINT8 _currentArenaId = 0; 
 #define ARENAS_COUNT    10
 
 
 void arenaTransition(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY) {
+    _currentArenaId = (_currentArenaId +1) % ARENAS_COUNT;
 
     *nextArena = _arenas[_currentArenaId].arena;
     *backgroundTile = _arenas[_currentArenaId].bgTile;
     *startX = _arenas[_currentArenaId].startX;
     *startY = _arenas[_currentArenaId].startY;
+}
 
-    _currentArenaId = (_currentArenaId +1) % ARENAS_COUNT;
 
+void arenaTransitionBackToLevel1(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY) {
+    //trick so when called it turns to zero = the first level
+    _currentArenaId = ARENAS_COUNT-1;
+
+    arenaTransition(nextArena, backgroundTile, startX, startY);
+}
+
+void arenaReset(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY) {
+    *nextArena = _arenas[_currentArenaId].arena;
+    *backgroundTile = _arenas[_currentArenaId].bgTile;
+    *startX = _arenas[_currentArenaId].startX;
+    *startY = _arenas[_currentArenaId].startY;
 }
