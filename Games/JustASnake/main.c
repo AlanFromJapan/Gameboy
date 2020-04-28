@@ -304,7 +304,7 @@ void hitWall(){
         //update hearts
         updateHearts();
 
-        windowShowText("Ouch! Resetting   level...", 0);
+        windowShowText("Ouch! Resetting\nlevel...", 0);
 
         //restart level
         nextArena(NEXTARENA_RESET);
@@ -358,7 +358,6 @@ void main() {
 
     //branch interrup handler for VBlank
     add_VBL(vblint);
-
 
     while (1) {
         UINT8 t = 0;
