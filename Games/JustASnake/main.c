@@ -149,22 +149,35 @@ void drop_bonbon(){
 }
 
 
+#define NEXTARENA_NEXT      0
+#define NEXTARENA_FIRST     1
+#define NEXTARENA_RESET     2
 
 /**
  * Transition to next arena
+ * pReinit: 0= NEXT level, 1= back to level 1, 2= restart current level
  */
 void nextArena(UINT8 pReinit){
     //disable to avoid dirty writes on the background
     disable_interrupts();
     UINT8 x,y;
 
-    if (pReinit == 0) {
-        arenaTransition(&currentArenaMap, &backgroundTile, &x, &y);
+    switch (pReinit){
+        case 0:
+            //Go to next level
+            arenaTransition(&currentArenaMap, &backgroundTile, &x, &y);
+            break;
+        case 1:
+            //Go to level 1
+            arenaTransitionBackToLevel1(&currentArenaMap, &backgroundTile, &x, &y);
+            score = 0;
+            heartsCount = HEART_DEFAULT;
+        case 2:
+            //reset current level
+            arenaReset(&currentArenaMap, &backgroundTile, &x, &y);
     }
-    else{
-        arenaTransitionBackToLevel1(&currentArenaMap, &backgroundTile, &x, &y);
-        score = 0;
-    }
+
+
     SETX(HEAD, x);
     SETY(HEAD, y);
     snakeLen = 1;
@@ -193,7 +206,7 @@ void nextArena(UINT8 pReinit){
 void gameOver(){
     windowShowText("Game Over!", 0);
 
-    nextArena(1);
+    nextArena(NEXTARENA_FIRST);
 }
 
 /**
@@ -248,7 +261,11 @@ void moveTo(UINT8 x, UINT8 y){
             if (currentItemNumber > ITEMS_PER_LEVEL){
                 //next level!
                 windowShowText("Bravo ! On to the next level!", 0);
-                nextArena(0);
+                
+                //get bonus points
+                score += 150 * heartsCount;
+
+                nextArena(NEXTARENA_NEXT);
             }
             else {
                 //add next item
@@ -265,7 +282,7 @@ void moveTo(UINT8 x, UINT8 y){
         
         /* ------------- Other tile : you shouldn't be here ------------- */
         default:   
-            gameOver();
+            hitWall();
             break;
     }
 
@@ -273,7 +290,26 @@ void moveTo(UINT8 x, UINT8 y){
 }
 
 
+/**
+ * If you hit a wall, might lead to a gameover
+ */
+void hitWall(){
+    heartsCount --;
+    if (heartsCount == 0){
+        //sorry finished
+        heartsCount = HEART_DEFAULT;
+        gameOver();
+    }
+    else{
+        //update hearts
+        updateHearts();
 
+        windowShowText("Ouch! Resetting   level...", 0);
+
+        //restart level
+        nextArena(NEXTARENA_RESET);
+    }
+}
 
 
 /**
@@ -348,7 +384,7 @@ void main() {
 
             /* DEBUG TEST MOVE TO NEXT ARENA */
             if (lastJoypad & J_SELECT){
-                nextArena(0);
+                nextArena(NEXTARENA_NEXT);
                 //debounce
                 delay(200);
             }
@@ -365,8 +401,7 @@ void main() {
         }
         else {
             if (dx != 0) {
-                //TODO HIT A WALL
-                gameOver();
+                hitWall();
             }
         }
         if (dy != 0 && newy > 0 && newy < Map_Arene_HEIGHT -2){
@@ -374,8 +409,7 @@ void main() {
         }
         else {
             if (dy != 0) {
-                //TODO HIT A WALL
-                gameOver();
+                hitWall();
             }
         }
 
