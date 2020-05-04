@@ -87,16 +87,19 @@ void nextArena(UINT8 pReinit){
     UINT8 x,y;
 
     switch (pReinit){
-        case 0:
+        case NEXTARENA_NEXT:
             //Go to next level
             arenaTransition(&currentArenaMap, &backgroundTile, &x, &y);
             break;
-        case 1:
+
+        case NEXTARENA_FIRST:
             //Go to level 1
             arenaTransitionBackToLevel1(&currentArenaMap, &backgroundTile, &x, &y);
             score = 0;
             heartsCount = HEART_DEFAULT;
-        case 2:
+            //no break: do the reset just below
+            
+        case NEXTARENA_RESET:
             //reset current level
             arenaReset(&currentArenaMap, &backgroundTile, &x, &y);
     }

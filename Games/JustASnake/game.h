@@ -4,7 +4,7 @@
 #include <gb/gb.h>
 #include "my_lib01.h"
 
-#define ITEMS_PER_LEVEL     4
+#define ITEMS_PER_LEVEL     10
 extern UINT8 currentItemNumber ;
 
 #define HEART_DEFAULT   3

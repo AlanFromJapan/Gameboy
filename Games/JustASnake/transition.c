@@ -39,20 +39,20 @@ const struct ArenaBucket _arenas[] = {
     {Map_Arene,     TILE_EMPTY,             10, 8},
     {Map_Arene2,    TILE_EMPTY,             10, 8},
     {Map_Arene3,    TILE_EMPTY,             10, 2},
-    {Map_Arene4,    TILE_EMPTY,             3, 3},
-    {Map_Arene5,    TILE_SAND,              10, 8},
-    {Map_Arene6,    TILE_EMPTY,             10, 8},
-    {Map_Arene7,    TILE_SAND,              10, 8},
-    {Map_Arene8,    TILE_SAND,              10, 8},
     {Map_Arene9,    TILE_DIAGBRICK2,        10, 4},
-    {Map_Arene10,   TILE_DIAGBRICK2,        10, 4},
-    {Map_Arene11,   TILE_EMPTY,             10, 4},
-    {Map_Arene12,   TILE_SAND,              10, 4},
-    {Map_Arene13,   TILE_DIAGBRICK2,        10, 4},
-    {Map_Arene14,   TILE_EMPTY,             10, 4},
+    {Map_Arene6,    TILE_EMPTY,             10, 8},
+    {Map_Arene8,    TILE_SAND,              10, 8},
     {Map_Arene15,   TILE_DIAGBRICK,         10, 4},
+    {Map_Arene7,    TILE_SAND,              10, 5},
+    {Map_Arene10,   TILE_DIAGBRICK2,        10, 4},
+    {Map_Arene4,    TILE_EMPTY,             10, 2},
     {Map_Arene16,   TILE_DIAGBRICK2,        10, 4},
-    {Map_Arene17,   TILE_EMPTY,             10, 4},
+    {Map_Arene5,    TILE_SAND,              12, 9},
+    {Map_Arene11,   TILE_EMPTY,             10, 2},
+    {Map_Arene12,   TILE_SAND,              10, 3},
+    {Map_Arene13,   TILE_DIAGBRICK2,        12, 3},
+    {Map_Arene17,   TILE_EMPTY,             12, 1},
+    {Map_Arene14,   TILE_EMPTY,             12, 1},
 };
 UINT8 _currentArenaId = 0; 
 #define ARENAS_COUNT    17
@@ -103,7 +103,7 @@ UINT8 showTitle(){
     UINT8 tmax = 15;
     UINT8 mnu = TITLEMENU_PLAY;
     while(1) {
-        if(joypad() & J_A) {
+        if(joypad() & J_A || joypad() & J_START) {
             break;
         }
         if(joypad() & J_DOWN) {
