@@ -20,6 +20,8 @@
 
 #include "my_lib01.h"
 
+#include "Map_SplashScreen.h"
+
 struct ArenaBucket {
     UINT8*  arena;
     UINT8   bgTile;
@@ -77,4 +79,22 @@ void arenaReset(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* 
 
 inline UINT8 getCurrentArenaId(){
     return _currentArenaId;
+}
+
+/**
+ * Shows title screen
+ * 
+ */
+inline void showTitle(){
+    set_bkg_tiles(0, 0, Map_SplashScreen_WIDTH, Map_SplashScreen_HEIGHT, Map_SplashScreen);
+    SHOW_BKG;
+
+    while(1) {
+        if(joypad() & J_START) {
+            break;
+        }
+    }
+
+    //debouncing
+    delay(200);
 }
