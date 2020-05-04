@@ -273,11 +273,20 @@ void main() {
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
 
     SHOW_BKG;
-
-    showTitle();
-
     SHOW_SPRITES;
 
+    UINT8 mnu = showTitle();
+
+    switch(mnu){
+        case TITLEMENU_CREDITS:
+            showCredits();
+            break;
+        case TITLEMENU_OPTIONS:
+            showCredits();
+            break;
+    }
+
+    //anyway, after the menu or if player picked play, let's start preparing the game from this point
     wait_vbl_done();    
 
     //init the snake
@@ -290,6 +299,7 @@ void main() {
 
     //just to be sure all the initial level is loaded fine
     nextArena(NEXTARENA_FIRST);
+    SHOW_BKG;
 
     //branch interrup handler for VBlank
     add_VBL(vblint);

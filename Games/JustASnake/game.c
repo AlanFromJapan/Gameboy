@@ -9,8 +9,6 @@
 #include "Map_SplashScreen.h"
 #include "Map_About.h"
 #include "Map_Arene.h"
-#include "window.h"
-#include "transition.h"
 
 UINT8 currentItemNumber = 1;
 
