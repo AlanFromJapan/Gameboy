@@ -7,5 +7,6 @@
 void arenaTransition(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY);
 void arenaTransitionBackToLevel1(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY);
 void arenaReset(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY);
+inline UINT8 getCurrentArenaId();
 
 #endif // __TRANSITION_H__

@@ -74,3 +74,7 @@ void arenaReset(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* 
     *startX = _arenas[_currentArenaId].startX;
     *startY = _arenas[_currentArenaId].startY;
 }
+
+inline UINT8 getCurrentArenaId(){
+    return _currentArenaId;
+}

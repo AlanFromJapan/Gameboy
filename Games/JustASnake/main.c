@@ -148,6 +148,37 @@ void drop_bonbon(){
     }
 }
 
+/**
+ * Draws the "Level xx" label
+ * 
+ * Should have been drawned in the map, or calculated once and kept in mem, so let's say it's a tradeoff space vx complexity
+ */
+#define LEVEL_LABEL_LEN 10
+inline void drawLevelLabel(){
+    //Label
+    char* lbl = " Level xx ";
+    UINT8 lblTiles[LEVEL_LABEL_LEN+1];
+    lbl[LEVEL_LABEL_LEN] = 0;
+
+    //make tiles 
+    string2tile(lbl, lblTiles);
+
+    //overwrite the xx with the arena number (start = 1)
+    UINT8 lvl = getCurrentArenaId() +1;
+    if (lvl < 10){
+        lblTiles[7] = TILE_NUMBER_BLACK_1; //0        
+    }
+    else {
+        lblTiles[7] = TILE_NUMBER_BLACK_1 + (lvl / 10); 
+    }
+    lblTiles[8] = TILE_NUMBER_BLACK_1 + (lvl % 10); 
+    
+    //write it on the background
+    for (UINT8 t = 0; t < LEVEL_LABEL_LEN; t++){
+        putTile(lblTiles[t], (20-LEVEL_LABEL_LEN)/2 + t, 0);
+    }
+
+}
 
 #define NEXTARENA_NEXT      0
 #define NEXTARENA_FIRST     1
@@ -196,13 +227,8 @@ void nextArena(UINT8 pReinit){
     dx = -1;
     dy = 0;
 
-    //Label
-    /* WIP
-    unsigned char* lbl = "Level xx";
-    UINT8 lblTiles[8];
-    string2tile(lbl, lblTiles);
-    set_bkg_tiles((20-8) /2, 14, 8, 1, lblTiles);
-    */
+    //add the "Level xx"
+    drawLevelLabel();
 
     //at last: back in business
     enable_interrupts();
@@ -367,11 +393,11 @@ void main() {
     SETY(HEAD, 9);
     snakeLen = 1;
 
-    drop_bonbon();
-    updateHearts();
-
     //init random generator
     srand(DIV_REG);
+
+    //just to be sure all the initial level is loaded fine
+    nextArena(NEXTARENA_FIRST);
 
     //branch interrup handler for VBlank
     add_VBL(vblint);
