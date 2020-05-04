@@ -74,16 +74,6 @@ inline void showTitle(){
 
 
 /**
- * Shows arena screen
- * 
- */
-void showArena(){
-    set_bkg_tiles(0, 0, Map_Arene_WIDTH, Map_Arene_HEIGHT, Map_Arene);
-    SHOW_BKG;
-
-}
-
-/**
  * Set a background tile to the tile in parameter
  */
 void putTile(UINT8 tile, UINT8 x, UINT8 y){
@@ -383,7 +373,6 @@ void main() {
 
     showTitle();
 
-    showArena();
     SHOW_SPRITES;
 
     wait_vbl_done();    
