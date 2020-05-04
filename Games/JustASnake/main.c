@@ -196,6 +196,14 @@ void nextArena(UINT8 pReinit){
     dx = -1;
     dy = 0;
 
+    //Label
+    /* WIP
+    unsigned char* lbl = "Level xx";
+    UINT8 lblTiles[8];
+    string2tile(lbl, lblTiles);
+    set_bkg_tiles((20-8) /2, 14, 8, 1, lblTiles);
+    */
+
     //at last: back in business
     enable_interrupts();
 }
@@ -221,7 +229,7 @@ void moveTo(UINT8 x, UINT8 y){
     putTile(backgroundTile, GETX(TAIL), GETY(TAIL));
 
     //slide every items 
-    for(UINT8 i =snakeLen; snakeLen > 1 && i > 0; i--){
+    for(UINT8 i =snakeLen; snakeLen >= 1 && i > 0; i--){
         SETX (snake[i-1], GETX(snake[i-2]));
         SETY (snake[i-1], GETY(snake[i-2]));
     }
@@ -237,7 +245,7 @@ void moveTo(UINT8 x, UINT8 y){
         /* ------------- Bonbon ------------- */
         case TILE_BONBON:
             //copy the snake content to one more cell backward
-            for(UINT8 i =snakeLen; snakeLen > 1 && i > 0; i--){
+            for(UINT8 i =snakeLen; snakeLen >= 1 && i > 0; i--){
                 SETX (snake[i], GETX(snake[i-1]));
                 SETY (snake[i], GETY(snake[i-1]));
             }
@@ -317,12 +325,21 @@ void hitWall(){
  */
 void vblint(){
 
-    for (UINT8 i = 0; i < snakeLen; i++){
+    //Draw from the tail to the head, so that the head is always visible (because drawn last)
+    UINT8 i = snakeLen -1;
+    while(1){
         if (i == 0)
             putTile(TILE_SNAKE_HEAD, GETX(snake[i]), GETY(snake[i]));
         else
-            putTile(TILE_SNAKE_BODY, GETX(snake[i]), GETY(snake[i]));
+            putTile(TILE_SNAKE_BODY, GETX(snake[i]), GETY(snake[i]));            
+
+
+        if (i == 0)
+            break;
+        else
+            i--;        
     }
+
 }
 
 /*****************************************************************************************
@@ -361,6 +378,7 @@ void main() {
 
     while (1) {
         UINT8 t = 0;
+        //Read often (every n millisec) but move only every /speed/ millisec
         while (t < speed) {
             UINT8 lastJoypad = joypad();
             if(dx == 0 && lastJoypad & J_RIGHT ) {
@@ -393,6 +411,7 @@ void main() {
             delay(10);
         }
 
+        //move calculations
         UINT8 newx = GETX(HEAD) + dx;
         UINT8 newy = GETY(HEAD) + dy;
         if (dx != 0 && newx >0 && newx < Map_Arene_WIDTH-1){
