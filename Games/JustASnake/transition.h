@@ -23,5 +23,10 @@ UINT8 showTitle();
  * 
  */
 void showCredits();
+/**
+ * Shows options screen
+ * 
+ */
+void showOptions();
 
 #endif // __TRANSITION_H__

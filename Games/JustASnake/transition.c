@@ -22,6 +22,8 @@
 
 #include "Map_SplashScreen.h"
 #include "Map_About.h"
+#include "Map_Options.h"
+#include "window.h"
 
 #include "game.h"
 
@@ -164,6 +166,7 @@ UINT8 showTitle(){
     return mnu;
 }
 
+#define USE_BUILD_TIME
 /**
  * Shows credits screen
  * 
@@ -172,11 +175,49 @@ void showCredits(){
     set_bkg_tiles(0, 0, Map_About_WIDTH, Map_About_HEIGHT, Map_About);
     SHOW_BKG;
 
+#ifdef USE_BUILD_TIME
+    UINT8 lblTiles[11+1];
+
+    //make tiles from the time based on the __DATE__ compile time variable
+    string2tile(__DATE__, lblTiles);
+    
+    //write it on the background
+    for (UINT8 t = 0; t < 11; t++){
+        putTile(lblTiles[t], 8+t, 16);
+    }
+#endif 
+
     while(1) {
         if(joypad() & J_A) {
             break;
         }
+        if(joypad() & J_START) {
+            break;
+        }
 
+        delay(10);
+    }
+
+
+    //debouncing
+    delay(200);
+}
+
+/**
+ * Shows options screen
+ * 
+ */
+void showOptions(){
+    set_bkg_tiles(0, 0, Map_Options_WIDTH, Map_Options_HEIGHT, Map_Options);
+    SHOW_BKG;
+
+    while(1) {
+        if(joypad() & J_A) {
+            break;
+        }
+        if(joypad() & J_START) {
+            break;
+        }
 
         delay(10);
     }

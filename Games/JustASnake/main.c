@@ -282,7 +282,7 @@ void main() {
             showCredits();
             break;
         case TITLEMENU_OPTIONS:
-            showCredits();
+            showOptions();
             break;
     }
 

@@ -29,6 +29,7 @@ OBJ_FILES = $(OBJ_DIR)/Map_SplashScreen.rel \
 			$(OBJ_DIR)/Map_Arene16.rel \
 			$(OBJ_DIR)/Map_Arene17.rel \
 			$(OBJ_DIR)/Map_About.rel \
+			$(OBJ_DIR)/Map_Options.rel \
 			$(OBJ_DIR)/transition.rel \
 			$(OBJ_DIR)/my_lib01.rel \
 			$(OBJ_DIR)/main.rel
