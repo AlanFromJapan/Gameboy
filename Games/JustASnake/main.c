@@ -256,9 +256,9 @@ void vblint(){
     UINT8 i = snakeLen -1;
     while(1){
         if (i == 0)
-            putTile(TILE_SNAKE_HEAD, GETX(snake[i]), GETY(snake[i]));
+            putTile(TILE_SNAKE_HEAD2, GETX(snake[i]), GETY(snake[i]));
         else
-            putTile(TILE_SNAKE_BODY, GETX(snake[i]), GETY(snake[i]));            
+            putTile(TILE_GOLD, GETX(snake[i]), GETY(snake[i]));            
 
 
         if (i == 0)
