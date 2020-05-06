@@ -15,6 +15,7 @@ unsigned char _winBuffer[WINDOW_W * WINDOW_H];
 
 
 unsigned char _wintextBuffer[WINDOW_TEXT_MAXLEN+1];
+UINT8 _tilesBuffer[WINDOW_TEXT_MAXLEN+1];
 
 
 inline void windowClean(){
@@ -45,7 +46,7 @@ inline void windowWaitForCloseCondition (UINT8 timeoutSec){
         
         }
     }
-
+    //debounce
     delay(200);
 }
 
@@ -54,8 +55,8 @@ inline void windowWaitForCloseCondition (UINT8 timeoutSec){
  * YOU MUST INIT THE ARRAY AND FREE IT BEFORE.
  */
 void string2tile(char* msg, UINT8* tiles){
-
-    for (UINT8 i =0; msg[i] != 0; i++){
+    UINT8 i;
+    for (i =0; msg[i] != 0; i++){
         UINT8 c = msg[i];
 
         if (c >='a' && c <= 'z'){
@@ -90,9 +91,8 @@ void string2tile(char* msg, UINT8* tiles){
                 }
             }
         }
-
-        
     }
+    tiles[i] = 0;
 }
 
 /**
@@ -107,54 +107,38 @@ void windowShowText(char* msg, UINT8 timeoutSec){
 
     windowClean();
 
-    UINT8* tiles = (UINT8*)malloc(WINDOW_TEXT_MAXLEN +1);
     UINT8 lnum = 1;
+    UINT8 tilesCount = 0;
 
-    for (char* p = msg; ; p += WINDOW_TEXT_MAXLEN) {
-        UINT8 vEnd = 0;
-        for (UINT8 i = 0; i < WINDOW_TEXT_MAXLEN; i++) {
-            _wintextBuffer[i]=p[i];
-            if (p[i] == 0)
-                vEnd = 1;
+    //p is the current character
+    for (char* p = msg; *p != 0; ) {
+
+        for (tilesCount = 0; tilesCount < WINDOW_TEXT_MAXLEN && *p != 0 && *p != (UINT8)'\n'; tilesCount++) {
+            _wintextBuffer[tilesCount]=*p;
+            //move pointer to next char
+            p++;
         }
+
+        if (*p == (UINT8)'\n'){
+            //don'T forget to skip it or you're in for an infinite loop
+            p++;
+        }
+
         _wintextBuffer[WINDOW_TEXT_MAXLEN] = 0;
+        _wintextBuffer[tilesCount] = 0;
         
-        string2tile(_wintextBuffer, tiles);
+        //convert the TEXT to a TILE array
+        string2tile(_wintextBuffer, _tilesBuffer);
 
-        for (UINT8 i = 0; i < WINDOW_TEXT_MAXLEN && p[i] != 0; i++) {
-            _winBuffer[WINDOW_W * lnum + 1 + i] = tiles[i];
+        //write the tiles to the window
+        for (UINT8 i = 0; i < WINDOW_TEXT_MAXLEN && _tilesBuffer[i] != 0; i++) {
+            _winBuffer[WINDOW_W * lnum + 1 + i] = _tilesBuffer[i];
         }
 
-        if (vEnd != 0){
-            break;
-        }
-        else {
-            lnum++;
-
-            //already inc lnum so next line num is 3, 5, 7, ... odd number
-            if ((lnum & 0x01) != 0){
-                //...and we still have some text to show
-                _winBuffer[WINDOW_H * WINDOW_W -1] = TILE_SNAKE_HEAD;
-
-                set_win_tiles(0,0,WINDOW_W,WINDOW_H, _winBuffer);
-                move_win(8, 8*10);
-
-                SHOW_WIN;
-
-                windowWaitForCloseCondition(timeoutSec);
-
-                HIDE_WIN;
-
-                windowClean();
-
-                lnum = 1;
-            }
-        }
+        //next line
+        lnum++;
     }
     
-
-
-    free(tiles);
 
     set_win_tiles(0,0,WINDOW_W,WINDOW_H, _winBuffer);
     move_win(8, 8 * 10);
