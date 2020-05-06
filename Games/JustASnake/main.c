@@ -200,9 +200,9 @@ void moveTo(UINT8 x, UINT8 y){
                 drop_bonbon();
 
                 //drop extra items? From level 5 only
-                if (getCurrentArenaId() > 1) {
-                    //once every 16 times
-                    if ((rand() & 0x01) == 0){
+                if (getCurrentArenaId() > 4) {
+                    //once every 8 times
+                    if ((rand() & 0x07) == 0){
                         //put a heart
                         drop_heart();
 
