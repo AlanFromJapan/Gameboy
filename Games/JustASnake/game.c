@@ -10,7 +10,10 @@
 #include "Map_About.h"
 #include "Map_Arene.h"
 
+#include "window.h"
+
 UINT8 currentItemNumber = 1;
+UINT8 maxItemNumber = ITEMS_PER_LEVEL_NORMAL;
 
 UINT8 heartsCount = HEART_DEFAULT;
 
@@ -32,26 +35,36 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y){
 }
 
 /**
- * Puts a bonbon somewhere on the map randomly
+ * Finds an empty space fit for dropping item
  */
-void drop_bonbon(){
-    UINT8 t, x, y;
+inline void findEmptyDropTile (UINT8* x, UINT8* y){
+    UINT8 t;
 
     //loop until it works
     while (1){
-        x = rand() & 0x1f; //max 32
-        y = rand() & 0x0f; //max 16
-        if (x >= Map_Arene_WIDTH)
-            x = x/2;
+        *x = rand() & 0x1f; //max 32
+        *y = rand() & 0x0f; //max 16
+        if (*x >= Map_Arene_WIDTH)
+            *x = (*x)/2;
         
-        get_bkg_tiles(x, y, 1, 1, &t);
+        get_bkg_tiles(*x, *y, 1, 1, &t);
         if (t == backgroundTile){
             //empty spot!
-            putTile(TILE_BONBON, x, y);
             //exit the loop
-            break;
+            return;
         }
     }
+}
+
+/**
+ * Puts a bonbon somewhere on the map randomly
+ */
+void drop_bonbon(){
+    UINT8 x, y;
+
+    findEmptyDropTile(&x, &y);
+
+    putTile(TILE_BONBON, x, y);    
 }
 
 
@@ -86,5 +99,13 @@ void updateHearts(){
     for (i=0; i < heartsCount; i++){
         putTile(TILE_HEART_FULL, 2+i, Map_Arene_HEIGHT-1);
     }
+
+}
+
+/**
+ * Shows Pause screen
+ */
+void showPause(){
+    windowShowText("Quick pause...\n\n\n\n\nPress A or Start", 0);
 
 }

@@ -4,7 +4,9 @@
 #include <gb/gb.h>
 #include "my_lib01.h"
 
-#define ITEMS_PER_LEVEL     10
+#define ITEMS_PER_LEVEL_NORMAL      10
+#define ITEMS_PER_LEVEL_HARD        15
+extern UINT8 maxItemNumber ;
 extern UINT8 currentItemNumber ;
 
 #define HEART_DEFAULT   3
@@ -41,6 +43,11 @@ void updateHearts();
  * Update the score display
  */
 void updateScore();
+
+/**
+ * Shows Pause screen
+ */
+void showPause();
 
 
 #endif //__GAME_H__

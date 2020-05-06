@@ -15,8 +15,6 @@
 #include <stdlib.h>
 
 #include "my_lib01.h"
-#include "Map_SplashScreen.h"
-#include "Map_About.h"
 #include "Map_Arene.h"
 #include "window.h"
 #include "transition.h"
@@ -139,6 +137,30 @@ void gameOver(){
     nextArena(NEXTARENA_FIRST);
 }
 
+
+
+/**
+ * If you hit a wall, might lead to a gameover
+ */
+void hitWall(){
+    heartsCount --;
+    if (heartsCount == 0){
+        //sorry finished
+        heartsCount = HEART_DEFAULT;
+        gameOver();
+    }
+    else{
+        //update hearts
+        updateHearts();
+
+        windowShowText("Ouch! Resetting\nlevel...", 0);
+
+        //restart level
+        nextArena(NEXTARENA_RESET);
+    }
+}
+
+
 /**
  * Move the snake to x,y.
  * It's NOT the arena border, but no other check done.
@@ -188,7 +210,7 @@ void moveTo(UINT8 x, UINT8 y){
 
             //more sweets or next map?
             currentItemNumber++;
-            if (currentItemNumber > ITEMS_PER_LEVEL){
+            if (currentItemNumber > maxItemNumber){
                 //next level!
                 windowShowText("Bravo ! On to the next level!", 0);
                 
@@ -220,26 +242,6 @@ void moveTo(UINT8 x, UINT8 y){
 }
 
 
-/**
- * If you hit a wall, might lead to a gameover
- */
-void hitWall(){
-    heartsCount --;
-    if (heartsCount == 0){
-        //sorry finished
-        heartsCount = HEART_DEFAULT;
-        gameOver();
-    }
-    else{
-        //update hearts
-        updateHearts();
-
-        windowShowText("Ouch! Resetting\nlevel...", 0);
-
-        //restart level
-        nextArena(NEXTARENA_RESET);
-    }
-}
 
 
 /**
@@ -329,6 +331,13 @@ void main() {
                 dx=0;
             }
 
+            // Pause ?
+            if(lastJoypad & J_START) {
+                //debounce
+                delay(200);
+                //then show
+                showPause();
+            }
 
             /* DEBUG TEST MOVE TO NEXT ARENA */
             if (lastJoypad & J_SELECT){
