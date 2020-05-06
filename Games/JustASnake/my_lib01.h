@@ -2,7 +2,7 @@
 #ifndef __my_lib01_H__
 #define __my_lib01_H__
 
-#define my_lib01_COUNT   122
+#define my_lib01_COUNT   123
 
 
 #define TILE_NUMBER_1   0
@@ -127,6 +127,7 @@
 #define TILE_SAPIN_NE   119
 #define TILE_SAPIN_SE   120
 #define TILE_PLAYER_ALT   121
+#define TILE_SNAKE_HEAD2   122
 
 
 //declared as const to save compile and execution time/space
