@@ -39,7 +39,7 @@ inline void windowWaitForCloseCondition (UINT8 timeoutSec){
     }
     else {
         while (1){
-            if(joypad() & J_A) {
+            if(joypad() & J_A || joypad() & J_START) {
                 break;
             }
             delay(20);

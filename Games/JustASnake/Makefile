@@ -28,6 +28,9 @@ OBJ_FILES = $(OBJ_DIR)/Map_SplashScreen.rel \
 			$(OBJ_DIR)/Map_Arene15.rel \
 			$(OBJ_DIR)/Map_Arene16.rel \
 			$(OBJ_DIR)/Map_Arene17.rel \
+			$(OBJ_DIR)/Map_Arene18.rel \
+			$(OBJ_DIR)/Map_Arene19.rel \
+			$(OBJ_DIR)/Map_Arene20.rel \
 			$(OBJ_DIR)/Map_About.rel \
 			$(OBJ_DIR)/Map_Options.rel \
 			$(OBJ_DIR)/transition.rel \

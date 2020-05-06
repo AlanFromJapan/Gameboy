@@ -15,8 +15,6 @@
 #include <stdlib.h>
 
 #include "my_lib01.h"
-#include "Map_SplashScreen.h"
-#include "Map_About.h"
 #include "Map_Arene.h"
 #include "window.h"
 #include "transition.h"
@@ -40,38 +38,11 @@ UINT8 snakeLen = 1;
 INT8 dx = -1;
 INT8 dy = 0;
 
+/*The timeout is calculated in the main loop, decreased by 1 at each button scan round*/
+#define TEMP_ITEM_DISABLED  0
+#define TEMP_ITEM_TIMEOUT   180
+UINT8 tempItemTimeout = TEMP_ITEM_DISABLED;
 
-/**
- * Draws the "Level xx" label
- * 
- * Should have been drawned in the map, or calculated once and kept in mem, so let's say it's a tradeoff space vx complexity
- */
-#define LEVEL_LABEL_LEN 10
-inline void drawLevelLabel(){
-    //Label
-    char* lbl = " Level xx ";
-    UINT8 lblTiles[LEVEL_LABEL_LEN+1];
-    lbl[LEVEL_LABEL_LEN] = 0;
-
-    //make tiles 
-    string2tile(lbl, lblTiles);
-
-    //overwrite the xx with the arena number (start = 1)
-    UINT8 lvl = getCurrentArenaId() +1;
-    if (lvl < 10){
-        lblTiles[7] = TILE_NUMBER_BLACK_1; //0        
-    }
-    else {
-        lblTiles[7] = TILE_NUMBER_BLACK_1 + (lvl / 10); 
-    }
-    lblTiles[8] = TILE_NUMBER_BLACK_1 + (lvl % 10); 
-    
-    //write it on the background
-    for (UINT8 t = 0; t < LEVEL_LABEL_LEN; t++){
-        putTile(lblTiles[t], (20-LEVEL_LABEL_LEN)/2 + t, 0);
-    }
-
-}
 
 #define NEXTARENA_NEXT      0
 #define NEXTARENA_FIRST     1
@@ -139,6 +110,30 @@ void gameOver(){
     nextArena(NEXTARENA_FIRST);
 }
 
+
+
+/**
+ * If you hit a wall, might lead to a gameover
+ */
+void hitWall(){
+    heartsCount --;
+    if (heartsCount == 0){
+        //sorry finished
+        heartsCount = HEART_DEFAULT;
+        gameOver();
+    }
+    else{
+        //update hearts
+        updateHearts();
+
+        windowShowText("Ouch! Resetting\nlevel...", 0);
+
+        //restart level
+        nextArena(NEXTARENA_RESET);
+    }
+}
+
+
 /**
  * Move the snake to x,y.
  * It's NOT the arena border, but no other check done.
@@ -176,7 +171,7 @@ void moveTo(UINT8 x, UINT8 y){
             //grow
             snakeLen ++;
 
-            //remove the bonbon
+            //remove the item
             putTile(backgroundTile, x, y);
 
             //speedup
@@ -188,7 +183,7 @@ void moveTo(UINT8 x, UINT8 y){
 
             //more sweets or next map?
             currentItemNumber++;
-            if (currentItemNumber > ITEMS_PER_LEVEL){
+            if (currentItemNumber > maxItemNumber){
                 //next level!
                 windowShowText("Bravo ! On to the next level!", 0);
                 
@@ -198,11 +193,41 @@ void moveTo(UINT8 x, UINT8 y){
                 nextArena(NEXTARENA_NEXT);
             }
             else {
+                //remove uncaught extras
+                clearExtraItems();
+
                 //add next item
                 drop_bonbon();
+
+                //drop extra items? From level 5 only
+                if (getCurrentArenaId() > 1) {
+                    //once every 16 times
+                    if ((rand() & 0x01) == 0){
+                        //put a heart
+                        drop_heart();
+
+                        //start the timeout
+                        tempItemTimeout = TEMP_ITEM_TIMEOUT;                        
+                    }
+                }
             }
             break;
-        
+
+        /* ------------- HEART ------------- */
+        case TILE_HEART_FULL:
+            //remove the item
+            putTile(backgroundTile, x, y);
+
+            //get points
+            score += 200;
+            updateScore();
+
+            if (heartsCount < HEART_MAX){
+                heartsCount++;
+                updateHearts();
+            }
+            break;
+
         /* ------------- Ground tiles ok to cross ------------- */
         case TILE_EMPTY:
         case TILE_SAND:
@@ -220,26 +245,6 @@ void moveTo(UINT8 x, UINT8 y){
 }
 
 
-/**
- * If you hit a wall, might lead to a gameover
- */
-void hitWall(){
-    heartsCount --;
-    if (heartsCount == 0){
-        //sorry finished
-        heartsCount = HEART_DEFAULT;
-        gameOver();
-    }
-    else{
-        //update hearts
-        updateHearts();
-
-        windowShowText("Ouch! Resetting\nlevel...", 0);
-
-        //restart level
-        nextArena(NEXTARENA_RESET);
-    }
-}
 
 
 /**
@@ -329,6 +334,13 @@ void main() {
                 dx=0;
             }
 
+            // Pause ?
+            if(lastJoypad & J_START) {
+                //debounce
+                delay(200);
+                //then show
+                showPause();
+            }
 
             /* DEBUG TEST MOVE TO NEXT ARENA */
             if (lastJoypad & J_SELECT){
@@ -340,6 +352,19 @@ void main() {
 
             t += 10;
             delay(10);
+            
+            //should we clear "temp" items (hearts,...)?
+            if (tempItemTimeout > TEMP_ITEM_DISABLED){
+                if (tempItemTimeout > 1){
+                    tempItemTimeout--;
+                }
+                else{
+                    //tempItemTimeout == 1
+                    tempItemTimeout = TEMP_ITEM_DISABLED;
+                    clearExtraItems();
+                }
+
+            }
         }
 
         //move calculations

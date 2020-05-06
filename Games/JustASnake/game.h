@@ -4,7 +4,9 @@
 #include <gb/gb.h>
 #include "my_lib01.h"
 
-#define ITEMS_PER_LEVEL     10
+#define ITEMS_PER_LEVEL_NORMAL      10
+#define ITEMS_PER_LEVEL_HARD        15
+extern UINT8 maxItemNumber ;
 extern UINT8 currentItemNumber ;
 
 #define HEART_DEFAULT   3
@@ -31,6 +33,15 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y);
  */
 void drop_bonbon();
 
+/**
+ * Puts a heart somewhere on the map randomly
+ */
+void drop_heart();
+
+/**
+ * Remove all items from the map (except bonbon)
+ */
+void clearExtraItems();
 
 /**
  * Update the hearts display
@@ -42,5 +53,16 @@ void updateHearts();
  */
 void updateScore();
 
+/**
+ * Shows Pause screen
+ */
+void showPause();
+
+/**
+ * Draws the "Level xx" label
+ * 
+ * Should have been drawned in the map, or calculated once and kept in mem, so let's say it's a tradeoff space vx complexity
+ */
+inline void drawLevelLabel();
 
 #endif //__GAME_H__
