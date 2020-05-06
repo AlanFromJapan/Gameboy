@@ -32,7 +32,10 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y);
  * Puts a bonbon somewhere on the map randomly
  */
 void drop_bonbon();
-
+/**
+ * Puts a heart somewhere on the map randomly
+ */
+void drop_heart();
 
 /**
  * Update the hearts display

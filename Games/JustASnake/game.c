@@ -68,6 +68,18 @@ void drop_bonbon(){
 }
 
 
+/**
+ * Puts a heart somewhere on the map randomly
+ */
+void drop_heart(){
+    UINT8 x, y;
+
+    findEmptyDropTile(&x, &y);
+
+    putTile(TILE_HEART_FULL, x, y);    
+}
+
+
 
 
 /**

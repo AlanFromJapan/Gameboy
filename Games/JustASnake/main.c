@@ -198,7 +198,7 @@ void moveTo(UINT8 x, UINT8 y){
             //grow
             snakeLen ++;
 
-            //remove the bonbon
+            //remove the item
             putTile(backgroundTile, x, y);
 
             //speedup
@@ -222,9 +222,32 @@ void moveTo(UINT8 x, UINT8 y){
             else {
                 //add next item
                 drop_bonbon();
+
+                //drop extra items? From level 5 only
+                if (getCurrentArenaId() > 4) {
+                    //once every 16 times
+                    if ((rand() & 0x0f) == 0){
+                        drop_heart();                        
+                    }
+                }
             }
             break;
-        
+
+        /* ------------- HEART ------------- */
+        case TILE_HEART_FULL:
+            //remove the item
+            putTile(backgroundTile, x, y);
+
+            //get points
+            score += 200;
+            updateScore();
+
+            if (heartsCount < HEART_MAX){
+                heartsCount++;
+                updateHearts();
+            }
+            break;
+
         /* ------------- Ground tiles ok to cross ------------- */
         case TILE_EMPTY:
         case TILE_SAND:
