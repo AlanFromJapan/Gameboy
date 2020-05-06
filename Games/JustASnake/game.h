@@ -32,10 +32,16 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y);
  * Puts a bonbon somewhere on the map randomly
  */
 void drop_bonbon();
+
 /**
  * Puts a heart somewhere on the map randomly
  */
 void drop_heart();
+
+/**
+ * Remove all items from the map (except bonbon)
+ */
+void clearExtraItems();
 
 /**
  * Update the hearts display
@@ -52,5 +58,11 @@ void updateScore();
  */
 void showPause();
 
+/**
+ * Draws the "Level xx" label
+ * 
+ * Should have been drawned in the map, or calculated once and kept in mem, so let's say it's a tradeoff space vx complexity
+ */
+inline void drawLevelLabel();
 
 #endif //__GAME_H__

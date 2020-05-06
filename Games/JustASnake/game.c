@@ -79,8 +79,19 @@ void drop_heart(){
     putTile(TILE_HEART_FULL, x, y);    
 }
 
-
-
+/**
+ * Remove all items from the map (except bonbon)
+ */
+void clearExtraItems(){
+    UINT8 t, x, y;
+    for (x = 1; x < Map_Arene_WIDTH-1; x++)
+        for (y = 1; y < Map_Arene_HEIGHT -2; y++){
+            get_bkg_tiles(x, y, 1, 1, &t);
+            if (t == TILE_HEART_FULL){
+                putTile(backgroundTile, x, y); 
+            }
+        }
+}
 
 /**
  * Update the score display
@@ -119,5 +130,37 @@ void updateHearts(){
  */
 void showPause(){
     windowShowText("Quick pause...\n\n\n\n\nPress A or Start", 0);
+
+}
+
+/**
+ * Draws the "Level xx" label
+ * 
+ * Should have been drawned in the map, or calculated once and kept in mem, so let's say it's a tradeoff space vx complexity
+ */
+#define LEVEL_LABEL_LEN 10
+inline void drawLevelLabel(){
+    //Label
+    char* lbl = " Level xx ";
+    UINT8 lblTiles[LEVEL_LABEL_LEN+1];
+    lbl[LEVEL_LABEL_LEN] = 0;
+
+    //make tiles 
+    string2tile(lbl, lblTiles);
+
+    //overwrite the xx with the arena number (start = 1)
+    UINT8 lvl = getCurrentArenaId() +1;
+    if (lvl < 10){
+        lblTiles[7] = TILE_NUMBER_BLACK_1; //0        
+    }
+    else {
+        lblTiles[7] = TILE_NUMBER_BLACK_1 + (lvl / 10); 
+    }
+    lblTiles[8] = TILE_NUMBER_BLACK_1 + (lvl % 10); 
+    
+    //write it on the background
+    for (UINT8 t = 0; t < LEVEL_LABEL_LEN; t++){
+        putTile(lblTiles[t], (20-LEVEL_LABEL_LEN)/2 + t, 0);
+    }
 
 }
