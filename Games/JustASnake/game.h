@@ -4,6 +4,10 @@
 #include <gb/gb.h>
 #include "my_lib01.h"
 
+#define DIFFICULTY_NORMAL   0
+#define DIFFICULTY_HARD     1
+extern UINT8 gameDifficulty; 
+
 #define ITEMS_PER_LEVEL_NORMAL      10
 #define ITEMS_PER_LEVEL_HARD        15
 extern UINT8 maxItemNumber ;
@@ -19,8 +23,9 @@ extern UINT8* currentArenaMap ;
 extern UINT16 score;
 
 
-#define SPEED_START 250
-#define SPEED_MIN   60
+#define SPEED_START_NORMAL  250
+#define SPEED_START_HARD    200
+#define SPEED_MIN   40
 extern UINT8 speed;
 
 /**
@@ -64,5 +69,11 @@ void showPause();
  * Should have been drawned in the map, or calculated once and kept in mem, so let's say it's a tradeoff space vx complexity
  */
 inline void drawLevelLabel();
+
+
+/**
+ * Turns the game in HARD MODE
+ */
+inline void setHardMode();
 
 #endif //__GAME_H__

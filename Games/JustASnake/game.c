@@ -22,8 +22,9 @@ UINT8* currentArenaMap = Map_Arene;
 
 UINT16 score = 0;
 
-UINT8 speed = SPEED_START;
+UINT8 speed = SPEED_START_NORMAL;
 
+UINT8 gameDifficulty = DIFFICULTY_NORMAL;
 
 /**
  * Set a background tile to the tile in parameter
@@ -162,5 +163,16 @@ inline void drawLevelLabel(){
     for (UINT8 t = 0; t < LEVEL_LABEL_LEN; t++){
         putTile(lblTiles[t], (20-LEVEL_LABEL_LEN)/2 + t, 0);
     }
+
+}
+
+
+/**
+ * Turns the game in HARD MODE
+ */
+inline void setHardMode(){
+    gameDifficulty = DIFFICULTY_HARD;
+
+    maxItemNumber = ITEMS_PER_LEVEL_HARD;
 
 }

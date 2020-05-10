@@ -79,7 +79,13 @@ void nextArena(UINT8 pReinit){
     SETX(HEAD, x);
     SETY(HEAD, y);
     snakeLen = 1;
-    speed = SPEED_START;
+    if (gameDifficulty == DIFFICULTY_NORMAL){
+        speed = SPEED_START_NORMAL;
+    }
+    else {
+        speed = SPEED_START_HARD;
+    }
+    
 
     set_bkg_tiles(0, 0, Map_Arene_WIDTH, Map_Arene_HEIGHT, currentArenaMap);
 
@@ -175,10 +181,16 @@ void moveTo(UINT8 x, UINT8 y){
             putTile(backgroundTile, x, y);
 
             //speedup
-            speed = speed - (speed/8);
+            if (gameDifficulty == DIFFICULTY_NORMAL){
+                speed = speed - (speed/8);
+            }
+            else {
+                speed = speed - (speed/7);
+            }
+            
 
             //get points
-            score += 100;
+            score += 100 * (1 + gameDifficulty);
             updateScore();
 
             //more sweets or next map?
@@ -188,7 +200,7 @@ void moveTo(UINT8 x, UINT8 y){
                 windowShowText("Bravo ! On to the next level!", 0);
                 
                 //get bonus points
-                score += 150 * heartsCount;
+                score += 150 * heartsCount * (1 + gameDifficulty);
 
                 nextArena(NEXTARENA_NEXT);
             }
@@ -290,7 +302,12 @@ void main() {
             showCredits();
             break;
         case TITLEMENU_OPTIONS:
-            showOptions();
+            mnu = showOptions();
+
+            if (mnu == OPTIONSMENU_HARD){
+                //SET HARD MODE
+                setHardMode();
+            }
             break;
     }
 

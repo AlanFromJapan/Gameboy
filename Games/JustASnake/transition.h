@@ -8,6 +8,9 @@
 #define TITLEMENU_OPTIONS   1
 #define TITLEMENU_CREDITS   2
 
+#define OPTIONSMENU_NORMAL  0
+#define OPTIONSMENU_HARD    1
+
 
 void arenaTransition(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY);
 void arenaTransitionBackToLevel1(UINT8** nextArena, UINT8* backgroundTile, UINT8* startX, UINT8* startY);
@@ -27,6 +30,6 @@ void showCredits();
  * Shows options screen
  * 
  */
-void showOptions();
+UINT8 showOptions();
 
 #endif // __TRANSITION_H__
