@@ -106,6 +106,7 @@ UINT8 showTitle(){
 
     //create the first sprit as option marker
     set_sprite_tile(0, TILE_PLAYER_SMALL);
+    SHOW_SPRITES;
 
 
     UINT8 t = 0;
@@ -217,22 +218,74 @@ void showCredits(){
  * Shows options screen
  * 
  */
-void showOptions(){
+UINT8 showOptions(){
     set_bkg_tiles(0, 0, Map_Options_WIDTH, Map_Options_HEIGHT, Map_Options);
     SHOW_BKG;
 
+    //create the first sprit as option marker
+    set_sprite_tile(0, TILE_PLAYER_SMALL);
+    SHOW_SPRITES;
+
+
+    UINT8 t = 0;
+    UINT8 stat = 0;
+    UINT8 tmax = 15;
+    UINT8 mnu = OPTIONSMENU_NORMAL;
     while(1) {
-        if(joypad() & J_A) {
+        if(joypad() & J_A || joypad() & J_START) {
             break;
         }
-        if(joypad() & J_START) {
-            break;
+        if(joypad() & J_RIGHT) {
+            mnu = (mnu + 1)% 2;
+        }
+        if(joypad() & J_LEFT) {
+            mnu = mnu -1;
+            if (mnu == 255)
+                mnu = 1;
         }
 
-        delay(10);
+        switch (mnu){
+            case OPTIONSMENU_NORMAL:
+                move_sprite(0, 8* 3, 8* 5);
+                putTile(TILE_EMPTY, 2, 3);
+                putTile(TILE_BLACK, 13, 3);
+                break;
+            case OPTIONSMENU_HARD:
+                move_sprite(0, 8* 14, 8* 5);
+                putTile(TILE_BLACK, 2, 3);
+                putTile(TILE_EMPTY, 13, 3);
+                break;
+
+        }
+
+
+        delay(100);
+        t++;
+
+        if (t== tmax){
+            if (stat == 0){
+                set_sprite_tile(0, TILE_PLAYER_ALT);
+                stat = 1;
+                tmax = 1;
+                t = 0;
+            }
+            else {
+                set_sprite_tile(0, TILE_PLAYER_SMALL);
+                stat = 0;
+                tmax = 15;
+                t=0;
+            }
+            
+        }
     }
+
+    HIDE_BKG;
+    HIDE_SPRITES;
+
 
 
     //debouncing
     delay(200);
+
+    return mnu;
 }
