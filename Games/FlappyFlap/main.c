@@ -16,6 +16,11 @@
 #include "game.h"
 
 
+inline void initSound(){
+    NR52_REG = 0x80;
+    NR50_REG = 0xFF;
+    NR51_REG = 0xFF;
+}
 
 void main() {
     
@@ -23,12 +28,15 @@ void main() {
 
     set_sprite_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
+    set_win_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_tiles(0, 0, Map_SplashScreen_WIDTH, Map_SplashScreen_HEIGHT, Map_SplashScreen);
 
 
     SHOW_BKG;
     SHOW_SPRITES;
 
+    initSound();
+    
     wait_vbl_done();
 
     while (1) {
