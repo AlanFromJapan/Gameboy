@@ -7,6 +7,9 @@ obj/
 #emacs
 *~
 
+#misc temp files
+*#
+
 # Prerequisites
 *.d
 
