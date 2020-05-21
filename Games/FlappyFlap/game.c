@@ -131,9 +131,9 @@ inline UINT8 checkCollision(){
 
     //Trick: the "walls" are all the first tiles so a simple lessthan compare is good for a hit check
     if (
-        tiles[0] <= TILE_TUYAUX_6 || 
-        tiles[1] <= TILE_TUYAUX_6 ) {
-        //hit a pipe !
+        tiles[0] <= TILE_MOSS_SE || 
+        tiles[1] <= TILE_MOSS_SE ) {
+        //hit a pipe or somthing else you can't go through!
         return 1;
     }
 
