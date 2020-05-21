@@ -3,6 +3,8 @@
 #include <gb/gb.h>
 #include <gb/drawing.h>
 
+#include <stdlib.h>
+
 #include "my_lib01.h"
 
 
@@ -12,11 +14,16 @@
 #define SCREENW_TILE    20
 #define SCREENW_TILE_TOTAL    32
 
+#define PIPE_WIDTH  3
+
 UINT8 dynMap[SCREENW_TILE_TOTAL * SCREENH_TILE];
 UINT8 speed = 1;
 UINT8 X = 0;
 UINT8 Y = 0;
 UINT8 xoffset = 0;
+
+//position of the leftmost part of the rightmost pipe IN TILES
+UINT8 rightmostPipe = 0;
 
 void beep1(){
     NR10_REG = 0x38U;
@@ -45,14 +52,14 @@ void beep2(){
  */
 inline void addPipeBottom (UINT8 x, UINT8 y){
     dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_1;
-    dynMap[x+1 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_2;
-    dynMap[x+2 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_3;
+    dynMap[(x+1)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_2;
+    dynMap[(x+2)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_3;
 
 
     for (y++; y < SCREENH_TILE-1; y++){
         dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_4;
-        dynMap[x+1 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_5;
-        dynMap[x+2 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_6;                
+        dynMap[(x+1)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_5;
+        dynMap[(x+2)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_6;                
     }
 
 }
@@ -63,14 +70,14 @@ inline void addPipeBottom (UINT8 x, UINT8 y){
  */
 inline void addPipeTop (UINT8 x, UINT8 y){
     dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_1;
-    dynMap[x+1 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_2;
-    dynMap[x+2 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_3;
+    dynMap[(x+1)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_2;
+    dynMap[(x+2)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_3;
 
 
     for (y--; y != 255; y--){
         dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_4;
-        dynMap[x+1 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_5;
-        dynMap[x+2 + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_6;                
+        dynMap[(x+1)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_5;
+        dynMap[(x+2)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = TILE_TUYAUX_6;                
     }
 
 }
@@ -81,8 +88,8 @@ inline void addPipeTop (UINT8 x, UINT8 y){
 inline void drawSpriteBg(UINT8 topleftTile, UINT8 x, UINT8 y){
     dynMap[x + y * SCREENW_TILE_TOTAL] = topleftTile;
     dynMap[x + (y+1) * SCREENW_TILE_TOTAL] = topleftTile+1;
-    dynMap[(x+1) + y * SCREENW_TILE_TOTAL] = topleftTile+2;
-    dynMap[(x+1) + (y+1) * SCREENW_TILE_TOTAL] = topleftTile+3;
+    dynMap[(x+1)% SCREENW_TILE_TOTAL + y * SCREENW_TILE_TOTAL] = topleftTile+2;
+    dynMap[(x+1)% SCREENW_TILE_TOTAL + (y+1) * SCREENW_TILE_TOTAL] = topleftTile+3;
 }
 
 /**
@@ -102,14 +109,64 @@ inline void makeGhostSprite(){
 }
 
 /**
+ * Draws the rest of the autoscroller on the right hand
+ */
+inline void updateAutoscrollerBuffer(){
+    //idea is consider all is drawn until rightmostPipeX (in TILE)
+    UINT8 lTile = xoffset / 8;
+    UINT8 rTile = (lTile + 20) % SCREENW_TILE_TOTAL;
+
+
+    if (rightmostPipe > rTile || rightmostPipe < lTile ){
+        //rightmost pipe not shown, nothing to do
+        //Doc case 1,2,3
+        return;
+    }
+
+
+    //now here we KNOW we have to draw something at the right of the buffer
+    UINT8 currentrmp = rightmostPipe;
+    rightmostPipe+= 
+        PIPE_WIDTH /* width of the pipe*/
+        //+ 4 /* blank space */
+        + (rand() & 0x07) /* a bit of random space*/
+        ;
+
+    
+    //clear everything between the last pipe RIGHT and the future pipe's RIGHT
+    currentrmp += PIPE_WIDTH; //pipe width
+    for (; currentrmp < rightmostPipe; currentrmp ++){
+        UINT8 x = currentrmp % SCREENW_TILE_TOTAL;
+        for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
+            dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_EMPTY;
+        }
+    }
+
+    rightmostPipe = rightmostPipe % SCREENW_TILE_TOTAL;
+
+    //make a pipe
+    addPipeBottom (rightmostPipe, 14);
+    addPipeTop (rightmostPipe, 6);    
+
+    //update background
+    set_bkg_tiles(0, 0, SCREENW_TILE_TOTAL, SCREENH_TILE, dynMap);
+
+}
+
+/**
  * Vertical blank interrupt: where we "draw" memory while screen is not updated
  */
 void vblint(){
+    //scroll
     scroll_bkg(speed, 0);
     xoffset += speed;
 
+    //move
     move_sprite(2, X, Y);
     move_sprite(3, X+8, Y);
+
+    //draw the rest of the zone
+    updateAutoscrollerBuffer();
 }
 
 
@@ -148,6 +205,9 @@ inline UINT8 checkCollision(){
  * 
  */
 inline void autoscroller(){
+
+    srand(DIV_REG);
+
     //fill blank
     for (UINT8 x = 0; x < SCREENW_TILE_TOTAL; x++){
         for (UINT8 y = 0; y < SCREENH_TILE; y++){
@@ -167,9 +227,13 @@ inline void autoscroller(){
     drawSpriteBg(TILE_BG_FLOWER_NW, 10, 10);
     drawSpriteBg(TILE_BG_STAR_NW, 14, 14);
 
+/*
     //make a pipe
     addPipeBottom (1, 14);
     addPipeTop (14, 6);
+    addPipeBottom (22, 16);
+    rightmostPipe = 22;
+*/
 
     //display
     set_bkg_tiles(0, 0, SCREENW_TILE_TOTAL, SCREENH_TILE, dynMap);
