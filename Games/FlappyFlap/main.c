@@ -23,7 +23,9 @@ inline void initSound(){
 }
 
 void main() {
-    
+    //stick to bank 0 for GB DMG compatibility
+    VBK_REG = 0;
+
     SPRITES_8x16;
 
     set_sprite_data(0, my_lib01_COUNT, my_lib01);
@@ -31,6 +33,10 @@ void main() {
     set_win_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_tiles(0, 0, Map_SplashScreen_WIDTH, Map_SplashScreen_HEIGHT, Map_SplashScreen);
 
+    //load palettes
+    set_bkg_palette (0, PALETTE_COUNT, bgPalette);
+    set_sprite_palette (0, PALETTE_COUNT, bgPalette);
+    
 
     SHOW_BKG;
     SHOW_SPRITES;

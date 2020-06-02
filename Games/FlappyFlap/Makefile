@@ -1,6 +1,7 @@
 # ROM name
 ROM_NAME = flappyflap
 ROM_LABEL = "Flappy Flap!"
+ROM_EXT = gbc
 
 # Bins and libs
 BIN = /home/alan/Git/gbdk-n/bin
@@ -16,8 +17,8 @@ OBJ_FILES = $(OBJ_DIR)/Map_SplashScreen.rel \
 build: $(OBJ_FILES)
 	@echo "\e[36mLinking .rel files to .ihx file...\e[0m"
 	$(BIN)/gbdk-n-link-4.sh $(OBJ_DIR)/*.rel  -o $(OBJ_DIR)/$(ROM_NAME).ihx 
-	@echo "\e[36mConvert .ihx file to final .gb ...\e[0m"
-	$(BIN)/gbdk-n-make-rom-4.sh -yn $(ROM_LABEL) $(OBJ_DIR)/$(ROM_NAME).ihx $(ROM_NAME).gb
+	@echo "\e[36mConvert .ihx file to final .gbc (see -yc flag!) ...\e[0m"
+	$(BIN)/gbdk-n-make-rom-4.sh -yc -yn $(ROM_LABEL) $(OBJ_DIR)/$(ROM_NAME).ihx $(ROM_NAME).$(ROM_EXT)
 	@echo "\e[36mFinished!\e[0m"
 
 $(OBJ_DIR)/%.rel : ./%.c
@@ -28,14 +29,14 @@ $(OBJ_DIR)/%.rel : ./%.c
 clean:
 	@echo "\e[31mCleaning up old files\e[0m"
 	rm -rf $(OBJ_DIR)
-	rm -f *.gb
+	rm -f *.$(ROM_EXT)
 
 run:
 	@echo "\e[1;32mRun !!\e[0m"
 #	vba $(ROM_NAME).gb
-	wine ../../bgb/bgb.exe ./$(ROM_NAME).gb
+	wine ../../bgb/bgb.exe ./$(ROM_NAME).$(ROM_EXT)
 
 full: clean build run
 
 flash:
-	sudo $(FLASHER)/ems-flasher --bank 1 --verbose --write $(ROM_NAME).gb
+	sudo $(FLASHER)/ems-flasher --bank 1 --verbose --write $(ROM_NAME).$(ROM_EXT)
