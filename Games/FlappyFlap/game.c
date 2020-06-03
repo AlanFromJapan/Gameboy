@@ -9,6 +9,7 @@
 
 
 #define SPRITE_MIRROR   0x20
+#define SPRITE_PALETTE  0x02
 
 #define SCREENH_TILE    18
 #define SCREENW_TILE    20
@@ -17,9 +18,9 @@
 #define PIPE_WIDTH  3
 
 UWORD bgPalette[] = {
-	RGB_WHITE, RGB_YELLOW, RGB_DARKBLUE, RGB_PINK,
-	0, RGB_RED, RGB_ORANGE, RGB_YELLOW,
-	0, RGB_GREEN, RGB_BLUE, RGB_PURPLE,
+	RGB_WHITE, RGB_GREEN, RGB_DARKGREEN, RGB_BLACK,
+	RGB_WHITE, RGB_RED, RGB_ORANGE, RGB_YELLOW,
+	0, RGB_LIGHTGRAY, RGB_BLACK, RGB_DARKGRAY,
 	0, RGB_BLACK, RGB_DARKGRAY, RGB_WHITE
 };
 
@@ -151,8 +152,10 @@ inline void makeGhostSprite(){
     //create the character ghost sprite
     set_sprite_tile(2, TILE_GHOST_A_NE);
     set_sprite_tile(3, TILE_GHOST_A_NW);
-    set_sprite_prop(2, SPRITE_MIRROR);
-    set_sprite_prop(3, SPRITE_MIRROR);
+    set_sprite_prop(2, SPRITE_MIRROR | SPRITE_PALETTE);
+    set_sprite_prop(3, SPRITE_MIRROR | SPRITE_PALETTE);
+
+    
 
     X = 8*6;
     Y = 8*9;
