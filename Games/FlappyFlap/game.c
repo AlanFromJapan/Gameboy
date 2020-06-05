@@ -170,48 +170,25 @@ inline void updateAutoscrollerBuffer(){
     UINT8 lTile = xoffset / 8;
     UINT8 rTile = (lTile + 20) % SCREENW_TILE_TOTAL;
 
-
-    if (rightmostPipe > rTile || rightmostPipe < lTile ){
-        //rightmost pipe not shown, nothing to do
-        //Doc case 1,2,3
+    if (rTile != rightmostPipe) {
+        //will redraw one more pipe on the right only if the leftmost part of the reviously drawn one is shown
         return;
     }
-
 
     //now here we KNOW we have to draw something at the right of the buffer
     UINT8 currentrmp = rightmostPipe;
     rightmostPipe+= 
         PIPE_WIDTH /* width of the pipe*/
-        + 4 /* blank space */
-        //+ (rand() & 0x07) /* a bit of random space*/
+        + 1 /* blank space */
+        + (rand() & 0x07) /* a bit of random space*/
         ;
 
-    
-    //clear everything between the last pipe RIGHT and the future pipe's RIGHT
-    currentrmp += PIPE_WIDTH; //pipe width
-/*
-    for (; currentrmp < rightmostPipe; currentrmp ++){
-        UINT8 x = currentrmp % SCREENW_TILE_TOTAL;
-        for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
-            dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_EMPTY;
-        }
-    }
-*/
-/*    
-    for (UINT8 c = 0; c  < (32-20) ; c ++){
-        UINT8 x = (currentrmp  +c) % SCREENW_TILE_TOTAL;
-        if (x == lTile)
-            break;
+    rightmostPipe = rightmostPipe % SCREENW_TILE_TOTAL;
 
-        for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
-            dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_EMPTY;
-        }
-    }
-*/
 
-    UINT8 c = currentrmp;
-    while (1){
-        if (c == lTile)
+    UINT8 c = currentrmp + PIPE_WIDTH;
+    while (1){        
+        if (c == rightmostPipe)
             break;
 
         for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
@@ -221,8 +198,6 @@ inline void updateAutoscrollerBuffer(){
         c = c % SCREENW_TILE_TOTAL;
     }
 
-
-    rightmostPipe = rightmostPipe % SCREENW_TILE_TOTAL;
 
     //make a pipe
     addPipeBottom (rightmostPipe, 14);
@@ -320,6 +295,13 @@ inline void autoscroller(){
 
     makeGhostSprite();
     SHOW_SPRITES;
+
+    //init first pipe outside of the of displayed zone
+    rightmostPipe = 22;
+    //make a pipe
+    addPipeBottom (rightmostPipe, 14);
+    addPipeTop (rightmostPipe, 6);    
+
 
     //branch interrup handler for VBlank
     add_VBL(vblint);
