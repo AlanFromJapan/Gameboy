@@ -18,10 +18,9 @@
 #define PIPE_WIDTH  3
 
 UWORD bgPalette[] = {
-	RGB_WHITE, RGB_GREEN, RGB_DARKGREEN, RGB_BLACK,
+	RGB_WHITE, RGB_GREEN, RGB_DARKGREEN, RGB_BLACK, /* for the background */
 	RGB_WHITE, RGB_RED, RGB_ORANGE, RGB_YELLOW,
-	0, RGB_LIGHTGRAY, RGB_BLACK, RGB_DARKGRAY,
-	0, RGB_BLACK, RGB_DARKGRAY, RGB_WHITE
+	0, RGB_LIGHTGRAY, RGB_BLACK, RGB_DARKGRAY /* For the ghost sprite */ 
 };
 
 UINT8 dynMap[SCREENW_TILE_TOTAL * SCREENH_TILE];
@@ -183,19 +182,45 @@ inline void updateAutoscrollerBuffer(){
     UINT8 currentrmp = rightmostPipe;
     rightmostPipe+= 
         PIPE_WIDTH /* width of the pipe*/
-        //+ 4 /* blank space */
-        + (rand() & 0x07) /* a bit of random space*/
+        + 4 /* blank space */
+        //+ (rand() & 0x07) /* a bit of random space*/
         ;
 
     
     //clear everything between the last pipe RIGHT and the future pipe's RIGHT
     currentrmp += PIPE_WIDTH; //pipe width
+/*
     for (; currentrmp < rightmostPipe; currentrmp ++){
         UINT8 x = currentrmp % SCREENW_TILE_TOTAL;
         for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
             dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_EMPTY;
         }
     }
+*/
+/*    
+    for (UINT8 c = 0; c  < (32-20) ; c ++){
+        UINT8 x = (currentrmp  +c) % SCREENW_TILE_TOTAL;
+        if (x == lTile)
+            break;
+
+        for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
+            dynMap[x + y * SCREENW_TILE_TOTAL] = TILE_EMPTY;
+        }
+    }
+*/
+
+    UINT8 c = currentrmp;
+    while (1){
+        if (c == lTile)
+            break;
+
+        for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
+            dynMap[c + y * SCREENW_TILE_TOTAL] = TILE_EMPTY;
+        }
+        c++;
+        c = c % SCREENW_TILE_TOTAL;
+    }
+
 
     rightmostPipe = rightmostPipe % SCREENW_TILE_TOTAL;
 
@@ -245,7 +270,7 @@ inline UINT8 checkCollision(){
     if (
         tiles[0] <= TILE_MOSS_SE || 
         tiles[1] <= TILE_MOSS_SE ) {
-        //hit a pipe or somthing else you can't go through!
+        //hit a pipe or something else you can't go through!
         return 1;
     }
 
