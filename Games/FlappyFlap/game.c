@@ -7,6 +7,8 @@
 
 #include "my_lib01.h"
 
+#define MAX(a,b) ((a) > (b)? (a) : (b))
+#define MIN(a,b) ((a) < (b)? (a) : (b))
 
 #define SPRITE_MIRROR   0x20
 #define SPRITE_PALETTE  0x02
@@ -16,6 +18,7 @@
 #define SCREENW_TILE_TOTAL    32
 
 #define PIPE_WIDTH  3
+#define PIPE_VSPACE  6
 
 UWORD bgPalette[] = {
 	RGB_WHITE, RGB_GREEN, RGB_DARKGREEN, RGB_BLACK, /* for the background */
@@ -186,22 +189,29 @@ inline void updateAutoscrollerBuffer(){
     rightmostPipe = rightmostPipe % SCREENW_TILE_TOTAL;
 
 
-    UINT8 c = currentrmp + PIPE_WIDTH;
-    while (1){        
-        if (c == rightmostPipe)
-            break;
+    UINT8 c = (currentrmp + PIPE_WIDTH) % SCREENW_TILE_TOTAL;
+    while (1){      
 
         for (UINT8 y = 0; y < SCREENH_TILE -1; y++){
             dynMap[c + y * SCREENW_TILE_TOTAL] = TILE_EMPTY;
         }
+
+        if (c == rightmostPipe)
+            break;
+
         c++;
         c = c % SCREENW_TILE_TOTAL;
+          
+
     }
 
 
     //make a pipe
-    addPipeBottom (rightmostPipe, 14);
-    addPipeTop (rightmostPipe, 6);    
+    c = rand() & 0x0f;
+    c = (c * 3) / 4;
+    // 0 <= c <= 11
+    addPipeTop (rightmostPipe, 1 + c);    
+    addPipeBottom (rightmostPipe, MIN(1 + c + PIPE_VSPACE, 16));
 
     //update background
     set_bkg_tiles(0, 0, SCREENW_TILE_TOTAL, SCREENH_TILE, dynMap);

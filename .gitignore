@@ -4,6 +4,9 @@ test-not-save/
 obj/
 .vscode/
 
+# sample ROMs folder
+ROMS/
+
 #emacs
 *~
 
