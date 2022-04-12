@@ -1,7 +1,7 @@
 # ROM name
 ROM_NAME = pacghost
 ROM_LABEL = "PacGhost"
-ROM_EXT = gbc
+ROM_EXT = gb
 
 # Bins and libs
 BIN = /home/alan/Git/gbdk-n/bin
@@ -11,13 +11,15 @@ FLASHER = /home/alan/Git/Gameboy/ems-flasher
 
 OBJ_FILES = $(OBJ_DIR)/Map_Screen1.rel \
 			$(OBJ_DIR)/my_lib01.rel \
+			$(OBJ_DIR)/Export.rel \
 			$(OBJ_DIR)/main.rel
 
 build: $(OBJ_FILES)
 	@echo "\e[36mLinking .rel files to .ihx file...\e[0m"
 	$(BIN)/gbdk-n-link-4.sh $(OBJ_DIR)/*.rel  -o $(OBJ_DIR)/$(ROM_NAME).ihx 
-	@echo "\e[36mConvert .ihx file to final .gbc (see -yc flag!) ...\e[0m"
-	$(BIN)/gbdk-n-make-rom-4.sh -yc -yn $(ROM_LABEL) $(OBJ_DIR)/$(ROM_NAME).ihx $(ROM_NAME).$(ROM_EXT)
+#	@echo "\e[36mConvert .ihx file to final .gbc (see -yc flag!) ...\e[0m"
+#	$(BIN)/gbdk-n-make-rom-4.sh -yc -yn $(ROM_LABEL) $(OBJ_DIR)/$(ROM_NAME).ihx $(ROM_NAME).$(ROM_EXT)
+	$(BIN)/gbdk-n-make-rom-4.sh -yn $(ROM_LABEL) $(OBJ_DIR)/$(ROM_NAME).ihx $(ROM_NAME).$(ROM_EXT)
 	@echo "\e[36mFinished!\e[0m"
 
 $(OBJ_DIR)/%.rel : ./%.c

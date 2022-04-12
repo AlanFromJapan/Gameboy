@@ -8,11 +8,12 @@
 */
 
 #include <gb/gb.h>
-#include <gb/cgb.h>
+//#include <gb/cgb.h>
 #include <gb/drawing.h>
 
 #include "my_lib01.h"
 #include "Map_Screen1.h"
+#include "Export.h"
 
 #define PALETTE_COUNT   4
 UWORD bgPalette[] = {
@@ -23,12 +24,12 @@ UWORD bgPalette[] = {
 };
 
 void main() {
-    UINT8 X,Y ;
+    UINT8 X,Y, SPRITE_FRAME ;
     INT8 dx, dy;
 
-    SPRITES_8x16;
+    SPRITES_8x8;
 
-    set_sprite_data(0, my_lib01_COUNT, my_lib01);
+    set_sprite_data(0, my_lib01_COUNT, TileLabel);
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_tiles(0, 0, Map_Screen1_WIDTH, Map_Screen1_HEIGHT, Map_Screen1);
 
@@ -39,21 +40,20 @@ void main() {
     VBK_REG = 0;
 
     //load palettes
-    set_bkg_palette (0, PALETTE_COUNT, bgPalette);
-    set_sprite_palette (0, PALETTE_COUNT, bgPalette);
+    //set_bkg_palette (0, PALETTE_COUNT, bgPalette);
+    //set_sprite_palette (0, PALETTE_COUNT, bgPalette);
 
     X = 50;
     Y = 50;
     dx = 1;
     dy = 1;
 
-    set_sprite_tile(0, TILE_BLOCK_Q_NW);
-    set_sprite_tile(1, TILE_BLOCK_Q_NE);
+    SPRITE_FRAME=0;
+
+    set_sprite_tile(0, SPRITE_FRAME);
     move_sprite(0, X, Y);
-    move_sprite(1, X+8, Y);
     //assign palette to sprites
-    set_sprite_prop(0, 0x01U);
-    set_sprite_prop(1, 0x01U);
+    //set_sprite_prop(0, 0x01U);
 
     wait_vbl_done();
 
@@ -76,7 +76,6 @@ void main() {
         if (joypad() & J_A){
             //palette change
             set_sprite_prop(0, spal);
-            set_sprite_prop(1, spal);
             spal++;
             spal = spal % PALETTE_COUNT;
         }
@@ -84,6 +83,7 @@ void main() {
         X = X + dx;
         Y = Y + dy;
 
+        //TODO: fix this it's copy pasted from other project that was for 16x16 sprites
         //X is the MIDDLE of the 16x16 sprite
         if (X <= (8+8) || X >= ((20-1) * 8 -8) )
             dx=-dx;
@@ -93,8 +93,9 @@ void main() {
             dy=-dy;
 
         move_sprite(0, X, Y);
-        move_sprite(1, X+8, Y);
 
+        SPRITE_FRAME = (SPRITE_FRAME + 1) % 4;
+        set_sprite_tile(0, SPRITE_FRAME);
         delay(50);
     }
 }
