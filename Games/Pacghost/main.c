@@ -24,8 +24,8 @@ UWORD bgPalette[] = {
 };
 
 void main() {
-    UINT8 X,Y, SPRITE_FRAME ;
-    INT8 dx, dy;
+    UINT8 X,Y ;
+    INT8 dx, dy, SPRITE_FRAME;
 
     SPRITES_8x8;
 
@@ -94,7 +94,15 @@ void main() {
 
         move_sprite(0, X, Y);
 
-        SPRITE_FRAME = (SPRITE_FRAME + 1) % 4;
+        if (dx >= 0)
+            SPRITE_FRAME = (SPRITE_FRAME + 1) % 4;
+        else{
+            SPRITE_FRAME -= 1;
+            if (SPRITE_FRAME < 0)
+                SPRITE_FRAME = 3;
+            
+        }
+            
         set_sprite_tile(0, SPRITE_FRAME);
         delay(50);
     }
