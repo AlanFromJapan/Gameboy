@@ -21,7 +21,7 @@ unsigned int bgy = 0;
 
 /**
  * Fill in the tiles array with the tile representation of the text.
- * YOU MUST INIT THE ARRAY AND FREE IT BEFORE.
+ * tiles param: YOU MUST MALLOC THE ARRAY BEFORE AND FREE IT AFTER.
  */
 void string2tile(char* msg, UINT8* tiles){
 

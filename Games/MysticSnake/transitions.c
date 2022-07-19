@@ -11,7 +11,7 @@
 //#include <gb/rand.h>
 #include <stdlib.h>
 
-//memory of what time of room was the previous one. Default is 0 (fixed rooms)
+//Flag defining which map we are in. Default is 0 (fixed rooms), or >=1 means various random maps.
 UINT8 mLastMapId=0;
 
 #define MAX(A,B)    ((A) > (B)? (A): (B))
@@ -298,6 +298,22 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
     switch(mLastMapId){
         /* ---------------------------------------------------------------------------------------------- */
         case 0:
+            /* 
+                mLastMapId == 0 : we're in the STATIC transition mode. Predefined order of move between rooms. 
+                Hardcoding now, todo rewrite as a static array of transitions later if more rooms.
+            */
+            if (*map == Map_Intro){
+                //Intro -> enter in Room1
+                *x=16;
+                *y=32;
+                *map = Map_Room1;
+                *wtile = Map_Room1_WIDTH;
+                *htile = Map_Room1_HEIGHT;
+
+                //mLastMapId = 1; //stay out of the random map loop
+                break;
+            }
+
             if (*map == Map_Room1) {
                 //Room1 -> BigRoom1
                 *x=16;
@@ -305,19 +321,17 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
                 *map = Map_BigRoom1;
                 *wtile = Map_BigRoom1_WIDTH;
                 *htile = Map_BigRoom1_HEIGHT;
+
+                //From that point on move to random maps (set flag to 1)
                 mLastMapId = 1;
-            }
-            else {
-                //enter in Room1
-                *x=16;
-                *y=32;
-                *map = Map_Room1;
-                *wtile = Map_Room1_WIDTH;
-                *htile = Map_Room1_HEIGHT;
-                //mLastMapId = 1; //stay out of the random map loop
+
+                //seed the random generator
+                srand(DIV_REG);
+
+                break;
             }
 
-            srand(DIV_REG);
+
             break;
         /* ---------------------------------------------------------------------------------------------- */
         case 1:

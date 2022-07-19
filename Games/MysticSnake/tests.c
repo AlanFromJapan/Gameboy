@@ -3,6 +3,10 @@
 #include "my_lib01.h"
 #include "inputs.h"
 #include "windows.h"
+#include "transitions.h"
+
+#include "Map_Outside1.h"
+
 
 void test_text(){
     clearDynmap(TILE_EMPTY);
@@ -41,4 +45,17 @@ void test_windows() {
     windowShowText("un message long   qui se coupe bien", 0);
     windowShowText("un message tres    long qui depasse  mais passe a la   page suivante !", 0);
     windowShowText("Alors du delire   un message sur 3  pages carement    c est fou fou fou et tres beau.", 0);
+}
+
+
+/**
+ * Shows the Big map 
+ */
+void showBigMapOutside(){
+
+    // mapTransition(Map_Outside1, )
+    // set_bkg_tiles(bgx, bgy, Map_Outside1_WIDTH, Map_Outside1_HEIGHT, Map_Outside1);
+    // currentMap = Map_Outside1;
+    // currentMapW_Tile = Map_Outside1_WIDTH;
+    // currentMapH_Tile = Map_Outside1_HEIGHT;
 }
