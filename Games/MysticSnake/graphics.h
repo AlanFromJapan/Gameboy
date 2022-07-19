@@ -3,8 +3,15 @@
 
 #include <gb/gb.h>
 
-//32x18 (could be 32x32)
+//A GB screen shows only 20 tiles in width
+#define SCREEN_TILES_WIDTH 20
+//A GB screen shows only 18 tiles in height
+#define SCREEN_TILES_HEIGHT 18
+
+
+//Dynamic map maximum Width IN TILES
 #define DynMap_MAX_WIDTH   32
+//Dynamic map maximum height IN TILES
 #define DynMap_MAX_HEIGHT  32 
 
 

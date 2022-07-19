@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 //Flag defining which map we are in. Default is 0 (fixed rooms), or >=1 means various random maps.
-UINT8 mLastMapId=0;
+UINT8 mMapTransitionModeFlag=0;
 
 #define MAX(A,B)    ((A) > (B)? (A): (B))
 #define MIN(A,B)    ((A) < (B)? (A): (B))
@@ -295,11 +295,11 @@ inline void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile){
  * 
  */
 void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
-    switch(mLastMapId){
+    switch(mMapTransitionModeFlag){
         /* ---------------------------------------------------------------------------------------------- */
         case 0:
             /* 
-                mLastMapId == 0 : we're in the STATIC transition mode. Predefined order of move between rooms. 
+                mMapTransitionModeFlag == 0 : we're in the STATIC transition mode. Predefined order of move between rooms. 
                 Hardcoding now, todo rewrite as a static array of transitions later if more rooms.
             */
             if (*map == Map_Intro){
@@ -310,7 +310,7 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
                 *wtile = Map_Room1_WIDTH;
                 *htile = Map_Room1_HEIGHT;
 
-                //mLastMapId = 1; //stay out of the random map loop
+                //mMapTransitionModeFlag = 1; //stay out of the random map loop
                 break;
             }
 
@@ -323,7 +323,7 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
                 *htile = Map_BigRoom1_HEIGHT;
 
                 //From that point on move to random maps (set flag to 1)
-                mLastMapId = 1;
+                mMapTransitionModeFlag = 1;
 
                 //seed the random generator
                 srand(DIV_REG);
@@ -338,7 +338,7 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
             //make a new map with rooms
             makeRandomMapRooms (map, x, y, wtile, htile);        
             //stay on this type of map or alternate
-            mLastMapId = 1 + (rand() & 0x01);
+            mMapTransitionModeFlag = 1 + (rand() & 0x01);
             break;
         /* ---------------------------------------------------------------------------------------------- */
         case 2:
@@ -351,7 +351,7 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
             makeRandomMap (map, x, y, wtile, htile);        
 
             //stay on this type of map or alternate
-            mLastMapId = 1 + (rand() & 0x01);
+            mMapTransitionModeFlag = 1 + (rand() & 0x01);
             break;
     }
 

@@ -41,8 +41,8 @@ unsigned int y = 50;
 unsigned int stepCount = 0;
 
 unsigned char *currentMap;
-unsigned int currentMapW_Tile = 20;
-unsigned int currentMapH_Tile = 18;
+unsigned int currentMapW_Tile = SCREEN_TILES_WIDTH;
+unsigned int currentMapH_Tile = SCREEN_TILES_HEIGHT;
 
 //List of tiles that are considered as not-walkable (should be the first ones or the last ones for performance sake)
 #define COLLISION_TILE_LEN  25
@@ -139,7 +139,7 @@ void doMapTransition(){
         &currentMapH_Tile
         );
 
-    if (currentMapW_Tile >= 20) {
+    if (currentMapW_Tile >= SCREEN_TILES_WIDTH) {
         //if wider than a screen, align left
         bgx=0;
     }
@@ -150,7 +150,7 @@ void doMapTransition(){
         bgx = 255 - bgx;        
     }
     
-    if (currentMapH_Tile >= 20) {
+    if (currentMapH_Tile >= SCREEN_TILES_HEIGHT) {
         //if taller than a screen, align top
         bgy=0;
     }
@@ -214,7 +214,7 @@ inline void showStartupScroller(){
     HIDE_BKG;
 
     mapMakeVerticalMessage(&currentMap, TILE_EMPTY);
-    currentMapW_Tile = 20;
+    currentMapW_Tile = SCREEN_TILES_WIDTH;
     currentMapH_Tile = 32;
 
     writetextBG(1,1, "Dans un future    lointain, le monde a ete ravage par une etrange maladie.Tous les humains ont disparu peu apeu, laissant une terre vide qui retomba petit a petitdans un monde moyenageux ou la  technologie a ete oubliee.");
