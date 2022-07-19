@@ -21,7 +21,7 @@
 
 //#define SHOW_INTRO
 
-#define RUN_TESTS
+//#define RUN_TESTS
 
 #ifdef RUN_TESTS
 #include "tests.h"
@@ -40,9 +40,6 @@ unsigned int y = 50;
 
 unsigned int stepCount = 0;
 
-unsigned char *currentMap;
-unsigned int currentMapW_Tile = SCREEN_TILES_WIDTH;
-unsigned int currentMapH_Tile = SCREEN_TILES_HEIGHT;
 
 //List of tiles that are considered as not-walkable (should be the first ones or the last ones for performance sake)
 #define COLLISION_TILE_LEN  25
@@ -66,8 +63,6 @@ TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_
 
 //Move the Hero to x,y
 #define MV_HERO(x,y)    move_sprite(0, x, y); move_sprite(1, x+8, y);
-//Returns the background tile at XX,YY
-#define GET_BG_TILE(XX, YY)     (currentMap[(YY / 8) * currentMapW_Tile + (XX / 8)])
 //Returns the position of the player on the map (different than on the screen!)
 #define GET_MAP_X(dx)   (bgx + x + (dx * (INT8)8)) /* +8 because x is in the middle of the 16x16 */
 #define GET_MAP_Y(dy)   (bgy + y + dy -8) /* -8 to put the collision detection center of the body */
@@ -120,55 +115,6 @@ void vblint(){
 
 }
 
-/**
- * Map transition: small anim and load new bg
- * 
- */
-void doMapTransition(){
-    HIDE_BKG;
-    delay (500);
-    HIDE_SPRITES;
-    delay (500);
-
-    //LOAD!
-    mapTransition(
-        &currentMap, 
-        &x, 
-        &y, 
-        &currentMapW_Tile, 
-        &currentMapH_Tile
-        );
-
-    if (currentMapW_Tile >= SCREEN_TILES_WIDTH) {
-        //if wider than a screen, align left
-        bgx=0;
-    }
-    else {
-
-        bgx = (SCREENW - currentMapW_Tile * 8) / 2 ;
-        x += bgx;
-        bgx = 255 - bgx;        
-    }
-    
-    if (currentMapH_Tile >= SCREEN_TILES_HEIGHT) {
-        //if taller than a screen, align top
-        bgy=0;
-    }
-    else {
-        //centers the new map vertically in the screen (no vertical scroll)
-        bgy = (SCREENH - currentMapH_Tile * 8) / 2 ;
-        y += bgy;
-        bgy = 255 - bgy; 
-    }
-
-    vblint();
-
-    SHOW_SPRITES;
-    delay (500);
-    SHOW_BKG;
-    delay (500);
-
-}
 
 
 /**
@@ -193,51 +139,7 @@ void showTitle(){
 
 
 
-/**
- * Shows the first map at beginning, after is all transitions
- */
-inline void showInitialMap(){
-    set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
-    currentMap = Map_Intro;
-    currentMapW_Tile = Map_Intro_WIDTH;
-    currentMapH_Tile = Map_Intro_HEIGHT;
-}
 
-
-
-
-/**
- * Displays a fullscreen scroller for the story intro.
- * 
- */
-inline void showStartupScroller(){
-    HIDE_BKG;
-
-    mapMakeVerticalMessage(&currentMap, TILE_EMPTY);
-    currentMapW_Tile = SCREEN_TILES_WIDTH;
-    currentMapH_Tile = 32;
-
-    writetextBG(1,1, "Dans un future    lointain, le monde a ete ravage par une etrange maladie.Tous les humains ont disparu peu apeu, laissant une terre vide qui retomba petit a petitdans un monde moyenageux ou la  technologie a ete oubliee.");
-    writetextBG(1,14, "Notre hero part a la recherche de laverite, se basant sur des legendes  parlant d un mage qui vivait dans   une tour cachee   dans la foret...");
-
-    set_bkg_tiles(bgx, bgy, currentMapW_Tile, currentMapH_Tile, currentMap);
-
-    SHOW_BKG;
-    UINT8 vy =180;
-
-    while(1) {
-        
-        if (vy >= 180 || vy <100) {
-            move_bkg(0, vy++);
-            delay(100);
-        }
-        else {
-            delay(3000);
-            break;
-        }
-    }
-
-}
 
 
 /*
@@ -258,6 +160,9 @@ void main() {
     //TEST
 #ifdef RUN_TESTS    
     test_text();
+    
+    //Show a sample of 32x32 map
+    //showBigMapOutside();
 #endif
 
 #ifdef SHOW_INTRO
@@ -267,8 +172,6 @@ void main() {
 
     //show the landing map
     showInitialMap();
-    //Show a sample of 32x32 map
-    //showBigMap();
 
     //make the hero and move to start point
     set_sprite_tile(0, TILE_HERO_NW);
@@ -304,7 +207,7 @@ void main() {
         //TEST
 #ifdef RUN_TESTS    
         if(lastJoypad & J_SELECT) {
-            doMapTransition();
+            doMapTransition(&x, &y);
         }
         /*
         if(lastJoypad & J_START) {
@@ -317,7 +220,7 @@ void main() {
 
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
             //transition!
-            doMapTransition();
+            doMapTransition(&x, &y);
         }
         else {
             //move or collide

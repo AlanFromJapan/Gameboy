@@ -7,12 +7,19 @@
 #include "Map_BigRoom1.h"
 
 #include "graphics.h"
+#include <gb/drawing.h>
 
 //#include <gb/rand.h>
 #include <stdlib.h>
 
 //Flag defining which map we are in. Default is 0 (fixed rooms), or >=1 means various random maps.
 UINT8 mMapTransitionModeFlag=0;
+
+
+unsigned char *currentMap;
+unsigned int currentMapW_Tile = SCREEN_TILES_WIDTH;
+unsigned int currentMapH_Tile = SCREEN_TILES_HEIGHT;
+
 
 #define MAX(A,B)    ((A) > (B)? (A): (B))
 #define MIN(A,B)    ((A) < (B)? (A): (B))
@@ -170,7 +177,12 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
  * Generates a random map EMPTY
  * 
  */
-void makeRandomMap(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
+void makeRandomSingleRoom(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
+    
+    //clear the full dynmap, refresh the screen since this room will be less than 1 screen so remove garbage
+    clearDynmap(TILE_EMPTY);
+    set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
+
     //hero start point
     *x=16;
     *y=16;
@@ -290,6 +302,8 @@ inline void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile){
 
 }
 
+/* ============================================================================================================================================= */
+
 /**
  * When transition from a given map, by a transition at point x,y (MAP coordinate)
  * 
@@ -343,12 +357,8 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
         /* ---------------------------------------------------------------------------------------------- */
         case 2:
         default:
-            //clear the full dynmap, refresh the screen
-            clearDynmap(TILE_EMPTY);
-            set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
-
             //make a new map
-            makeRandomMap (map, x, y, wtile, htile);        
+            makeRandomSingleRoom (map, x, y, wtile, htile);        
 
             //stay on this type of map or alternate
             mMapTransitionModeFlag = 1 + (rand() & 0x01);
@@ -358,3 +368,98 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
     set_bkg_tiles(0, 0, *wtile, *htile, *map );
 }
 
+
+/**
+ * Map transition: small anim and load new bg
+ * 
+ */
+void doMapTransition(UINT8* x, UINT8* y){
+    HIDE_BKG;
+    delay (500);
+    HIDE_SPRITES;
+    delay (500);
+
+    //LOAD!
+    mapTransition(
+        &currentMap, 
+        x, 
+        y, 
+        &currentMapW_Tile, 
+        &currentMapH_Tile
+        );
+
+    if (currentMapW_Tile >= SCREEN_TILES_WIDTH) {
+        //if wider than a screen, align left
+        bgx=0;
+    }
+    else {
+
+        bgx = (GRAPHICS_WIDTH - currentMapW_Tile * 8) / 2 ;
+        x += bgx;
+        bgx = 255 - bgx;        
+    }
+    
+    if (currentMapH_Tile >= SCREEN_TILES_HEIGHT) {
+        //if taller than a screen, align top
+        bgy=0;
+    }
+    else {
+        //centers the new map vertically in the screen (no vertical scroll)
+        bgy = (GRAPHICS_HEIGHT - currentMapH_Tile * 8) / 2 ;
+        y += bgy;
+        bgy = 255 - bgy; 
+    }
+
+
+    SHOW_SPRITES;
+    delay (500);
+    SHOW_BKG;
+    delay (500);
+
+}
+
+
+/**
+ * Shows the first map at beginning, after is all transitions
+ */
+inline void showInitialMap(){
+    set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
+    currentMap = Map_Intro;
+    currentMapW_Tile = Map_Intro_WIDTH;
+    currentMapH_Tile = Map_Intro_HEIGHT;
+}
+
+
+
+/**
+ * Displays a fullscreen scroller for the story intro.
+ * 
+ */
+inline void showStartupScroller(){
+    HIDE_BKG;
+
+    mapMakeVerticalMessage(&currentMap, TILE_EMPTY);
+    currentMapW_Tile = SCREEN_TILES_WIDTH;
+    currentMapH_Tile = 32;
+
+    writetextBG(1,1, "Dans un future    lointain, le monde a ete ravage par une etrange maladie.Tous les humains ont disparu peu apeu, laissant une terre vide qui retomba petit a petitdans un monde moyenageux ou la  technologie a ete oubliee.");
+    writetextBG(1,14, "Notre hero part a la recherche de laverite, se basant sur des legendes  parlant d un mage qui vivait dans   une tour cachee   dans la foret...");
+
+    set_bkg_tiles(bgx, bgy, currentMapW_Tile, currentMapH_Tile, currentMap);
+
+    SHOW_BKG;
+    UINT8 vy =180;
+
+    while(1) {
+        
+        if (vy >= 180 || vy <100) {
+            move_bkg(0, vy++);
+            delay(100);
+        }
+        else {
+            delay(3000);
+            break;
+        }
+    }
+
+}

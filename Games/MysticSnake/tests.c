@@ -53,9 +53,9 @@ void test_windows() {
  */
 void showBigMapOutside(){
 
-    // mapTransition(Map_Outside1, )
-    // set_bkg_tiles(bgx, bgy, Map_Outside1_WIDTH, Map_Outside1_HEIGHT, Map_Outside1);
-    // currentMap = Map_Outside1;
-    // currentMapW_Tile = Map_Outside1_WIDTH;
-    // currentMapH_Tile = Map_Outside1_HEIGHT;
+    
+    set_bkg_tiles(bgx, bgy, Map_Outside1_WIDTH, Map_Outside1_HEIGHT, Map_Outside1);
+    currentMap = Map_Outside1;
+    currentMapW_Tile = Map_Outside1_WIDTH;
+    currentMapH_Tile = Map_Outside1_HEIGHT;
 }
