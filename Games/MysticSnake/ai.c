@@ -4,10 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SPRITE_MAX_COUNT 40
+//HOw many sprites a DMG can show
+#define SPRITE_MAX_COUNT    40
+//SLow down the AI to move/act only onces every nth times (one setting for all for now)
+#define AI_THROTTLE         10
 
 struct ai* currentMapAI = NULL;
 UINT8 currentMapAICount = 0;
+UINT8 aiThrottleCounter = 0;
 
 //Inits the currentMapAI with the proper AIs for this map
 void setMapAI(unsigned char* map){
@@ -42,5 +46,29 @@ void setMapAI(unsigned char* map){
 
         set_sprite_tile(2 + 2 * i, currentMapAI[i].tileID);
         set_sprite_tile(2 + 2 * i + 1 , currentMapAI[i].tileID+2); //+2 tile ID since it's stored NW SW NE SE
+    }
+}
+
+
+void moveAI(UINT8 herox, UINT8 heroy){
+    if (currentMapAI == NULL || currentMapAICount == 0){
+        return;
+    }
+
+    //slow down the AIs
+    aiThrottleCounter++;
+    if (aiThrottleCounter< AI_THROTTLE){
+        return;
+    }
+
+    //Ok time to do something
+    aiThrottleCounter = 0;
+
+    //Move
+    for (UINT8 i = 0; i < currentMapAICount; i++){
+        INT8 dx = - 1 + (rand() & 0x02);
+        INT8 dy = - 1 + (rand() & 0x02);
+        scroll_sprite(2 + 2 * i, dx, dy);
+        scroll_sprite(2 + 2 * i + 1, dx, dy);
     }
 }

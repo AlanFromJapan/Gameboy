@@ -15,5 +15,7 @@ extern struct ai* currentMapAI;
 
 void setMapAI(unsigned char* map);
 
+void moveAI(UINT8 herox, UINT8 heroy);
+
 #endif //__AI_H__
 

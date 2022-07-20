@@ -273,6 +273,9 @@ void main() {
                 }
 
             }
+
+            //Now AI's turn to move
+            moveAI(x, y);
         }
 
         //debouncing on the cheap
