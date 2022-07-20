@@ -82,3 +82,20 @@ void moveAI(UINT8 herox, UINT8 heroy){
         scroll_sprite(2 + 2 * i + 1, dx, dy);
     }
 }
+
+
+//If bg moved on bug map, need to reflect the impact on the sprites visible positions
+void backgroundMoveEventAI (INT8 dx, INT8 dy){
+    if (currentMapAI == NULL || currentMapAICount == 0){
+        return;
+    } 
+
+    //SCROLL the APPARENT position of the sprites
+    for (UINT8 i = 0; i < currentMapAICount; i++){
+        
+        //move insteda of scroll? 
+        //FIXME a bit buggy when big maps between the hero position apparent and on screen ...
+        scroll_sprite(2 + 2 * i, dx, dy);
+        scroll_sprite(2 + 2 * i + 1, dx, dy);
+    }
+}

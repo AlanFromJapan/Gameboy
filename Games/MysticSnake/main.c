@@ -233,13 +233,14 @@ void main() {
             if (dx > 0 && currentMapW_Tile * 8 > SCREENW && bgx < (currentMapW_Tile * 8 - SCREENW) &&  x > HSCROLLRIGHT) {
                 x--;
                 bgx ++;
-
+                backgroundMoveEventAI(-1, 0);
             }
             else {
                 //move bg Right ? only on big maps
                 if (currentMapW_Tile * 8 > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
                     x++;
                     bgx --;
+                    backgroundMoveEventAI(+1, 0);
                 }
             }
 
@@ -248,13 +249,14 @@ void main() {
             if (dy > 0 && currentMapH_Tile * 8 > SCREENH && bgy < (currentMapH_Tile * 8 - SCREENH) &&  y > VSCROLLBOTTOM) {
                 y--;
                 bgy ++;
-
+                backgroundMoveEventAI(0, -1);
             }
             else {
                 //move bg Down ? only on big maps
                 if (currentMapH_Tile * 8 > SCREENH && bgy > 0  &&  y < VSCROLLBOTTOM) {
                     y++;
                     bgy --;
+                    backgroundMoveEventAI(0, +1);
                 }
             }
 

@@ -17,5 +17,7 @@ void setMapAI(unsigned char* map);
 
 void moveAI(UINT8 herox, UINT8 heroy);
 
+void backgroundMoveEventAI (INT8 dx, INT8 dy);
+
 #endif //__AI_H__
 
