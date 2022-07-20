@@ -7,7 +7,7 @@
 //HOw many sprites a DMG can show
 #define SPRITE_MAX_COUNT    40
 //SLow down the AI to move/act only onces every nth times (one setting for all for now)
-#define AI_THROTTLE         10
+#define AI_THROTTLE         7
 
 struct ai* currentMapAI = NULL;
 UINT8 currentMapAICount = 0;
@@ -30,13 +30,18 @@ void setMapAI(unsigned char* map){
     }
 
     //for now just make 1
-    currentMapAICount = 1;
+    currentMapAICount = 2;
     currentMapAI = (struct ai*)malloc(sizeof(struct ai) * currentMapAICount);
 
     currentMapAI[0].hp = 2;
     currentMapAI[0].x = 60;
     currentMapAI[0].y = 60;
     currentMapAI[0].tileID = TILE_SNOWMAN_NW;
+
+    currentMapAI[1].hp = 4;
+    currentMapAI[1].x = 100;
+    currentMapAI[1].y = 100;
+    currentMapAI[1].tileID = TILE_DWARF_NW;
 
     for (UINT8 i = 0; i < currentMapAICount; i++){
         //start at 2 since sprite 0 & 1 are for main character
@@ -66,8 +71,13 @@ void moveAI(UINT8 herox, UINT8 heroy){
 
     //Move
     for (UINT8 i = 0; i < currentMapAICount; i++){
-        INT8 dx = - 1 + (rand() & 0x02);
-        INT8 dy = - 1 + (rand() & 0x02);
+        INT8 dx = herox < currentMapAI[i].x ? -1 : +1;
+        INT8 dy = heroy < currentMapAI[i].y ? -1 : +1;
+
+        currentMapAI[i].x = currentMapAI[i].x + dx;
+        currentMapAI[i].y = currentMapAI[i].y + dy;
+        
+        //move insteda of scroll?
         scroll_sprite(2 + 2 * i, dx, dy);
         scroll_sprite(2 + 2 * i + 1, dx, dy);
     }
