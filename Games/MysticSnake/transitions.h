@@ -14,7 +14,10 @@ extern unsigned int currentMapH_Tile;
 //Returns the background tile at XX,YY
 #define GET_BG_TILE(XX, YY)     (currentMap[(YY / 8) * currentMapW_Tile + (XX / 8)])
 
-
+/**
+ * When transition from a given map, by a transition at point x,y (MAP coordinate)
+ * 
+ */
 void mapTransition(UINT8 * * map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile);
 void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile);
 

@@ -17,6 +17,7 @@
 #include "graphics.h"
 #include "inputs.h"
 #include "windows.h"
+#include "ai.h"
 
 
 //#define SHOW_INTRO
@@ -221,6 +222,7 @@ void main() {
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
             //transition!
             doMapTransition(&x, &y);
+            setMapAI(currentMap);
         }
         else {
             //move or collide
