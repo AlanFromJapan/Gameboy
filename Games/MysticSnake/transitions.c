@@ -191,10 +191,10 @@ void makeRandomSingleRoom(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* 
     *map = dynmap;
     //W: up to 32, min 6
     dynmapW = ((UINT8)(rand() & 0x1f));
-    dynmapW = MAX(10, dynmapW);
-    //H: up to 8 min 6
-    dynmapH = 3 + ((UINT8)(rand() & 0x0f));//max 18
-    dynmapH = MAX(9, dynmapH);
+    dynmapW = MAX(8, dynmapW);
+    //H: up to 32 min 8
+    dynmapH = ((UINT8)(rand() & 0x1f));
+    dynmapH = MAX(8, dynmapH);
 
     *wtile = dynmapW;
     *htile = dynmapH;
@@ -395,7 +395,7 @@ void doMapTransition(UINT8* x, UINT8* y){
     else {
 
         bgx = (GRAPHICS_WIDTH - currentMapW_Tile * 8) / 2 ;
-        x += bgx;
+        *x += bgx;
         bgx = 255 - bgx;        
     }
     
@@ -406,7 +406,7 @@ void doMapTransition(UINT8* x, UINT8* y){
     else {
         //centers the new map vertically in the screen (no vertical scroll)
         bgy = (GRAPHICS_HEIGHT - currentMapH_Tile * 8) / 2 ;
-        y += bgy;
+        *y += bgy;
         bgy = 255 - bgy; 
     }
 
