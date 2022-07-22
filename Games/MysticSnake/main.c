@@ -36,6 +36,13 @@
 #define VSCROLLBOTTOM       (GRAPHICS_HEIGHT -32)
 
 
+#define HERO_LOOK_UP        0
+#define HERO_LOOK_DOWN      1
+#define HERO_LOOK_LEFT      2
+#define HERO_LOOK_RIGHT     3
+UINT8 heroLook = HERO_LOOK_DOWN;
+
+
 unsigned int x = 50;
 unsigned int y = 50;
 
@@ -194,15 +201,19 @@ void main() {
         lastJoypad = joypad();
         if(lastJoypad & J_RIGHT && x < SCREENW-8) {
             dx=1;
+            heroLook = HERO_LOOK_RIGHT;
         }
         if(lastJoypad & J_LEFT && x > 8) {
             dx = -1;
+            heroLook = HERO_LOOK_LEFT;
         }
         if(lastJoypad & J_UP && y > 16) {
             dy = -1;
+            heroLook = HERO_LOOK_UP;
         }
         if(lastJoypad & J_DOWN && y < SCREENH) {
             dy = 1;
+            heroLook = HERO_LOOK_DOWN;
         }
 
         //TEST
@@ -265,14 +276,70 @@ void main() {
             //moved? change appearance
             if (dx != 0 || dy != 0){
                 stepCount++;    
+                switch(heroLook){
+                    case HERO_LOOK_DOWN:
+                        //tile not in the right place: FIX ME move the tiles side by side , then rewrite all 
+                        if ((stepCount & 0x01) == 0){
+                            set_sprite_tile(0, TILE_HERO_NW);
+                            set_sprite_tile(1, TILE_HERO_NE);
+                        }
+                        else {
+                            set_sprite_tile(0, TILE_HERO2_NW);
+                            set_sprite_tile(1, TILE_HERO2_NE);
+                        }
+                        break;
 
-                if ((stepCount & 0x01) == 0){
-                    set_sprite_tile(0, TILE_HERO_NW);
-                    set_sprite_tile(1, TILE_HERO_NE);
+                    case HERO_LOOK_LEFT:
+                        if ((stepCount & 0x01) == 0){
+                            set_sprite_tile(0, TILE_HERO_LEFT_NW);
+                            set_sprite_tile(1, TILE_HERO_LEFT_NW + 2);
+                        }
+                        else {
+                            set_sprite_tile(0, TILE_HERO_LEFT_NW + 4);
+                            set_sprite_tile(1, TILE_HERO_LEFT_NW + 6);
+                        }
+                        break;
+
+                        
+                    case HERO_LOOK_UP:
+                        if ((stepCount & 0x01) == 0){
+                            set_sprite_tile(0, TILE_HERO_UP_NW);
+                            set_sprite_tile(1, TILE_HERO_UP_NW + 2);
+                        }
+                        else {
+                            set_sprite_tile(0, TILE_HERO_UP_NW + 4);
+                            set_sprite_tile(1, TILE_HERO_UP_NW + 6);
+                        }
+                        break;
+
+
+                    case HERO_LOOK_RIGHT:
+                        //use the LEFT tiles but swapped and then mirrored (next step)
+                        if ((stepCount & 0x01) == 0){
+                            set_sprite_tile(0, TILE_HERO_LEFT_NW + 2);
+                            set_sprite_tile(1, TILE_HERO_LEFT_NW );
+                        }
+                        else {
+                            set_sprite_tile(0, TILE_HERO_LEFT_NW + 6);
+                            set_sprite_tile(1, TILE_HERO_LEFT_NW + 4);
+                        }
+                        break;
                 }
-                else {
-                    set_sprite_tile(0, TILE_HERO2_NW);
-                    set_sprite_tile(1, TILE_HERO2_NE);
+
+
+
+                switch(heroLook){
+
+                    case HERO_LOOK_DOWN:
+                    case HERO_LOOK_UP:
+                    case HERO_LOOK_LEFT:
+                        set_sprite_prop(0, 0x00); //NO flip
+                        set_sprite_prop(1, 0x00); //NO flip
+                        break;
+                    case HERO_LOOK_RIGHT:
+                        set_sprite_prop(0, 0x20); //Flip L/R
+                        set_sprite_prop(1, 0x20); //Flip L/R
+                        break;
                 }
 
             }
