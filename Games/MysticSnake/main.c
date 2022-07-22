@@ -221,6 +221,7 @@ void main() {
 
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
             //transition!
+            clearAllAI();
             doMapTransition(&x, &y);
             setMapAI(currentMap);
         }

@@ -13,21 +13,29 @@ struct ai* currentMapAI = NULL;
 UINT8 currentMapAICount = 0;
 UINT8 aiThrottleCounter = 0;
 
-//Inits the currentMapAI with the proper AIs for this map
-void setMapAI(unsigned char* map){
+//Removes all the AI (in memory and onscreen sprites)
+void clearAllAI(){
     if (currentMapAI != NULL){
         //hide the previous AIs
         for (UINT8 i = 0; i < currentMapAICount; i++){
             //start at 2 since sprite 0 & 1 are for main character
             //go 2 by 2 sine one character is 2 sprites
-            set_sprite_tile(2 + 2 * i, TILE_EMPTY);
-            set_sprite_tile(2 + 2 * i + 1, TILE_EMPTY);
+            
+            //taken from gbdk-2020 : move the sprite off the screen is the fastest way to hide it: so be it!
+            move_sprite(2 + 2 * i, 255, 255);
+            move_sprite(2 + 2 * i +1, 255, 255);
         }
 
         free(currentMapAI);
         currentMapAI = NULL;
         currentMapAICount = 0;
     }
+}
+
+//Inits the currentMapAI with the proper AIs for this map
+void setMapAI(unsigned char* map){
+    //in case
+    clearAllAI();  
 
     //for now just make 1
     currentMapAICount = 2;
@@ -54,7 +62,7 @@ void setMapAI(unsigned char* map){
     }
 }
 
-
+//Moves each AI 
 void moveAI(UINT8 herox, UINT8 heroy){
     if (currentMapAI == NULL || currentMapAICount == 0){
         return;
@@ -93,7 +101,7 @@ void backgroundMoveEventAI (INT8 dx, INT8 dy){
     //SCROLL the APPARENT position of the sprites
     for (UINT8 i = 0; i < currentMapAICount; i++){
         
-        //move insteda of scroll? 
+        //move instead of scroll? 
         //FIXME a bit buggy when big maps between the hero position apparent and on screen ...
         scroll_sprite(2 + 2 * i, dx, dy);
         scroll_sprite(2 + 2 * i + 1, dx, dy);
