@@ -332,7 +332,7 @@ void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
                 (*map).data = Map_Room1;
                 (*map).tilesW = Map_Room1_WIDTH;
                 (*map).tilesH = Map_Room1_HEIGHT;
-                (*map).floorTile = TILE_EMPTY;
+                (*map).floorTile = TILE_SAND;
 
                 //mMapTransitionModeFlag = 1; //stay out of the random map loop
                 break;
@@ -345,7 +345,7 @@ void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
                 (*map).data = Map_BigRoom1;
                 (*map).tilesW = Map_BigRoom1_WIDTH;
                 (*map).tilesH = Map_BigRoom1_HEIGHT;
-                (*map).floorTile = TILE_SAND;
+                (*map).floorTile = TILE_EMPTY;
 
                 //From that point on move to random maps (set flag to 1)
                 mMapTransitionModeFlag = 1;

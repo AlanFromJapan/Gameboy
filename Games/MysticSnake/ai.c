@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 //HOw many sprites a DMG can show
 #define SPRITE_MAX_COUNT    40
 //SLow down the AI to move/act only onces every nth times (one setting for all for now)
@@ -33,6 +34,30 @@ void clearAllAI(){
     }
 }
 
+//finds a proper random position for the ai to start (In the map and on the floor)
+void setAIRandomPosition (struct ai* ai, struct map* map) {
+    while (1){
+        UINT8 x, y;
+
+        x = rand();
+        y = rand();
+        (*ai).x = x;
+        (*ai).y = y;
+
+        //in the map (avoid the border for it's most likely a wall)
+        if (x > 8 && x < ((*map).tilesW -2) * 8 && y > 8 && y < ((*map).tilesH -2) * 8){
+            //map to tiles => div by 8 => shift right by 3
+            x = x / 8;
+            y = y / 8;
+            //from here x and y are in TILES not pixels
+            if ((*map).data [y * ((*map).tilesW) + x] == (*map).floorTile)
+                //the floor is free, accept otherwise try again
+                break;
+        }
+    }
+
+}
+
 //Inits the currentMapAI with the proper AIs for this map
 void setMapAI(struct map* map){
     //in case
@@ -43,16 +68,15 @@ void setMapAI(struct map* map){
     currentMapAI = (struct ai*)malloc(sizeof(struct ai) * currentMapAICount);
 
     currentMapAI[0].hp = 2;
-    currentMapAI[0].x = 60;
-    currentMapAI[0].y = 60;
     currentMapAI[0].tileID = TILE_SNOWMAN_NW;
 
     currentMapAI[1].hp = 4;
-    currentMapAI[1].x = 100;
-    currentMapAI[1].y = 100;
     currentMapAI[1].tileID = TILE_DWARF_NW;
 
     for (UINT8 i = 0; i < currentMapAICount; i++){
+        //set the ai somewhere the floor is free within the room
+        setAIRandomPosition (&(currentMapAI[i]), map);
+
         //start at 2 since sprite 0 & 1 are for main character
         //go 2 by 2 sine one character is 2 sprites
         move_sprite(2 + 2 * i, currentMapAI[i].x, currentMapAI[i].y);
