@@ -92,6 +92,7 @@ UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
 
     UINT8 tile = GET_BG_TILE(nx, ny);
 
+    //OPTIMIZATION: put all the collision tiles at begining or end of tile list and just make a > or < instead
     unsigned int i =0;
     for (; i < COLLISION_TILE_LEN; i++){
         if (tile == COLLISION_TILE[i]){
