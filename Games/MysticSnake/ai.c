@@ -1,6 +1,7 @@
 #include "ai.h"
 #include "my_lib01.h"
 #include "maps.h"
+#include "graphics.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,15 +105,18 @@ void moveAI(UINT8 herox, UINT8 heroy){
 
     //Move
     for (UINT8 i = 0; i < currentMapAICount; i++){
-        INT8 dx = herox < currentMapAI[i].x ? -1 : +1;
-        INT8 dy = heroy < currentMapAI[i].y ? -1 : +1;
+        INT16 dx = (herox + bgx) < currentMapAI[i].x ? -1 : +1;
+        INT8 dy = (heroy + bgy) < currentMapAI[i].y ? -1 : +1;
 
-        currentMapAI[i].x = currentMapAI[i].x + dx;
+        currentMapAI[i].x = (UINT8)(((INT16)currentMapAI[i].x) + dx);
         currentMapAI[i].y = currentMapAI[i].y + dy;
         
-        //move insteda of scroll?
-        scroll_sprite(2 + 2 * i, dx, dy);
-        scroll_sprite(2 + 2 * i + 1, dx, dy);
+        //move instead of scroll?
+//        scroll_sprite(2 + 2 * i, dx, dy);
+//        scroll_sprite(2 + 2 * i + 1, dx, dy);
+
+        move_sprite(2 + 2 * i, currentMapAI[i].x - bgx, currentMapAI[i].y - bgy);
+        move_sprite(2 + 2 * i + 1, currentMapAI[i].x - bgx + 8, currentMapAI[i].y - bgy);
     }
 }
 
@@ -128,7 +132,7 @@ void backgroundMoveEventAI (INT8 dx, INT8 dy){
         
         //move instead of scroll? 
         //FIXME a bit buggy when big maps between the hero position apparent and on screen ...
-        scroll_sprite(2 + 2 * i, dx, dy);
-        scroll_sprite(2 + 2 * i + 1, dx, dy);
+        move_sprite(2 + 2 * i, currentMapAI[i].x - bgx, currentMapAI[i].y - bgy);
+        move_sprite(2 + 2 * i + 1, currentMapAI[i].x - bgx + 8, currentMapAI[i].y - bgy);
     }
 }
