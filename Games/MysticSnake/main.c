@@ -176,7 +176,7 @@ void main() {
             }
             else {
                 //move bg Right ? only on big maps
-                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  hero.x < HSCROLLRIGHT) {
+                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  hero.x < HSCROLLLEFT) {
                     hero.x++;
                     bgx --;
                     backgroundMoveEventAI();
@@ -192,7 +192,7 @@ void main() {
             }
             else {
                 //move bg Down ? only on big maps
-                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  &&  hero.y < VSCROLLBOTTOM) {
+                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  &&  hero.y < VSCROLLTOP) {
                     hero.y++;
                     bgy --;
                     backgroundMoveEventAI();
