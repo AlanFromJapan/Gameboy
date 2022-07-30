@@ -2,7 +2,7 @@
 #define __AI_H__
 
 #include <gb/gb.h>
-
+#include "maps.h"
 
 struct ai {
     UINT8 tileID;
@@ -17,7 +17,7 @@ extern struct ai* currentMapAI;
 void clearAllAI();
 
 //Inits the currentMapAI with the proper AIs for this map
-void setMapAI(unsigned char* map);
+void setMapAI(struct map* map);
 
 //Moves each AI 
 void moveAI(UINT8 herox, UINT8 heroy);

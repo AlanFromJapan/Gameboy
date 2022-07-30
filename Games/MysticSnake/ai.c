@@ -1,5 +1,6 @@
 #include "ai.h"
 #include "my_lib01.h"
+#include "maps.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,7 +34,7 @@ void clearAllAI(){
 }
 
 //Inits the currentMapAI with the proper AIs for this map
-void setMapAI(unsigned char* map){
+void setMapAI(struct map* map){
     //in case
     clearAllAI();  
 

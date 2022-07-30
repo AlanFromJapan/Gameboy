@@ -10,6 +10,7 @@
 #include <gb/gb.h>
 #include <gb/drawing.h>
 
+#include "maps.h"
 #include "my_lib01.h"
 #include "Map_Intro.h"
 #include "Map_Title.h"
@@ -18,7 +19,6 @@
 #include "inputs.h"
 #include "windows.h"
 #include "ai.h"
-
 
 //#define SHOW_INTRO
 
@@ -234,7 +234,7 @@ void main() {
             //transition!
             clearAllAI();
             doMapTransition(&x, &y);
-            setMapAI(currentMap);
+            setMapAI(&currentMap);
         }
         else {
             //move or collide
@@ -242,14 +242,14 @@ void main() {
             y += dy;
 
             //move bg Left ? only on big maps
-            if (dx > 0 && currentMapW_Tile * 8 > SCREENW && bgx < (currentMapW_Tile * 8 - SCREENW) &&  x > HSCROLLRIGHT) {
+            if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  x > HSCROLLRIGHT) {
                 x--;
                 bgx ++;
                 backgroundMoveEventAI(-1, 0);
             }
             else {
                 //move bg Right ? only on big maps
-                if (currentMapW_Tile * 8 > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
+                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
                     x++;
                     bgx --;
                     backgroundMoveEventAI(+1, 0);
@@ -258,14 +258,14 @@ void main() {
 
 
             //move bg Up ? only on big maps
-            if (dy > 0 && currentMapH_Tile * 8 > SCREENH && bgy < (currentMapH_Tile * 8 - SCREENH) &&  y > VSCROLLBOTTOM) {
+            if (dy > 0 && currentMap.tilesH * 8 > SCREENH && bgy < (currentMap.tilesH * 8 - SCREENH) &&  y > VSCROLLBOTTOM) {
                 y--;
                 bgy ++;
                 backgroundMoveEventAI(0, -1);
             }
             else {
                 //move bg Down ? only on big maps
-                if (currentMapH_Tile * 8 > SCREENH && bgy > 0  &&  y < VSCROLLBOTTOM) {
+                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  &&  y < VSCROLLBOTTOM) {
                     y++;
                     bgy --;
                     backgroundMoveEventAI(0, +1);

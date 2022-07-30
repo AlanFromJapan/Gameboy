@@ -11,14 +11,12 @@
 
 //#include <gb/rand.h>
 #include <stdlib.h>
+#include "maps.h"
 
 //Flag defining which map we are in. Default is 0 (fixed rooms), or >=1 means various random maps.
 UINT8 mMapTransitionModeFlag=0;
 
 
-unsigned char *currentMap;
-unsigned int currentMapW_Tile = SCREEN_TILES_WIDTH;
-unsigned int currentMapH_Tile = SCREEN_TILES_HEIGHT;
 
 
 #define MAX(A,B)    ((A) > (B)? (A): (B))
@@ -33,7 +31,7 @@ const UINT8 _RoomDecorations[] = {TILE_PENTAGRAM_NW, TILE_TABLE_NW, TILE_MARBLE_
  * Generates a random map with rooms
  * 
  */
-void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
+void makeRandomMapRooms(struct map* map, UINT8* herox, UINT8* heroy){
     UINT8 gnd = 0;
     UINT8 vx ;
     UINT8 vy ;
@@ -44,16 +42,16 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
     UINT8 prevCenterY;
 
     //hero start point
-    *x=16;
-    *y=16;
+    *herox=16;
+    *heroy=16;
 
     //Map size
-    *map = dynmap;
+    (*map).data = dynmap;
     dynmapW = 32;
     dynmapH = 32;
 
-    *wtile = dynmapW;
-    *htile = dynmapH;
+    (*map).tilesW = dynmapW;
+    (*map).tilesH = dynmapH;
 
     //fill with walls
     clearDynmap(TILE_TOWER_3);
@@ -70,6 +68,8 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
             gnd = TILE_EMPTY;
             break;        
     }
+    //memorize
+    (*map).floorTile = gnd;
 
     //Make start room
     for (UINT8 i = 1; i <= 5; i++){
@@ -177,18 +177,19 @@ void makeRandomMapRooms(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* ht
  * Generates a random map EMPTY
  * 
  */
-void makeRandomSingleRoom(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
-    
+void makeRandomSingleRoom(struct map* map, UINT8* herox, UINT8* heroy){
+    UINT8 gnd = 0;
+
     //clear the full dynmap, refresh the screen since this room will be less than 1 screen so remove garbage
     clearDynmap(TILE_EMPTY);
     set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
 
     //hero start point
-    *x=16;
-    *y=16;
+    *herox=16;
+    *heroy=16;
 
     //Map size
-    *map = dynmap;
+    (*map).data = dynmap;
     //W: up to 32, min 6
     dynmapW = ((UINT8)(rand() & 0x1f));
     dynmapW = MAX(8, dynmapW);
@@ -196,22 +197,27 @@ void makeRandomSingleRoom(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* 
     dynmapH = ((UINT8)(rand() & 0x1f));
     dynmapH = MAX(8, dynmapH);
 
-    *wtile = dynmapW;
-    *htile = dynmapH;
+    (*map).tilesW = dynmapW;
+    (*map).tilesH = dynmapH;
 
-    //make the ground
+    //pick the ground
     switch (rand() & 0x03) {
         case 0:
-            clearDynmap(TILE_SAND);
+            gnd = TILE_SAND;
             break;
         case 1:
-            clearDynmap(TILE_GRASS_1);
+            gnd = TILE_GRASS_1;
             break;
         default:
-            clearDynmap(TILE_EMPTY);
+            gnd = TILE_EMPTY;
             break;
         
     }
+    //apply ground
+    clearDynmap(gnd);
+    //memorize
+    (*map).floorTile = gnd;
+
 
     //put some decorations
     UINT8 vx ;
@@ -292,11 +298,14 @@ void makeRandomSingleRoom(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* 
  * Makes a map 20w x 32h filled with bgTile
  * 
  */
-inline void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile){
+inline void mapMakeVerticalMessage (struct map* map, UINT8 bgTile){
 
-    *map = dynmap;
+    (*map).data = dynmap;
     dynmapW = 20;
     dynmapH = 32;
+    (*map).tilesW = dynmapW;
+    (*map).tilesH = dynmapH;
+    (*map).floorTile = bgTile;
 
     clearDynmap(bgTile);
 
@@ -308,7 +317,7 @@ inline void mapMakeVerticalMessage (UINT8 * * map, UINT8 bgTile){
  * When transition from a given map, by a transition at point x,y (MAP coordinate)
  * 
  */
-void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
+void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
     switch(mMapTransitionModeFlag){
         /* ---------------------------------------------------------------------------------------------- */
         case 0:
@@ -316,25 +325,27 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
                 mMapTransitionModeFlag == 0 : we're in the STATIC transition mode. Predefined order of move between rooms. 
                 Hardcoding now, todo rewrite as a static array of transitions later if more rooms.
             */
-            if (*map == Map_Intro){
+            if ((*map).data == Map_Intro){
                 //Intro -> enter in Room1
-                *x=16;
-                *y=32;
-                *map = Map_Room1;
-                *wtile = Map_Room1_WIDTH;
-                *htile = Map_Room1_HEIGHT;
+                *herox=16;
+                *heroy=32;
+                (*map).data = Map_Room1;
+                (*map).tilesW = Map_Room1_WIDTH;
+                (*map).tilesH = Map_Room1_HEIGHT;
+                (*map).floorTile = TILE_EMPTY;
 
                 //mMapTransitionModeFlag = 1; //stay out of the random map loop
                 break;
             }
 
-            if (*map == Map_Room1) {
+            if ((*map).data == Map_Room1) {
                 //Room1 -> BigRoom1
-                *x=16;
-                *y=16;
-                *map = Map_BigRoom1;
-                *wtile = Map_BigRoom1_WIDTH;
-                *htile = Map_BigRoom1_HEIGHT;
+                *herox=16;
+                *heroy=16;
+                (*map).data = Map_BigRoom1;
+                (*map).tilesW = Map_BigRoom1_WIDTH;
+                (*map).tilesH = Map_BigRoom1_HEIGHT;
+                (*map).floorTile = TILE_SAND;
 
                 //From that point on move to random maps (set flag to 1)
                 mMapTransitionModeFlag = 1;
@@ -350,7 +361,7 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
         /* ---------------------------------------------------------------------------------------------- */
         case 1:
             //make a new map with rooms
-            makeRandomMapRooms (map, x, y, wtile, htile);        
+            makeRandomMapRooms (map, herox, heroy);        
             //stay on this type of map or alternate
             mMapTransitionModeFlag = 1 + (rand() & 0x01);
             break;
@@ -358,14 +369,14 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
         case 2:
         default:
             //make a new map
-            makeRandomSingleRoom (map, x, y, wtile, htile);        
+            makeRandomSingleRoom (map, herox, heroy);        
 
             //stay on this type of map or alternate
             mMapTransitionModeFlag = 1 + (rand() & 0x01);
             break;
     }
 
-    set_bkg_tiles(0, 0, *wtile, *htile, *map );
+    set_bkg_tiles(0, 0, (*map).tilesW, (*map).tilesH, (*map).data );
 }
 
 
@@ -373,7 +384,7 @@ void mapTransition(UINT8** map, UINT8* x, UINT8* y, UINT8* wtile, UINT8* htile){
  * Map transition: small anim and load new bg
  * 
  */
-void doMapTransition(UINT8* x, UINT8* y){
+void doMapTransition(UINT8* herox, UINT8* heroy){
     HIDE_BKG;
     delay (500);
     HIDE_SPRITES;
@@ -382,31 +393,29 @@ void doMapTransition(UINT8* x, UINT8* y){
     //LOAD!
     mapTransition(
         &currentMap, 
-        x, 
-        y, 
-        &currentMapW_Tile, 
-        &currentMapH_Tile
+        herox, 
+        heroy
         );
 
-    if (currentMapW_Tile >= SCREEN_TILES_WIDTH) {
+    if (currentMap.tilesW >= SCREEN_TILES_WIDTH) {
         //if wider than a screen, align left
         bgx=0;
     }
     else {
 
-        bgx = (GRAPHICS_WIDTH - currentMapW_Tile * 8) / 2 ;
-        *x += bgx;
+        bgx = (GRAPHICS_WIDTH - currentMap.tilesW * 8) / 2 ;
+        *herox += bgx;
         bgx = 255 - bgx;        
     }
     
-    if (currentMapH_Tile >= SCREEN_TILES_HEIGHT) {
+    if (currentMap.tilesH >= SCREEN_TILES_HEIGHT) {
         //if taller than a screen, align top
         bgy=0;
     }
     else {
         //centers the new map vertically in the screen (no vertical scroll)
-        bgy = (GRAPHICS_HEIGHT - currentMapH_Tile * 8) / 2 ;
-        *y += bgy;
+        bgy = (GRAPHICS_HEIGHT - currentMap.tilesH * 8) / 2 ;
+        *heroy += bgy;
         bgy = 255 - bgy; 
     }
 
@@ -424,9 +433,10 @@ void doMapTransition(UINT8* x, UINT8* y){
  */
 inline void showInitialMap(){
     set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
-    currentMap = Map_Intro;
-    currentMapW_Tile = Map_Intro_WIDTH;
-    currentMapH_Tile = Map_Intro_HEIGHT;
+    currentMap.data = Map_Intro;
+    currentMap.tilesW = Map_Intro_WIDTH;
+    currentMap.tilesH = Map_Intro_HEIGHT;
+    currentMap.floorTile = TILE_EMPTY;
 }
 
 
@@ -439,13 +449,13 @@ inline void showStartupScroller(){
     HIDE_BKG;
 
     mapMakeVerticalMessage(&currentMap, TILE_EMPTY);
-    currentMapW_Tile = SCREEN_TILES_WIDTH;
-    currentMapH_Tile = 32;
+    currentMap.tilesW = SCREEN_TILES_WIDTH;
+    currentMap.tilesH = 32;
 
     writetextBG(1,1, "Dans un future    lointain, le monde a ete ravage par une etrange maladie.Tous les humains ont disparu peu apeu, laissant une terre vide qui retomba petit a petitdans un monde moyenageux ou la  technologie a ete oubliee.");
     writetextBG(1,14, "Notre hero part a la recherche de laverite, se basant sur des legendes  parlant d un mage qui vivait dans   une tour cachee   dans la foret...");
 
-    set_bkg_tiles(bgx, bgy, currentMapW_Tile, currentMapH_Tile, currentMap);
+    set_bkg_tiles(bgx, bgy, currentMap.tilesW, currentMap.tilesH, currentMap.data);
 
     SHOW_BKG;
     UINT8 vy =180;
