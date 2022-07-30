@@ -12,6 +12,7 @@
 //#include <gb/rand.h>
 #include <stdlib.h>
 #include "maps.h"
+#include "hero.h"
 
 //Flag defining which map we are in. Default is 0 (fixed rooms), or >=1 means various random maps.
 UINT8 mMapTransitionModeFlag=0;
@@ -31,7 +32,7 @@ const UINT8 _RoomDecorations[] = {TILE_PENTAGRAM_NW, TILE_TABLE_NW, TILE_MARBLE_
  * Generates a random map with rooms in a 32x32 tiles room
  * 
  */
-void makeRandomMapRooms(struct map* map, UINT8* herox, UINT8* heroy){
+void makeRandomMapRooms(struct map* map){
     UINT8 gnd = 0;
     UINT8 vx ;
     UINT8 vy ;
@@ -42,8 +43,8 @@ void makeRandomMapRooms(struct map* map, UINT8* herox, UINT8* heroy){
     UINT8 prevCenterY;
 
     //hero start point
-    *herox=16;
-    *heroy=16;
+    hero.x=16;
+    hero.y=16;
 
     //Map size
     (*map).data = dynmap;
@@ -177,7 +178,7 @@ void makeRandomMapRooms(struct map* map, UINT8* herox, UINT8* heroy){
  * Generates a random map EMPTY
  * 
  */
-void makeRandomSingleRoom(struct map* map, UINT8* herox, UINT8* heroy){
+void makeRandomSingleRoom(struct map* map){
     UINT8 gnd = 0;
 
     //clear the full dynmap, refresh the screen since this room will be less than 1 screen so remove garbage
@@ -185,8 +186,8 @@ void makeRandomSingleRoom(struct map* map, UINT8* herox, UINT8* heroy){
     set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
 
     //hero start point
-    *herox=16;
-    *heroy=16;
+    hero.x=16;
+    hero.y=16;
 
     //Map size
     (*map).data = dynmap;
@@ -317,7 +318,7 @@ inline void mapMakeVerticalMessage (struct map* map, UINT8 bgTile){
  * When transition from a given map, by a transition at point x,y (MAP coordinate)
  * 
  */
-void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
+void mapTransition(struct map* map){
     switch(mMapTransitionModeFlag){
         /* ---------------------------------------------------------------------------------------------- */
         case 0:
@@ -327,8 +328,8 @@ void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
             */
             if ((*map).data == Map_Intro){
                 //Intro -> enter in Room1
-                *herox=16;
-                *heroy=32;
+                hero.x=16;
+                hero.y=32;
                 (*map).data = Map_Room1;
                 (*map).tilesW = Map_Room1_WIDTH;
                 (*map).tilesH = Map_Room1_HEIGHT;
@@ -340,8 +341,8 @@ void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
 
             if ((*map).data == Map_Room1) {
                 //Room1 -> BigRoom1
-                *herox=16;
-                *heroy=16;
+                hero.x=16;
+                hero.y=16;
                 (*map).data = Map_BigRoom1;
                 (*map).tilesW = Map_BigRoom1_WIDTH;
                 (*map).tilesH = Map_BigRoom1_HEIGHT;
@@ -361,7 +362,7 @@ void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
         /* ---------------------------------------------------------------------------------------------- */
         case 1:
             //make a new map with rooms
-            makeRandomMapRooms (map, herox, heroy);        
+            makeRandomMapRooms (map);        
             //stay on this type of map or alternate
             mMapTransitionModeFlag = 1 + (rand() & 0x01);
             break;
@@ -369,7 +370,7 @@ void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
         case 2:
         default:
             //make a new map
-            makeRandomSingleRoom (map, herox, heroy);        
+            makeRandomSingleRoom (map);        
 
             //stay on this type of map or alternate
             mMapTransitionModeFlag = 1 + (rand() & 0x01);
@@ -384,18 +385,14 @@ void mapTransition(struct map* map, UINT8* herox, UINT8* heroy){
  * Map transition: small anim and load new bg
  * 
  */
-void doMapTransition(UINT8* herox, UINT8* heroy){
+void doMapTransition(){
     HIDE_BKG;
     delay (500);
     HIDE_SPRITES;
     delay (500);
 
     //LOAD!
-    mapTransition(
-        &currentMap, 
-        herox, 
-        heroy
-        );
+    mapTransition(&currentMap);
 
     if (currentMap.tilesW >= SCREEN_TILES_WIDTH) {
         //if wider than a screen, align left
@@ -404,7 +401,7 @@ void doMapTransition(UINT8* herox, UINT8* heroy){
     else {
 
         bgx = (GRAPHICS_WIDTH - currentMap.tilesW * 8) / 2 ;
-        *herox += bgx;
+        hero.x += bgx;
         bgx = 255 - bgx;        
     }
     
@@ -415,7 +412,7 @@ void doMapTransition(UINT8* herox, UINT8* heroy){
     else {
         //centers the new map vertically in the screen (no vertical scroll)
         bgy = (GRAPHICS_HEIGHT - currentMap.tilesH * 8) / 2 ;
-        *heroy += bgy;
+        hero.y += bgy;
         bgy = 255 - bgy; 
     }
 

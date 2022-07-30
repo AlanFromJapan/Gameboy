@@ -20,7 +20,7 @@ void clearAllAI();
 void setMapAI(struct map* map);
 
 //Moves each AI 
-void moveAI(UINT8 herox, UINT8 heroy);
+void moveAI();
 
 //If bg moved on bug map, need to reflect the impact on the sprites visible positions
 void backgroundMoveEventAI ();

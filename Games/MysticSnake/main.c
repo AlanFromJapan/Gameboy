@@ -71,8 +71,8 @@ UINT8 lastMoveCheck = MOVE_CHECK_OK;
  */
 UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
     //x,y are in the bottom-middle of the Sprite
-    UINT8 nx = GET_MAP_X(*dx);
-    UINT8 ny = GET_MAP_Y(*dy);
+    UINT8 nx = GET_MAP_X(hero.x, *dx);
+    UINT8 ny = GET_MAP_Y(hero.y, *dy);
 
     UINT8 tile = GET_BG_TILE(nx, ny);
 
@@ -218,7 +218,7 @@ void main() {
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
             //transition!
             clearAllAI();
-            doMapTransition(&hero.x, &hero.y);
+            doMapTransition();
             setMapAI(&currentMap);
         }
         else {
@@ -330,7 +330,7 @@ void main() {
             }
 
             //Now AI's turn to move
-            moveAI(hero.x, hero.y);
+            moveAI();
         }
 
         //debouncing on the cheap

@@ -13,14 +13,14 @@
  * When transition from a given map, by a transition at point x,y (MAP coordinate)
  * 
  */
-void mapTransition(struct map* map, UINT8* herox, UINT8* heroy);
+void mapTransition(struct map* map);
 void mapMakeVerticalMessage(struct map* map, UINT8 bgTile);
 
 /**
  * Map transition: small anim and load new bg
  * 
  */
-void doMapTransition(UINT8* herox, UINT8* heroy);
+void doMapTransition();
 void showInitialMap();
 void showStartupScroller();
 

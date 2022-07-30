@@ -21,8 +21,8 @@ extern struct hero hero;
 #define MV_HERO()    move_sprite(0, hero.x, hero.y); move_sprite(1, hero.x+8, hero.y);
 
 //Returns the position of the player on the map (different than on the screen!)
-#define GET_MAP_X(dx)   (bgx + hero.x + (dx * (INT8)8)) /* +8 because x is in the middle of the 16x16 */
-#define GET_MAP_Y(dy)   (bgy + hero.y + dy -8) /* -8 to put the collision detection center of the body */
+#define GET_MAP_X(x, dx)   (bgx + x + (dx * (INT8)8)) /* +8 because x is in the middle of the 16x16 */
+#define GET_MAP_Y(y, dy)   (bgy + y + dy -8) /* -8 to put the collision detection center of the body */
 
 
 

@@ -3,6 +3,8 @@
 #include "maps.h"
 #include "graphics.h"
 
+#include "hero.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -86,7 +88,7 @@ void setMapAI(struct map* map){
 }
 
 //Moves each AI 
-void moveAI(UINT8 herox, UINT8 heroy){
+void moveAI(){
     if (currentMapAI == NULL || currentMapAICount == 0){
         return;
     }
@@ -106,15 +108,15 @@ void moveAI(UINT8 herox, UINT8 heroy){
 
         //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
         if (bgx > 160)
-            dx = (herox - (255 - bgx)) < currentMapAI[i].x ? -1 : +1;
+            dx = (hero.x - (255 - bgx)) < currentMapAI[i].x ? -1 : +1;
         else
-            dx = (herox + bgx) < currentMapAI[i].x ? -1 : +1;
+            dx = (hero.x + bgx) < currentMapAI[i].x ? -1 : +1;
 
         //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
         if (bgy > 160)
-            dy = (heroy - (255 - bgy)) < currentMapAI[i].y ? -1 : +1;
+            dy = (hero.y - (255 - bgy)) < currentMapAI[i].y ? -1 : +1;
         else 
-            dy = (heroy + bgy) < currentMapAI[i].y ? -1 : +1;
+            dy = (hero.y + bgy) < currentMapAI[i].y ? -1 : +1;
 
         currentMapAI[i].x = currentMapAI[i].x + dx;
         currentMapAI[i].y = currentMapAI[i].y + dy;
