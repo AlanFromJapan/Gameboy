@@ -103,18 +103,28 @@ void moveAI(UINT8 herox, UINT8 heroy){
     //Ok time to do something
     aiThrottleCounter = 0;
 
-    //Move
+    //Calculate new position 
     for (UINT8 i = 0; i < currentMapAICount; i++){
-        INT8 dx = (herox + bgx) < currentMapAI[i].x ? -1 : +1;
-        INT8 dy = (heroy + bgy) < currentMapAI[i].y ? -1 : +1;
+        INT8 dx, dy;
+
+        //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
+        if (bgx > 160)
+            dx = (herox - (255 - bgx)) < currentMapAI[i].x ? -1 : +1;
+        else
+            dx = (herox + bgx) < currentMapAI[i].x ? -1 : +1;
+
+        //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
+        if (bgy > 160)
+            dy = (heroy - (255 - bgy)) < currentMapAI[i].y ? -1 : +1;
+        else 
+            dy = (heroy + bgy) < currentMapAI[i].y ? -1 : +1;
 
         currentMapAI[i].x = currentMapAI[i].x + dx;
         currentMapAI[i].y = currentMapAI[i].y + dy;
-        
-        //move taking account of background offset
-        move_sprite(2 + 2 * i, currentMapAI[i].x - bgx, currentMapAI[i].y - bgy);
-        move_sprite(2 + 2 * i + 1, currentMapAI[i].x - bgx + 8, currentMapAI[i].y - bgy);
     }
+
+    //Move the sprites
+    backgroundMoveEventAI ();
 }
 
 
