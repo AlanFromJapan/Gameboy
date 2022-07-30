@@ -105,16 +105,13 @@ void moveAI(UINT8 herox, UINT8 heroy){
 
     //Move
     for (UINT8 i = 0; i < currentMapAICount; i++){
-        INT16 dx = (herox + bgx) < currentMapAI[i].x ? -1 : +1;
+        INT8 dx = (herox + bgx) < currentMapAI[i].x ? -1 : +1;
         INT8 dy = (heroy + bgy) < currentMapAI[i].y ? -1 : +1;
 
-        currentMapAI[i].x = (UINT8)(((INT16)currentMapAI[i].x) + dx);
+        currentMapAI[i].x = currentMapAI[i].x + dx;
         currentMapAI[i].y = currentMapAI[i].y + dy;
         
-        //move instead of scroll?
-//        scroll_sprite(2 + 2 * i, dx, dy);
-//        scroll_sprite(2 + 2 * i + 1, dx, dy);
-
+        //move taking account of background offset
         move_sprite(2 + 2 * i, currentMapAI[i].x - bgx, currentMapAI[i].y - bgy);
         move_sprite(2 + 2 * i + 1, currentMapAI[i].x - bgx + 8, currentMapAI[i].y - bgy);
     }
@@ -122,16 +119,14 @@ void moveAI(UINT8 herox, UINT8 heroy){
 
 
 //If bg moved on bug map, need to reflect the impact on the sprites visible positions
-void backgroundMoveEventAI (INT8 dx, INT8 dy){
+void backgroundMoveEventAI (){
     if (currentMapAI == NULL || currentMapAICount == 0){
         return;
     } 
 
     //SCROLL the APPARENT position of the sprites
     for (UINT8 i = 0; i < currentMapAICount; i++){
-        
-        //move instead of scroll? 
-        //FIXME a bit buggy when big maps between the hero position apparent and on screen ...
+        //move taking account of background offset
         move_sprite(2 + 2 * i, currentMapAI[i].x - bgx, currentMapAI[i].y - bgy);
         move_sprite(2 + 2 * i + 1, currentMapAI[i].x - bgx + 8, currentMapAI[i].y - bgy);
     }

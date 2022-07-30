@@ -28,7 +28,7 @@ UINT8 mMapTransitionModeFlag=0;
 const UINT8 _RoomDecorations[] = {TILE_PENTAGRAM_NW, TILE_TABLE_NW, TILE_MARBLE_STELE_NW, TILE_TORCH_NW, TILE_CRANE_NW, TILE_CRYSTAL_NW, TILE_REMAINS_NW, TILE_REMAINS_NW};
 
 /**
- * Generates a random map with rooms
+ * Generates a random map with rooms in a 32x32 tiles room
  * 
  */
 void makeRandomMapRooms(struct map* map, UINT8* herox, UINT8* heroy){

@@ -245,14 +245,14 @@ void main() {
             if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  x > HSCROLLRIGHT) {
                 x--;
                 bgx ++;
-                backgroundMoveEventAI(-1, 0);
+                backgroundMoveEventAI();
             }
             else {
                 //move bg Right ? only on big maps
                 if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
                     x++;
                     bgx --;
-                    backgroundMoveEventAI(+1, 0);
+                    backgroundMoveEventAI();
                 }
             }
 
@@ -261,14 +261,14 @@ void main() {
             if (dy > 0 && currentMap.tilesH * 8 > SCREENH && bgy < (currentMap.tilesH * 8 - SCREENH) &&  y > VSCROLLBOTTOM) {
                 y--;
                 bgy ++;
-                backgroundMoveEventAI(0, -1);
+                backgroundMoveEventAI();
             }
             else {
                 //move bg Down ? only on big maps
                 if (currentMap.tilesH * 8 > SCREENH && bgy > 0  &&  y < VSCROLLBOTTOM) {
                     y++;
                     bgy --;
-                    backgroundMoveEventAI(0, +1);
+                    backgroundMoveEventAI();
                 }
             }
 
