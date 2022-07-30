@@ -20,6 +20,7 @@ OBJ_FILES = $(OBJ_DIR)/Map_Intro.rel \
 			$(OBJ_DIR)/windows.rel \
 			$(OBJ_DIR)/ai.rel \
 			$(OBJ_DIR)/maps.rel \
+			$(OBJ_DIR)/hero.rel \
 			$(OBJ_DIR)/main.rel
 
 build: $(OBJ_FILES)

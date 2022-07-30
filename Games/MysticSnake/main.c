@@ -19,6 +19,7 @@
 #include "inputs.h"
 #include "windows.h"
 #include "ai.h"
+#include "hero.h"
 
 //#define SHOW_INTRO
 
@@ -36,17 +37,6 @@
 #define VSCROLLBOTTOM       (GRAPHICS_HEIGHT -32)
 
 
-#define HERO_LOOK_UP        0
-#define HERO_LOOK_DOWN      1
-#define HERO_LOOK_LEFT      2
-#define HERO_LOOK_RIGHT     3
-UINT8 heroLook = HERO_LOOK_DOWN;
-
-
-unsigned int x = 50;
-unsigned int y = 50;
-
-unsigned int stepCount = 0;
 
 
 //List of tiles that are considered as not-walkable (should be the first ones or the last ones for performance sake)
@@ -68,12 +58,6 @@ TILE_STAIRS_UP_NW, TILE_STAIRS_UP_NE, TILE_STAIRS_UP_SW, TILE_STAIRS_UP_SE,
 TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_SE
 };
 
-
-//Move the Hero to x,y
-#define MV_HERO(x,y)    move_sprite(0, x, y); move_sprite(1, x+8, y);
-//Returns the position of the player on the map (different than on the screen!)
-#define GET_MAP_X(dx)   (bgx + x + (dx * (INT8)8)) /* +8 because x is in the middle of the 16x16 */
-#define GET_MAP_Y(dy)   (bgy + y + dy -8) /* -8 to put the collision detection center of the body */
 
 //Results of the checkCollision()
 #define MOVE_CHECK_OK           0
@@ -120,7 +104,7 @@ UINT8 inline checkCollision (INT8 *dx, INT8 *dy){
 void vblint(){
     move_bkg(bgx, bgy);
 
-    MV_HERO(x, y);
+    MV_HERO();
 
 }
 
@@ -186,7 +170,7 @@ void main() {
     set_sprite_tile(0, TILE_HERO_NW);
     set_sprite_tile(1, TILE_HERO_NE);
     
-    MV_HERO(x, y);
+    MV_HERO();
     
     SHOW_BKG;
     SHOW_SPRITES;
@@ -200,21 +184,21 @@ void main() {
         INT8 dy = 0;
 
         lastJoypad = joypad();
-        if(lastJoypad & J_RIGHT && x < SCREENW-8) {
+        if(lastJoypad & J_RIGHT && hero.x < SCREENW-8) {
             dx=1;
-            heroLook = HERO_LOOK_RIGHT;
+            hero.heroLook = HERO_LOOK_RIGHT;
         }
-        if(lastJoypad & J_LEFT && x > 8) {
+        if(lastJoypad & J_LEFT && hero.x > 8) {
             dx = -1;
-            heroLook = HERO_LOOK_LEFT;
+            hero.heroLook = HERO_LOOK_LEFT;
         }
-        if(lastJoypad & J_UP && y > 16) {
+        if(lastJoypad & J_UP && hero.y > 16) {
             dy = -1;
-            heroLook = HERO_LOOK_UP;
+            hero.heroLook = HERO_LOOK_UP;
         }
-        if(lastJoypad & J_DOWN && y < SCREENH) {
+        if(lastJoypad & J_DOWN && hero.y < SCREENH) {
             dy = 1;
-            heroLook = HERO_LOOK_DOWN;
+            hero.heroLook = HERO_LOOK_DOWN;
         }
 
         //TEST
@@ -234,24 +218,24 @@ void main() {
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
             //transition!
             clearAllAI();
-            doMapTransition(&x, &y);
+            doMapTransition(&hero.x, &hero.y);
             setMapAI(&currentMap);
         }
         else {
             //move or collide
-            x += dx;
-            y += dy;
+            hero.x += dx;
+            hero.y += dy;
 
             //move bg Left ? only on big maps
-            if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  x > HSCROLLRIGHT) {
-                x--;
+            if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  hero.x > HSCROLLRIGHT) {
+                hero.x--;
                 bgx ++;
                 backgroundMoveEventAI();
             }
             else {
                 //move bg Right ? only on big maps
-                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  x < HSCROLLRIGHT) {
-                    x++;
+                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  hero.x < HSCROLLRIGHT) {
+                    hero.x++;
                     bgx --;
                     backgroundMoveEventAI();
                 }
@@ -259,15 +243,15 @@ void main() {
 
 
             //move bg Up ? only on big maps
-            if (dy > 0 && currentMap.tilesH * 8 > SCREENH && bgy < (currentMap.tilesH * 8 - SCREENH) &&  y > VSCROLLBOTTOM) {
-                y--;
+            if (dy > 0 && currentMap.tilesH * 8 > SCREENH && bgy < (currentMap.tilesH * 8 - SCREENH) &&  hero.y > VSCROLLBOTTOM) {
+                hero.y--;
                 bgy ++;
                 backgroundMoveEventAI();
             }
             else {
                 //move bg Down ? only on big maps
-                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  &&  y < VSCROLLBOTTOM) {
-                    y++;
+                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  &&  hero.y < VSCROLLBOTTOM) {
+                    hero.y++;
                     bgy --;
                     backgroundMoveEventAI();
                 }
@@ -276,11 +260,11 @@ void main() {
 
             //moved? change appearance
             if (dx != 0 || dy != 0){
-                stepCount++;    
-                switch(heroLook){
+                hero.stepCount++;    
+                switch(hero.heroLook){
                     case HERO_LOOK_DOWN:
                         //tile not in the right place: FIX ME move the tiles side by side , then rewrite all 
-                        if ((stepCount & 0x01) == 0){
+                        if ((hero.stepCount & 0x01) == 0){
                             set_sprite_tile(0, TILE_HERO_NW);
                             set_sprite_tile(1, TILE_HERO_NE);
                         }
@@ -291,7 +275,7 @@ void main() {
                         break;
 
                     case HERO_LOOK_LEFT:
-                        if ((stepCount & 0x01) == 0){
+                        if ((hero.stepCount & 0x01) == 0){
                             set_sprite_tile(0, TILE_HERO_LEFT_NW);
                             set_sprite_tile(1, TILE_HERO_LEFT_NW + 2);
                         }
@@ -303,7 +287,7 @@ void main() {
 
                         
                     case HERO_LOOK_UP:
-                        if ((stepCount & 0x01) == 0){
+                        if ((hero.stepCount & 0x01) == 0){
                             set_sprite_tile(0, TILE_HERO_UP_NW);
                             set_sprite_tile(1, TILE_HERO_UP_NW + 2);
                         }
@@ -316,7 +300,7 @@ void main() {
 
                     case HERO_LOOK_RIGHT:
                         //use the LEFT tiles but swapped and then mirrored (next step)
-                        if ((stepCount & 0x01) == 0){
+                        if ((hero.stepCount & 0x01) == 0){
                             set_sprite_tile(0, TILE_HERO_LEFT_NW + 2);
                             set_sprite_tile(1, TILE_HERO_LEFT_NW );
                         }
@@ -329,7 +313,7 @@ void main() {
 
 
 
-                switch(heroLook){
+                switch(hero.heroLook){
 
                     case HERO_LOOK_DOWN:
                     case HERO_LOOK_UP:
@@ -346,7 +330,7 @@ void main() {
             }
 
             //Now AI's turn to move
-            moveAI(x, y);
+            moveAI(hero.x, hero.y);
         }
 
         //debouncing on the cheap
