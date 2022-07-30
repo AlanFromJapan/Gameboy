@@ -434,6 +434,9 @@ inline void showInitialMap(){
     currentMap.tilesW = Map_Intro_WIDTH;
     currentMap.tilesH = Map_Intro_HEIGHT;
     currentMap.floorTile = TILE_EMPTY;
+
+    hero.x = 20;
+    hero.y = 20;
 }
 
 
