@@ -64,17 +64,14 @@ void setMapAI(struct map* map){
     //in case
     clearAllAI();  
 
-    //for now just make 1
-    currentMapAICount = 2;
+    //Up to 3 AI with 50% of 0
+    currentMapAICount = (rand() & 0x03) * (rand() & 0x01);
     currentMapAI = (struct ai*)malloc(sizeof(struct ai) * currentMapAICount);
 
-    currentMapAI[0].hp = 2;
-    currentMapAI[0].tileID = TILE_SNOWMAN_NW;
-
-    currentMapAI[1].hp = 4;
-    currentMapAI[1].tileID = TILE_DWARF_NW;
-
     for (UINT8 i = 0; i < currentMapAICount; i++){
+        currentMapAI[i].hp = 1 + (rand() & 0x0f);
+        currentMapAI[i].tileID = TILE_SNAKE_NW;
+
         //set the ai somewhere the floor is free within the room
         setAIRandomPosition (&(currentMapAI[i]), map);
 
@@ -103,7 +100,7 @@ void moveAI(UINT8 herox, UINT8 heroy){
     //Ok time to do something
     aiThrottleCounter = 0;
 
-    //Calculate new position 
+    //Calculate new position : just a simple right line toward player
     for (UINT8 i = 0; i < currentMapAICount; i++){
         INT8 dx, dy;
 
