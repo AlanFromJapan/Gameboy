@@ -7,7 +7,7 @@
 #include "maps.h"
 
 //Returns the background tile at XX,YY
-#define GET_BG_TILE(XX, YY)     (currentMap.data[(YY / 8) * currentMap.tilesW + (XX / 8)])
+#define GET_BG_TILE(XX, YY)     (currentMap.data[((YY) / 8) * currentMap.tilesW + ((XX) / 8)])
 
 /**
  * When transition from a given map, by a transition at point x,y (MAP coordinate)

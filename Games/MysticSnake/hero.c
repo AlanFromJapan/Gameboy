@@ -34,30 +34,75 @@ TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_
 /**
  * Check if collision, return 0 if no collision and edits the delta x & y, 1 if collision, 2 if transition
  */
-UINT8  checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
+UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
     //x,y are in the bottom-middle of the Sprite
-    UINT8 nx = GET_MAP_X(x, *dx);
-    UINT8 ny = GET_MAP_Y(y, *dy);
+    // UINT8 nx = GET_MAP_X(x, *dx);
+    // UINT8 ny = GET_MAP_Y(y, *dy);
 
-    UINT8 tile = GET_BG_TILE(nx, ny);
+    UINT8 tileX = 0, tileY = 0;
+    UINT8 result = MOVE_CHECK_OK;
+
+    // tileX = GET_BG_TILE(bgx + x  + *dx ,   bgy + y -1);
+    // tileY = GET_BG_TILE(bgx + x - 8 - 1,                    bgy + y + *dy -1);
+    // tileX = GET_BG_TILE( GET_MAP_X(x, *dx),     GET_MAP_Y(y, 0));
+    // tileY = GET_BG_TILE( GET_MAP_X(x, 0),       GET_MAP_Y(y, *dy));
+
+    //X, Y are the **BOTTOM RIGHT** point of the sprite  (therefore __middle bottom__ of a 16x16 sprite)!
+    
+    if (*dx < 0){
+        //going LEFT
+        tileX = GET_BG_TILE(bgx + x + *dx -8, bgy + y + *dy - 4);
+    }
+    if (*dx > 0){
+        //going RIGHT
+        tileX = GET_BG_TILE(bgx + x + *dx + 8, bgy + y + *dy - 4);
+    }
+
+    if (*dy < 0){
+        //going UP
+        tileY = GET_BG_TILE(bgx + x + *dx , bgy + y + *dy -16);
+    }
+    if (*dy > 0){
+        //going DOWN
+        tileY = GET_BG_TILE(bgx + x + *dx , bgy + y + *dy );
+    }
+
+/*
+    //DEBUG
+    if (tileX != 0)
+        set_bkg_tiles(0, 0, 1, 1, &tileX);
+    if (tileY != 0)
+        set_bkg_tiles(0, 1, 1, 1, &tileY);
+*/   
+
 
     //OPTIMIZATION: put all the collision tiles at begining or end of tile list and just make a > or < instead
-    unsigned int i =0;
-    for (; i < COLLISION_TILE_LEN; i++){
-        if (tile == COLLISION_TILE[i]){
+    for (UINT8 i = 0; i < COLLISION_TILE_LEN; i++){
+        if (*dx != 0 && tileX == COLLISION_TILE[i]){
             //collision
             *dx = 0;
+            result = MOVE_CHECK_COLLISION;
+        }
+        //no "else" because AI might be in a corner
+        if (*dy != 0 && tileY == COLLISION_TILE[i]){
+            //collision
             *dy = 0;
-            return MOVE_CHECK_COLLISION;
+            result = MOVE_CHECK_COLLISION;
         }
 
+        //There's less transition than collision so it works
         if (i < TRANSITION_TILE_LEN){
             //not sure optimizer left-right
-            if (tile == TRANSITION_TILE[i]){
-                return MOVE_CHECK_TRANSITION;
+            if (tileX == TRANSITION_TILE[i] || tileY == TRANSITION_TILE[i]){
+                result = MOVE_CHECK_TRANSITION;
             }
-
         }
+        
+
+        //quit or continue?
+        if (result != MOVE_CHECK_OK)
+            return result;
+        
     }
     //all good
     return MOVE_CHECK_OK;
