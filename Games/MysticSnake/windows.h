@@ -6,4 +6,6 @@
 
 void windowShowText(char* msg, UINT8 timeoutSec);
 
+void showHUD(char* msg);
+
 #endif

@@ -29,7 +29,10 @@ TILE_STAIRS_UP_NW, TILE_STAIRS_UP_NE, TILE_STAIRS_UP_SW, TILE_STAIRS_UP_SE,
 TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_SE
 };
 
-
+#define COLLIDE_SIDES_OVERLAP_L     2
+#define COLLIDE_SIDES_OVERLAP_R     3
+#define COLLIDE_VERT_FOOT           1
+#define COLLIDE_VERT_HEIGHT         12
 
 /**
  * Check if collision, return 0 if no collision and edits the delta x & y, 1 if collision, 2 if transition
@@ -39,7 +42,7 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
     // UINT8 nx = GET_MAP_X(x, *dx);
     // UINT8 ny = GET_MAP_Y(y, *dy);
 
-    UINT8 tileX = 0, tileY = 0;
+    UINT8 tileX = 0, tileY = 0, tileX2 = 0, tileY2 = 0;
     UINT8 result = MOVE_CHECK_OK;
 
     // tileX = GET_BG_TILE(bgx + x  + *dx ,   bgy + y -1);
@@ -49,22 +52,31 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
 
     //X, Y are the **BOTTOM RIGHT** point of the sprite  (therefore __middle bottom__ of a 16x16 sprite)!
     
+    //Zelda style (?) detection
+    // to respect the feeling of depth, feet can't get onto walls, but head a little, and L/R just 1 pixel
+    // Therefore the calculation of collision is a sub-zone of the sprite : 1 px short L&R, bottom aligned and maybe 12 pixels high 
+    // THAT ZONE never overlaps with colliding tiles.
+    // ANd there's MAX 2 tiles you are trying to visually enter
     if (*dx < 0){
-        //going LEFT
-        tileX = GET_BG_TILE(bgx + x + *dx -8, bgy + y + *dy - 4);
+        //going LEFT: tileX is the upper one, tileX2 bottom one
+        tileX  = GET_BG_TILE(bgx + x + *dx -8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
+        tileX2 = GET_BG_TILE(bgx + x + *dx -8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_FOOT);
     }
     if (*dx > 0){
-        //going RIGHT
-        tileX = GET_BG_TILE(bgx + x + *dx + 8, bgy + y + *dy - 4);
+        //going RIGHT: tileX is the upper one, tileX2 bottom one
+        tileX  = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
+        tileX2 = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_FOOT);
     }
 
     if (*dy < 0){
-        //going UP
-        tileY = GET_BG_TILE(bgx + x + *dx , bgy + y + *dy -16);
+        //going UP : tileY is the left one, tileY2 is the right one
+        tileY  = GET_BG_TILE(bgx + x + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
+        tileY2 = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
     }
     if (*dy > 0){
-        //going DOWN
-        tileY = GET_BG_TILE(bgx + x + *dx , bgy + y + *dy );
+        //going DOWN: tileY is the left one, tileY2 is the right one
+        tileY  = GET_BG_TILE(bgx + x + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_FOOT);
+        tileY2 = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_FOOT);
     }
 
 /*
@@ -78,13 +90,18 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
 
     //OPTIMIZATION: put all the collision tiles at begining or end of tile list and just make a > or < instead
     for (UINT8 i = 0; i < COLLISION_TILE_LEN; i++){
-        if (*dx != 0 && tileX == COLLISION_TILE[i]){
+        //not sure of optimizer so let's help it
+        UINT8 TILE_COL, TILE_TRAN;
+
+        TILE_COL = COLLISION_TILE[i];
+
+        if (*dx != 0 && (tileX == TILE_COL || tileX2 == TILE_COL)){
             //collision
             *dx = 0;
             result = MOVE_CHECK_COLLISION;
         }
         //no "else" because AI might be in a corner
-        if (*dy != 0 && tileY == COLLISION_TILE[i]){
+        if (*dy != 0 && (tileY == TILE_COL || tileY2 == TILE_COL)){
             //collision
             *dy = 0;
             result = MOVE_CHECK_COLLISION;
@@ -92,8 +109,10 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
 
         //There's less transition than collision so it works
         if (i < TRANSITION_TILE_LEN){
+            TILE_TRAN = TRANSITION_TILE[i];
+
             //not sure optimizer left-right
-            if (tileX == TRANSITION_TILE[i] || tileY == TRANSITION_TILE[i]){
+            if (tileX == TILE_TRAN || tileY == TILE_TRAN || tileX2 == TILE_TRAN || tileY2 == TILE_TRAN){
                 result = MOVE_CHECK_TRANSITION;
             }
         }

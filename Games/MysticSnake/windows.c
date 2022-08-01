@@ -120,3 +120,11 @@ void windowShowText(char* msg, UINT8 timeoutSec){
 
     HIDE_WIN;
 }
+
+void showHUD(char* msg){
+    windowClean();
+
+    SHOW_WIN;
+    //screen bottom
+    move_win(8 * 18 - 8, 0);
+}

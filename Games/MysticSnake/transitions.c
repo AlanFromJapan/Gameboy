@@ -328,8 +328,8 @@ void mapTransition(struct map* map){
             */
             if ((*map).data == Map_Intro){
                 //Intro -> enter in Room1
-                hero.x=16;
-                hero.y=32;
+                hero.x=24;
+                hero.y=40;
                 (*map).data = Map_Room1;
                 (*map).tilesW = Map_Room1_WIDTH;
                 (*map).tilesH = Map_Room1_HEIGHT;
@@ -341,8 +341,8 @@ void mapTransition(struct map* map){
 
             if ((*map).data == Map_Room1) {
                 //Room1 -> BigRoom1
-                hero.x=16;
-                hero.y=16;
+                hero.x=24;
+                hero.y=24;
                 (*map).data = Map_BigRoom1;
                 (*map).tilesW = Map_BigRoom1_WIDTH;
                 (*map).tilesH = Map_BigRoom1_HEIGHT;
