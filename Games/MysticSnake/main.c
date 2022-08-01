@@ -155,6 +155,79 @@ void main() {
         */
 #endif 
 
+        //--------------------------------------------------- PLAYER APPEARANCE --------------------------------------------------------
+        //ATTEMPT to move? at least change sprite even if movement will be impossible
+        if (dx != 0 || dy != 0){
+            switch(hero.heroLook){
+                case HERO_LOOK_DOWN:
+                    //tile not in the right place: FIX ME move the tiles side by side , then rewrite all 
+                    if ((hero.stepCount & 0x01) == 0){
+                        set_sprite_tile(0, TILE_HERO_NW);
+                        set_sprite_tile(1, TILE_HERO_NE);
+                    }
+                    else {
+                        set_sprite_tile(0, TILE_HERO2_NW);
+                        set_sprite_tile(1, TILE_HERO2_NE);
+                    }
+                    break;
+
+                case HERO_LOOK_LEFT:
+                    if ((hero.stepCount & 0x01) == 0){
+                        set_sprite_tile(0, TILE_HERO_LEFT_NW);
+                        set_sprite_tile(1, TILE_HERO_LEFT_NW + 2);
+                    }
+                    else {
+                        set_sprite_tile(0, TILE_HERO_LEFT_NW + 4);
+                        set_sprite_tile(1, TILE_HERO_LEFT_NW + 6);
+                    }
+                    break;
+
+                    
+                case HERO_LOOK_UP:
+                    if ((hero.stepCount & 0x01) == 0){
+                        set_sprite_tile(0, TILE_HERO_UP_NW);
+                        set_sprite_tile(1, TILE_HERO_UP_NW + 2);
+                    }
+                    else {
+                        set_sprite_tile(0, TILE_HERO_UP_NW + 4);
+                        set_sprite_tile(1, TILE_HERO_UP_NW + 6);
+                    }
+                    break;
+
+
+                case HERO_LOOK_RIGHT:
+                    //use the LEFT tiles but swapped and then mirrored (next step)
+                    if ((hero.stepCount & 0x01) == 0){
+                        set_sprite_tile(0, TILE_HERO_LEFT_NW + 2);
+                        set_sprite_tile(1, TILE_HERO_LEFT_NW );
+                    }
+                    else {
+                        set_sprite_tile(0, TILE_HERO_LEFT_NW + 6);
+                        set_sprite_tile(1, TILE_HERO_LEFT_NW + 4);
+                    }
+                    break;
+            }
+
+
+
+            switch(hero.heroLook){
+
+                case HERO_LOOK_DOWN:
+                case HERO_LOOK_UP:
+                case HERO_LOOK_LEFT:
+                    set_sprite_prop(0, 0x00); //NO flip
+                    set_sprite_prop(1, 0x00); //NO flip
+                    break;
+                case HERO_LOOK_RIGHT:
+                    set_sprite_prop(0, 0x20); //Flip L/R
+                    set_sprite_prop(1, 0x20); //Flip L/R
+                    break;
+            }
+
+        }
+
+        //--------------------------------------------------- COLLISION --------------------------------------------------------
+
         UINT8 lastMoveCheck = checkCollision (hero.x, hero.y, &dx, &dy);
 
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
@@ -167,6 +240,11 @@ void main() {
             //move or collide
             hero.x += dx;
             hero.y += dy;
+
+            //change steps (sprite animation)
+            if (dx != 0 || dy != 0){
+                hero.stepCount++;   
+            } 
 
             //move bg Left ? only on big maps
             if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  hero.x > HSCROLLRIGHT) {
@@ -200,76 +278,7 @@ void main() {
             }
 
 
-            //moved? change appearance
-            if (dx != 0 || dy != 0){
-                hero.stepCount++;    
-                switch(hero.heroLook){
-                    case HERO_LOOK_DOWN:
-                        //tile not in the right place: FIX ME move the tiles side by side , then rewrite all 
-                        if ((hero.stepCount & 0x01) == 0){
-                            set_sprite_tile(0, TILE_HERO_NW);
-                            set_sprite_tile(1, TILE_HERO_NE);
-                        }
-                        else {
-                            set_sprite_tile(0, TILE_HERO2_NW);
-                            set_sprite_tile(1, TILE_HERO2_NE);
-                        }
-                        break;
 
-                    case HERO_LOOK_LEFT:
-                        if ((hero.stepCount & 0x01) == 0){
-                            set_sprite_tile(0, TILE_HERO_LEFT_NW);
-                            set_sprite_tile(1, TILE_HERO_LEFT_NW + 2);
-                        }
-                        else {
-                            set_sprite_tile(0, TILE_HERO_LEFT_NW + 4);
-                            set_sprite_tile(1, TILE_HERO_LEFT_NW + 6);
-                        }
-                        break;
-
-                        
-                    case HERO_LOOK_UP:
-                        if ((hero.stepCount & 0x01) == 0){
-                            set_sprite_tile(0, TILE_HERO_UP_NW);
-                            set_sprite_tile(1, TILE_HERO_UP_NW + 2);
-                        }
-                        else {
-                            set_sprite_tile(0, TILE_HERO_UP_NW + 4);
-                            set_sprite_tile(1, TILE_HERO_UP_NW + 6);
-                        }
-                        break;
-
-
-                    case HERO_LOOK_RIGHT:
-                        //use the LEFT tiles but swapped and then mirrored (next step)
-                        if ((hero.stepCount & 0x01) == 0){
-                            set_sprite_tile(0, TILE_HERO_LEFT_NW + 2);
-                            set_sprite_tile(1, TILE_HERO_LEFT_NW );
-                        }
-                        else {
-                            set_sprite_tile(0, TILE_HERO_LEFT_NW + 6);
-                            set_sprite_tile(1, TILE_HERO_LEFT_NW + 4);
-                        }
-                        break;
-                }
-
-
-
-                switch(hero.heroLook){
-
-                    case HERO_LOOK_DOWN:
-                    case HERO_LOOK_UP:
-                    case HERO_LOOK_LEFT:
-                        set_sprite_prop(0, 0x00); //NO flip
-                        set_sprite_prop(1, 0x00); //NO flip
-                        break;
-                    case HERO_LOOK_RIGHT:
-                        set_sprite_prop(0, 0x20); //Flip L/R
-                        set_sprite_prop(1, 0x20); //Flip L/R
-                        break;
-                }
-
-            }
 
             //Now AI's turn to move
             moveAI();
