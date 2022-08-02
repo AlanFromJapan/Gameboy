@@ -157,6 +157,8 @@ void main() {
 
         //--------------------------------------------------- PLAYER APPEARANCE --------------------------------------------------------
         //ATTEMPT to move? at least change sprite even if movement will be impossible
+        //
+        // About the sprites, remember they must be on an EVEN tile index. If on ODD index they won't display right. 
         if (dx != 0 || dy != 0){
             switch(hero.heroLook){
                 case HERO_LOOK_DOWN:

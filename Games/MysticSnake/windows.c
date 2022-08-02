@@ -89,7 +89,7 @@ void windowShowText(char* msg, UINT8 timeoutSec){
             //already inc lnum so next line num is 3, 5, 7, ... odd number
             if ((lnum & 0x01) != 0){
                 //...and we still have some text to show
-                _winBuffer[20*4-1] = TILE_ARROW_DOWN;
+                _winBuffer[20*4-1] = TILE_HEART_HALF;
 
                 set_win_tiles(0,0,WINDOW_W,WINDOW_H, _winBuffer);
                 move_win(7, 8 * (12+2));
