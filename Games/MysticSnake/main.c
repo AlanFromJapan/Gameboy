@@ -24,6 +24,7 @@
 //#define SHOW_INTRO
 
 //#define RUN_TESTS
+#define SELECT_NEXT_LEVEL
 
 #ifdef RUN_TESTS
 #include "tests.h"
@@ -144,15 +145,19 @@ void main() {
         }
 
         //TEST
-#ifdef RUN_TESTS    
+#ifdef SELECT_NEXT_LEVEL    
         if(lastJoypad & J_SELECT) {
-            doMapTransition(&x, &y);
+            doMapTransition();
         }
-        /*
+#endif
+
+        //TEST
+#ifdef RUN_TESTS            
+    
         if(lastJoypad & J_START) {
             test_windows();
         }
-        */
+        
 #endif 
 
         //--------------------------------------------------- PLAYER APPEARANCE --------------------------------------------------------

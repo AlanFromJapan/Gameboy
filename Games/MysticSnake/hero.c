@@ -9,14 +9,8 @@ struct hero hero;
 
 
 //List of tiles that are considered as not-walkable (should be the first ones or the last ones for performance sake)
-#define COLLISION_TILE_LEN  25
-UINT8 const COLLISION_TILE[] = {
-TILE_SAPIN_NW, TILE_SAPIN_NE, TILE_SAPIN_SW, TILE_SAPIN_SE, 
-TILE_PALMTREE_NW, TILE_PALMTREE_NE, TILE_PALMTREE_SW, TILE_PALMTREE_SE,
-TILE_ROCK_NW, TILE_ROCK_NE, TILE_ROCK_SW, TILE_ROCK_SE, 
-TILE_COLUMN_NW, TILE_COLUMN_NE, TILE_COLUMN_SW, TILE_COLUMN_SE, 
-TILE_TOWER_1, TILE_TOWER_2, TILE_TOWER_3, TILE_TOWER_4, TILE_TOWER_5
-};
+//OPTIMIZED: it's all tiles with ID smaller than TILE_EMPTY
+#define COLLIDE_MAX_TILEID  (TILE_EMPTY -1)
 
 
 
@@ -84,26 +78,22 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
 */   
 
 
-    //OPTIMIZATION: put all the collision tiles at begining or end of tile list and just make a > or < instead
-    for (UINT8 i = 0; i < COLLISION_TILE_LEN; i++){
-        //not sure of optimizer so let's help it
-        UINT8 TILE_COL, TILE_TRAN;
+    //OPTIMIZATION: put all the collision tiles at begining of tile list and just make  a comparison
+    if (*dx != 0 && (tileX <= COLLIDE_MAX_TILEID || tileX2 <= COLLIDE_MAX_TILEID)){
+        //collision
+        *dx = 0;
+        result = MOVE_CHECK_COLLISION;
+    }
+    //no "else" because AI might be in a corner
+    if (*dy != 0 && (tileY <= COLLIDE_MAX_TILEID || tileY2 <= COLLIDE_MAX_TILEID)){
+        //collision
+        *dy = 0;
+        result = MOVE_CHECK_COLLISION;
+    }
 
-        TILE_COL = COLLISION_TILE[i];
-
-        if (*dx != 0 && (tileX == TILE_COL || tileX2 == TILE_COL)){
-            //collision
-            *dx = 0;
-            result = MOVE_CHECK_COLLISION;
-        }
-        //no "else" because AI might be in a corner
-        if (*dy != 0 && (tileY == TILE_COL || tileY2 == TILE_COL)){
-            //collision
-            *dy = 0;
-            result = MOVE_CHECK_COLLISION;
-        }
-
-        //There's less transition than collision so it works
+    //do same optimization here one day ...
+    UINT8 TILE_TRAN;
+    for (UINT8 i = 0; i < TRANSITION_TILE_LEN; i++){
         if (i < TRANSITION_TILE_LEN){
             TILE_TRAN = TRANSITION_TILE[i];
 
@@ -112,13 +102,13 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
                 result = MOVE_CHECK_TRANSITION;
             }
         }
-        
-
-        //quit or continue?
-        if (result != MOVE_CHECK_OK)
-            return result;
-        
     }
+
+    //quit or continue?
+    if (result != MOVE_CHECK_OK)
+        return result;
+        
+    
     //all good
     return MOVE_CHECK_OK;
 }
