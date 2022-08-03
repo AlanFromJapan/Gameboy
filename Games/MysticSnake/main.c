@@ -76,8 +76,6 @@ void showTitle(){
 
 
 
-
-
 /*
  ***********************************************************************************************
  * MAIN method
@@ -164,41 +162,19 @@ void main() {
         //ATTEMPT to move? at least change sprite even if movement will be impossible
         //
         // About the sprites, remember they must be on an EVEN tile index. If on ODD index they won't display right. 
+        //Sprites are set alternate full sprite one after the other to ease the code
         if (dx != 0 || dy != 0){
             switch(hero.heroLook){
                 case HERO_LOOK_DOWN:
-                    //tile not in the right place: FIX ME move the tiles side by side , then rewrite all 
-                    if ((hero.stepCount & 0x01) == 0){
-                        set_sprite_tile(0, TILE_HERO_NW);
-                        set_sprite_tile(1, TILE_HERO_NE);
-                    }
-                    else {
-                        set_sprite_tile(0, TILE_HERO2_NW);
-                        set_sprite_tile(1, TILE_HERO2_NE);
-                    }
+                    updateHeroSprite(TILE_HERO_NW);
                     break;
 
                 case HERO_LOOK_LEFT:
-                    if ((hero.stepCount & 0x01) == 0){
-                        set_sprite_tile(0, TILE_HERO_LEFT_NW);
-                        set_sprite_tile(1, TILE_HERO_LEFT_NW + 2);
-                    }
-                    else {
-                        set_sprite_tile(0, TILE_HERO_LEFT_NW + 4);
-                        set_sprite_tile(1, TILE_HERO_LEFT_NW + 6);
-                    }
+                    updateHeroSprite(TILE_HERO_LEFT_NW);
                     break;
 
-                    
                 case HERO_LOOK_UP:
-                    if ((hero.stepCount & 0x01) == 0){
-                        set_sprite_tile(0, TILE_HERO_UP_NW);
-                        set_sprite_tile(1, TILE_HERO_UP_NW + 2);
-                    }
-                    else {
-                        set_sprite_tile(0, TILE_HERO_UP_NW + 4);
-                        set_sprite_tile(1, TILE_HERO_UP_NW + 6);
-                    }
+                    updateHeroSprite(TILE_HERO_UP_NW);
                     break;
 
 

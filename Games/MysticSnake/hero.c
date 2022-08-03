@@ -112,3 +112,17 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
     //all good
     return MOVE_CHECK_OK;
 }
+
+
+
+//Hero tiles have the alternate (left foot / right foot) stored one after the other, so once you have one the rest is just adding offset
+inline void updateHeroSprite(const UINT8 baseSprite){
+    if ((hero.stepCount & 0x01) == 0){
+        set_sprite_tile(0, baseSprite);
+        set_sprite_tile(1, baseSprite + 2);
+    }
+    else {
+        set_sprite_tile(0, baseSprite + 4);
+        set_sprite_tile(1, baseSprite + 6);
+    }
+}

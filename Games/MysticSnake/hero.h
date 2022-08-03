@@ -32,4 +32,7 @@ extern struct hero hero;
 //checks if the next move from x,y is possible regarding collision
 UINT8  checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy);
 
+//Hero tiles have the alternate (left foot / right foot) stored one after the other, so once you have one the rest is just adding offset
+inline void updateHeroSprite(const UINT8 baseSprite);
+
 #endif // __HERO_H__
