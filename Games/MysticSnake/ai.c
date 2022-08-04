@@ -27,8 +27,8 @@ void clearAllAI(){
             //go 2 by 2 sine one character is 2 sprites
             
             //taken from gbdk-2020 : move the sprite off the screen is the fastest way to hide it: so be it!
-            move_sprite(2 + 2 * i, 255, 255);
-            move_sprite(2 + 2 * i +1, 255, 255);
+            move_sprite(2 + 2 * i, 0, 0);
+            move_sprite(2 + 2 * i +1, 0, 0);
         }
 
         free(currentMapAI);
@@ -53,9 +53,16 @@ void setAIRandomPosition (struct ai* ai, struct map* map) {
             x = x / 8;
             y = y / 8;
             //from here x and y are in TILES not pixels
-            if ((*map).data [y * ((*map).tilesW) + x] == (*map).floorTile)
+            if ((*map).data [y * ((*map).tilesW) + x] == (*map).floorTile) {
                 //the floor is free, accept otherwise try again
+
+                //center it in the tile
+                (*ai).x = ((*ai).x / 8) * 8 + 4;
+                //at the bottom
+                (*ai).y = ((*ai).y / 8) * 8 + 7;
+
                 break;
+            }
         }
     }
 
