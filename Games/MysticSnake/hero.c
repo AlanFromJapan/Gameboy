@@ -27,10 +27,11 @@ TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_
 #define COLLIDE_VERT_FOOT           1
 #define COLLIDE_VERT_HEIGHT         12
 
+
 /**
  * Check if collision, return 0 if no collision and edits the delta x & y, 1 if collision, 2 if transition
  */
-UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
+UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy, UINT8 checkTransition){
     ///////////////////////////////////////////////
     //
     // X, Y are the **BOTTOM RIGHT** point of the LEFT sprite  (therefore **middle bottom** of a 16x16 sprite)!
@@ -92,25 +93,22 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy){
     }
 
     //do same optimization here one day ...
-    UINT8 TILE_TRAN;
-    for (UINT8 i = 0; i < TRANSITION_TILE_LEN; i++){
-        if (i < TRANSITION_TILE_LEN){
-            TILE_TRAN = TRANSITION_TILE[i];
+    if (checkTransition != 0) {
+        UINT8 TILE_TRAN;
+        for (UINT8 i = 0; i < TRANSITION_TILE_LEN; i++){
+            if (i < TRANSITION_TILE_LEN){
+                TILE_TRAN = TRANSITION_TILE[i];
 
-            //not sure optimizer left-right
-            if (tileX == TILE_TRAN || tileY == TILE_TRAN || tileX2 == TILE_TRAN || tileY2 == TILE_TRAN){
-                result = MOVE_CHECK_TRANSITION;
+                //not sure optimizer left-right
+                if (tileX == TILE_TRAN || tileY == TILE_TRAN || tileX2 == TILE_TRAN || tileY2 == TILE_TRAN){
+                    result = MOVE_CHECK_TRANSITION;
+                }
             }
         }
     }
 
-    //quit or continue?
-    if (result != MOVE_CHECK_OK)
-        return result;
-        
-    
-    //all good
-    return MOVE_CHECK_OK;
+
+    return result;
 }
 
 

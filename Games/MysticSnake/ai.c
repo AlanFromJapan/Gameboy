@@ -74,7 +74,7 @@ void setMapAI(struct map* map){
     clearAllAI();  
 
     //Up to 3 AI with 50% of 0
-    currentMapAICount = 2;// (rand() & 0x03) * (rand() & 0x01);
+    currentMapAICount = (rand() & 0x03); // * (rand() & 0x01);
     currentMapAI = (struct ai*)malloc(sizeof(struct ai) * currentMapAICount);
 
     for (UINT8 i = 0; i < currentMapAICount; i++){
@@ -126,7 +126,7 @@ void moveAI(){
             dy = (hero.y + bgy) < currentMapAI[i].y ? -1 : +1;
 
         //is move valid?
-        if (checkCollision(currentMapAI[i].x, currentMapAI[i].y, &dx, &dy) != MOVE_CHECK_COLLISION) {
+        if (checkCollision(currentMapAI[i].x, currentMapAI[i].y, &dx, &dy, 0) != MOVE_CHECK_COLLISION) {
             currentMapAI[i].x = currentMapAI[i].x + dx;
             currentMapAI[i].y = currentMapAI[i].y + dy;
         }

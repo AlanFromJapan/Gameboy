@@ -211,7 +211,7 @@ void main() {
 
         //--------------------------------------------------- COLLISION --------------------------------------------------------
 
-        UINT8 lastMoveCheck = checkCollision (hero.x, hero.y, &dx, &dy);
+        UINT8 lastMoveCheck = checkCollision (hero.x, hero.y, &dx, &dy, 1);
 
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
             //transition!
