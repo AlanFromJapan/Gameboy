@@ -2,8 +2,8 @@
 So I started writing this as a game for my son (and my own amusement) and thinking that "I'll sort out problems as I come by them" ... oh boy was I wrong.
 I designed only 3 maps but have a basic map generator.
 
-In the end, 2 years after starting (2022 now) I'm thinking that this should be kept as a framework that I would reuse for making a game. Keeping the technical part away from the game specifics.
-This will be just a demo of the different capabilities of the framework, without any gameplay ambition.
+In the end, 2 years after starting (2022 now) and looong breaks AFK, I'm thinking that this should be kept as a framework that I would reuse for making a game. Keeping the technical part away from the game specifics.
+This will be just a demo of the different capabilities of the framework, without any gameplay ambition. Until I change my mind again.
 
 ## What does it do now
 - top view Zelda style maps up to 32x32 tiles with background scrolling
