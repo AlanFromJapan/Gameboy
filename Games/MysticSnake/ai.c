@@ -122,10 +122,10 @@ void moveAI(){
         INT8 dx, dy;
 
         //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
-        dx = hero.x < currentMapAI[i].x ? -1 : +1;
+        dx = hero.x < currentMapAI[i].x ? -1 : hero.x == currentMapAI[i].x ? 0 : +1;
 
         //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
-        dy = hero.y < currentMapAI[i].y ? -1 : +1;
+        dy = hero.y < currentMapAI[i].y ? -1 : hero.y == currentMapAI[i].y ? 0 : +1;
 
         //is move valid?
         if (checkCollision(currentMapAI[i].x, currentMapAI[i].y, &dx, &dy, 0) != MOVE_CHECK_COLLISION) {
