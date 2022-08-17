@@ -15,8 +15,8 @@ UINT8 dynmapH = DynMap_MAX_HEIGHT;
 /**
  * The shift of the background compared to origin (top left = 0,0)
  */
-unsigned int bgx = 0;
-unsigned int bgy = 0;
+signed int bgx = 0;
+signed int bgy = 0;
 
 
 /**

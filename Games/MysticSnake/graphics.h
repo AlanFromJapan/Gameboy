@@ -15,8 +15,8 @@
 #define DynMap_MAX_HEIGHT  32 
 
 
-extern unsigned int bgx ;
-extern unsigned int bgy ;
+extern signed int bgx ;
+extern signed int bgy ;
 
 extern UINT8 dynmapW;
 extern UINT8 dynmapH;
@@ -25,6 +25,12 @@ extern unsigned char dynmap[];
 
 #define DYNMAP_PUT_TILE(T,X,Y)  dynmap[(Y) * dynmapW + (X)] = T;
 #define DYNMAP_GET_TILE(X,Y)    dynmap[(Y) * dynmapW + (X)]
+
+#define MAP2SCREEN_X(mapx)     (mapx - bgx)
+#define MAP2SCREEN_Y(mapy)     (mapy - bgy)
+#define SCREEN2MAP_X(screenx)  (screenx + bgx)
+#define SCREEN2MAP_Y(screeny)  (screeny + bgy)
+
 
 /**
  * Fill in the tiles array with the tile representation of the text.

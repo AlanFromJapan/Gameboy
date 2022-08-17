@@ -18,11 +18,7 @@ struct hero {
 extern struct hero hero;
 
 //Move the Hero to x,y
-#define MV_HERO()    move_sprite(0, hero.x, hero.y); move_sprite(1, hero.x+8, hero.y);
-
-//Returns the position on the map (different than on the screen!)
-#define GET_MAP_X(x, dx)   (bgx + x + (dx * (INT8)8)) /* +8 because x is in the middle of the 16x16 */
-#define GET_MAP_Y(y, dy)   (bgy + y + dy -8) /* -8 to put the collision detection center of the body */
+#define MV_HERO()    move_sprite(0, MAP2SCREEN_X(hero.x), MAP2SCREEN_Y(hero.y)); move_sprite(1, MAP2SCREEN_X(hero.x)+8, MAP2SCREEN_Y(hero.y));
 
 //Results of the checkCollision()
 #define MOVE_CHECK_OK           0
@@ -30,7 +26,7 @@ extern struct hero hero;
 #define MOVE_CHECK_TRANSITION   2
 
 //checks if the next move from x,y is possible regarding collision
-UINT8  checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy, UINT8 checkTransition);
+UINT8  checkCollision (UINT8 mapx, UINT8 mapy, INT8 *dx, INT8 *dy, UINT8 checkTransition);
 
 //Hero tiles have the alternate (left foot / right foot) stored one after the other, so once you have one the rest is just adding offset
 inline void updateHeroSprite(const UINT8 baseSprite);

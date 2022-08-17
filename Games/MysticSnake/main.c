@@ -134,19 +134,19 @@ void main() {
         INT8 dy = 0;
 
         lastJoypad = joypad();
-        if(lastJoypad & J_RIGHT && hero.x < SCREENW-8) {
+        if(lastJoypad & J_RIGHT && MAP2SCREEN_X(hero.x) < SCREENW-8) {
             dx=1;
             hero.heroLook = HERO_LOOK_RIGHT;
         }
-        if(lastJoypad & J_LEFT && hero.x > 8) {
+        if(lastJoypad & J_LEFT && MAP2SCREEN_X(hero.x) > 8) {
             dx = -1;
             hero.heroLook = HERO_LOOK_LEFT;
         }
-        if(lastJoypad & J_UP && hero.y > 16) {
+        if(lastJoypad & J_UP && MAP2SCREEN_Y(hero.y) > 16) {
             dy = -1;
             hero.heroLook = HERO_LOOK_UP;
         }
-        if(lastJoypad & J_DOWN && hero.y < SCREENH) {
+        if(lastJoypad & J_DOWN && MAP2SCREEN_Y(hero.y) < SCREENH) {
             dy = 1;
             hero.heroLook = HERO_LOOK_DOWN;
         }
@@ -237,15 +237,13 @@ void main() {
             } 
 
             //move bg Left ? only on big maps
-            if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  hero.x > HSCROLLRIGHT) {
-                hero.x--;
+            if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  MAP2SCREEN_X(hero.x) > HSCROLLRIGHT) {
                 bgx ++;
                 backgroundMoveEventAI();
             }
             else {
                 //move bg Right ? only on big maps
-                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  hero.x < HSCROLLLEFT) {
-                    hero.x++;
+                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  MAP2SCREEN_X(hero.x) < HSCROLLLEFT) {
                     bgx --;
                     backgroundMoveEventAI();
                 }
@@ -253,15 +251,13 @@ void main() {
 
 
             //move bg Up ? only on big maps
-            if (dy > 0 && currentMap.tilesH * 8 > SCREENH && bgy < (currentMap.tilesH * 8 - SCREENH) &&  hero.y > VSCROLLBOTTOM) {
-                hero.y--;
+            if (dy > 0 && currentMap.tilesH * 8 > SCREENH && bgy < (currentMap.tilesH * 8 - SCREENH) && MAP2SCREEN_Y(hero.y) > VSCROLLBOTTOM) {
                 bgy ++;
                 backgroundMoveEventAI();
             }
             else {
                 //move bg Down ? only on big maps
-                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  &&  hero.y < VSCROLLTOP) {
-                    hero.y++;
+                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  && MAP2SCREEN_Y(hero.y) < VSCROLLTOP) {
                     bgy --;
                     backgroundMoveEventAI();
                 }

@@ -31,7 +31,7 @@ TILE_STAIRS_DOWN_NW, TILE_STAIRS_DOWN_NE, TILE_STAIRS_DOWN_SW, TILE_STAIRS_DOWN_
 /**
  * Check if collision, return 0 if no collision and edits the delta x & y, 1 if collision, 2 if transition
  */
-UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy, UINT8 checkTransition){
+UINT8 checkCollision (UINT8 mapx, UINT8 mapy, INT8 *dx, INT8 *dy, UINT8 checkTransition){
     ///////////////////////////////////////////////
     //
     // X, Y are the **BOTTOM RIGHT** point of the LEFT sprite  (therefore **middle bottom** of a 16x16 sprite)!
@@ -50,24 +50,24 @@ UINT8 checkCollision (UINT8 x, UINT8 y, INT8 *dx, INT8 *dy, UINT8 checkTransitio
     // ANd there's MAX 2 tiles you are trying to visually enter
     if (*dx < 0){
         //going LEFT: tileX is the upper one, tileX2 bottom one
-        tileX  = GET_BG_TILE(bgx + x + *dx -8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
-        tileX2 = GET_BG_TILE(bgx + x + *dx -8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_FOOT);
+        tileX  = GET_BG_TILE(mapx + *dx -8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_HEIGHT);
+        tileX2 = GET_BG_TILE(mapx + *dx -8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_FOOT);
     }
     if (*dx > 0){
         //going RIGHT: tileX is the upper one, tileX2 bottom one
-        tileX  = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
-        tileX2 = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_FOOT);
+        tileX  = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_HEIGHT);
+        tileX2 = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_FOOT);
     }
 
     if (*dy < 0){
         //going UP : tileY is the left one, tileY2 is the right one
-        tileY  = GET_BG_TILE(bgx + x + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
-        tileY2 = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_HEIGHT);
+        tileY  = GET_BG_TILE(mapx + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_HEIGHT);
+        tileY2 = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_HEIGHT);
     }
     if (*dy > 0){
         //going DOWN: tileY is the left one, tileY2 is the right one
-        tileY  = GET_BG_TILE(bgx + x + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, bgy + y + *dy - COLLIDE_VERT_FOOT);
-        tileY2 = GET_BG_TILE(bgx + x + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, bgy + y + *dy - COLLIDE_VERT_FOOT);
+        tileY  = GET_BG_TILE(mapx + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_FOOT);
+        tileY2 = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_FOOT);
     }
 
 /*

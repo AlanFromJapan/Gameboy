@@ -94,8 +94,8 @@ void setMapAI(struct map* map){
 
         //start at 2 since sprite 0 & 1 are for main character
         //go 2 by 2 sine one character is 2 sprites
-        move_sprite(2 + 2 * i, currentMapAI[i].x, currentMapAI[i].y);
-        move_sprite(2 + 2 * i + 1, currentMapAI[i].x + 8, currentMapAI[i].y);
+        move_sprite(2 + 2 * i, MAP2SCREEN_X(currentMapAI[i].x), MAP2SCREEN_Y(currentMapAI[i].y));
+        move_sprite(2 + 2 * i + 1, MAP2SCREEN_X(currentMapAI[i].x) + 8, MAP2SCREEN_Y(currentMapAI[i].y));
 
         set_sprite_tile(2 + 2 * i, currentMapAI[i].tileID);
         set_sprite_tile(2 + 2 * i + 1 , currentMapAI[i].tileID+2); //+2 tile ID since it's stored NW SW NE SE
@@ -122,16 +122,10 @@ void moveAI(){
         INT8 dx, dy;
 
         //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
-        if (bgx > 160)
-            dx = (hero.x - (255 - bgx)) < currentMapAI[i].x ? -1 : +1;
-        else
-            dx = (hero.x + bgx) < currentMapAI[i].x ? -1 : +1;
+        dx = hero.x < currentMapAI[i].x ? -1 : +1;
 
         //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
-        if (bgy > 160)
-            dy = (hero.y - (255 - bgy)) < currentMapAI[i].y ? -1 : +1;
-        else 
-            dy = (hero.y + bgy) < currentMapAI[i].y ? -1 : +1;
+        dy = hero.y < currentMapAI[i].y ? -1 : +1;
 
         //is move valid?
         if (checkCollision(currentMapAI[i].x, currentMapAI[i].y, &dx, &dy, 0) != MOVE_CHECK_COLLISION) {
@@ -154,7 +148,7 @@ void backgroundMoveEventAI (){
     //SCROLL the APPARENT position of the sprites
     for (UINT8 i = 0; i < currentMapAICount; i++){
         //move taking account of background offset
-        move_sprite(2 + 2 * i, currentMapAI[i].x - bgx, currentMapAI[i].y - bgy);
-        move_sprite(2 + 2 * i + 1, currentMapAI[i].x - bgx + 8, currentMapAI[i].y - bgy);
+        move_sprite(2 + 2 * i, MAP2SCREEN_X(currentMapAI[i].x), MAP2SCREEN_Y(currentMapAI[i].y));
+        move_sprite(2 + 2 * i + 1, MAP2SCREEN_X(currentMapAI[i].x) + 8, MAP2SCREEN_Y(currentMapAI[i].y));
     }
 }
