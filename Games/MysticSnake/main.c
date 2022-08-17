@@ -75,6 +75,15 @@ void showTitle(){
 
 
 
+/**
+ * Move to next screen 
+ */
+inline void doTransition(){
+    clearAllAI();
+    doMapTransition();
+    setMapAI(&currentMap);
+}
+
 
 /*
  ***********************************************************************************************
@@ -145,7 +154,7 @@ void main() {
         //TEST
 #ifdef SELECT_NEXT_LEVEL    
         if(lastJoypad & J_SELECT) {
-            doMapTransition();
+            doTransition();
         }
 #endif
 
@@ -215,9 +224,7 @@ void main() {
 
         if (lastMoveCheck == MOVE_CHECK_TRANSITION){
             //transition!
-            clearAllAI();
-            doMapTransition();
-            setMapAI(&currentMap);
+            doTransition();
         }
         else {
             //move or collide

@@ -53,13 +53,18 @@ void setAIRandomPosition (struct ai* ai, struct map* map) {
             x = x / 8;
             y = y / 8;
             //from here x and y are in TILES not pixels
-            if ((*map).data [y * ((*map).tilesW) + x] == (*map).floorTile) {
+            if (
+                (*map).data [y * ((*map).tilesW) + x] == (*map).floorTile 
+                && (*map).data [y * ((*map).tilesW) + x + 1] == (*map).floorTile
+                && (*map).data [(y +1) * ((*map).tilesW) + x] == (*map).floorTile 
+                && (*map).data [(y +1) * ((*map).tilesW) + x + 1] == (*map).floorTile
+            ) {
                 //the floor is free, accept otherwise try again
 
                 //center it in the tile
-                (*ai).x = ((*ai).x / 8) * 8 + 4;
+                (*ai).x = x * 8 + 8;
                 //at the bottom
-                (*ai).y = ((*ai).y / 8) * 8 + 7;
+                (*ai).y = y * 8 + 15;
 
                 break;
             }
@@ -75,6 +80,9 @@ void setMapAI(struct map* map){
 
     //Up to 3 AI with 50% of 0
     currentMapAICount = (rand() & 0x03); // * (rand() & 0x01);
+    if (currentMapAICount == 0)
+        return;
+
     currentMapAI = (struct ai*)malloc(sizeof(struct ai) * currentMapAICount);
 
     for (UINT8 i = 0; i < currentMapAICount; i++){
