@@ -50,34 +50,25 @@ UINT8 checkCollision (UINT8 mapx, UINT8 mapy, INT8 *dx, INT8 *dy, UINT8 checkTra
     // ANd there's MAX 2 tiles you are trying to visually enter
     if (*dx < 0){
         //going LEFT: tileX is the upper one, tileX2 bottom one
-        tileX  = GET_BG_TILE(mapx + *dx -8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_HEIGHT);
-        tileX2 = GET_BG_TILE(mapx + *dx -8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_FOOT);
+        tileX  = GET_BG_TILE(mapx + *dx -8 + COLLIDE_SIDES_OVERLAP_L, mapy  - COLLIDE_VERT_HEIGHT);
+        tileX2 = GET_BG_TILE(mapx + *dx -8 + COLLIDE_SIDES_OVERLAP_L, mapy  - COLLIDE_VERT_FOOT);
     }
     if (*dx > 0){
         //going RIGHT: tileX is the upper one, tileX2 bottom one
-        tileX  = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_HEIGHT);
-        tileX2 = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_FOOT);
+        tileX  = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy  - COLLIDE_VERT_HEIGHT);
+        tileX2 = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy  - COLLIDE_VERT_FOOT);
     }
-
+    
     if (*dy < 0){
         //going UP : tileY is the left one, tileY2 is the right one
-        tileY  = GET_BG_TILE(mapx + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_HEIGHT);
-        tileY2 = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_HEIGHT);
+        tileY  = GET_BG_TILE(mapx - 8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_HEIGHT);
+        tileY2 = GET_BG_TILE(mapx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_HEIGHT);
     }
     if (*dy > 0){
         //going DOWN: tileY is the left one, tileY2 is the right one
-        tileY  = GET_BG_TILE(mapx + *dx - 8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_FOOT);
-        tileY2 = GET_BG_TILE(mapx + *dx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_FOOT);
+        tileY  = GET_BG_TILE(mapx - 8 + COLLIDE_SIDES_OVERLAP_L, mapy + *dy - COLLIDE_VERT_FOOT);
+        tileY2 = GET_BG_TILE(mapx + 8 - COLLIDE_SIDES_OVERLAP_R, mapy + *dy - COLLIDE_VERT_FOOT);
     }
-
-/*
-    //DEBUG
-    if (tileX != 0)
-        set_bkg_tiles(0, 0, 1, 1, &tileX);
-    if (tileY != 0)
-        set_bkg_tiles(0, 1, 1, 1, &tileY);
-*/   
-
 
     //OPTIMIZATION: put all the collision tiles at begining of tile list and just make  a comparison
     if (*dx != 0 && (tileX <= COLLIDE_MAX_TILEID || tileX2 <= COLLIDE_MAX_TILEID)){
@@ -85,7 +76,6 @@ UINT8 checkCollision (UINT8 mapx, UINT8 mapy, INT8 *dx, INT8 *dy, UINT8 checkTra
         *dx = 0;
         result = MOVE_CHECK_COLLISION;
     }
-    //no "else" because AI might be in a corner
     if (*dy != 0 && (tileY <= COLLIDE_MAX_TILEID || tileY2 <= COLLIDE_MAX_TILEID)){
         //collision
         *dy = 0;

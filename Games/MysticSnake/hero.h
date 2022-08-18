@@ -25,6 +25,10 @@ extern struct hero hero;
 #define MOVE_CHECK_COLLISION    1
 #define MOVE_CHECK_TRANSITION   2
 
+//last param of checkCollision() only the hero needs to check transition
+#define IGNORE_TRANSITION       0
+#define CHECK_FOR_TRANSITION    1
+
 //checks if the next move from x,y is possible regarding collision
 UINT8  checkCollision (UINT8 mapx, UINT8 mapy, INT8 *dx, INT8 *dy, UINT8 checkTransition);
 

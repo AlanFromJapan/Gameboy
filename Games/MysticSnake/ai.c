@@ -121,17 +121,15 @@ void moveAI(){
     for (UINT8 i = 0; i < currentMapAICount; i++){
         INT8 dx, dy;
 
-        //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
         dx = hero.x < currentMapAI[i].x ? -1 : hero.x == currentMapAI[i].x ? 0 : +1;
 
-        //big bakground offset (> 160) mean in fact SMALL room being centered so need to adapt the formula
         dy = hero.y < currentMapAI[i].y ? -1 : hero.y == currentMapAI[i].y ? 0 : +1;
 
-        //is move valid?
-        if (checkCollision(currentMapAI[i].x, currentMapAI[i].y, &dx, &dy, 0) != MOVE_CHECK_COLLISION) {
-            currentMapAI[i].x = currentMapAI[i].x + dx;
-            currentMapAI[i].y = currentMapAI[i].y + dy;
-        }
+        //is move valid? ignore result but let the function update dx/dy
+        checkCollision(currentMapAI[i].x, currentMapAI[i].y, &dx, &dy, IGNORE_TRANSITION);
+        //this allows to move along a wall if at least one direction is possible if not both
+        currentMapAI[i].x = currentMapAI[i].x + dx;
+        currentMapAI[i].y = currentMapAI[i].y + dy;
     }
 
     //Move the sprites
