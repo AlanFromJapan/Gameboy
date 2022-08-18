@@ -122,8 +122,19 @@ void moveAI(){
         INT8 dx, dy;
 
         dx = hero.x < currentMapAI[i].x ? -1 : hero.x == currentMapAI[i].x ? 0 : +1;
-
         dy = hero.y < currentMapAI[i].y ? -1 : hero.y == currentMapAI[i].y ? 0 : +1;
+
+        //can the AI "see" the player?
+        //use a dirty square zone to speed up and avoid doing sqrt() calc on a 8bit Z80 :D
+        if (dx > 0 && hero.x - currentMapAI[i].x > AI_SEE_RADIUS)
+            continue;
+        if (dx < 0 && currentMapAI[i].x - hero.x > AI_SEE_RADIUS)
+            continue;
+        if (dy > 0 && hero.y - currentMapAI[i].y > AI_SEE_RADIUS)
+            continue;
+        if (dy < 0 && currentMapAI[i].y - hero.y > AI_SEE_RADIUS)
+            continue;
+        
 
         //is move valid? ignore result but let the function update dx/dy
         checkCollision(currentMapAI[i].x, currentMapAI[i].y, &dx, &dy, IGNORE_TRANSITION);

@@ -4,6 +4,9 @@
 #include <gb/gb.h>
 #include "maps.h"
 
+//Distance in pixels how far the AI can "see" the player. THIS IS NOT A TRUE DISTANCE (use a square not a circle)
+#define AI_SEE_RADIUS   80
+
 struct ai {
     UINT8 tileID;
     INT8 hp;
