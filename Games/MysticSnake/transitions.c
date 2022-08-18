@@ -185,13 +185,9 @@ void makeRandomSingleRoom(struct map* map){
     clearDynmap(TILE_EMPTY);
     set_bkg_tiles(0, 0, DynMap_MAX_WIDTH, DynMap_MAX_HEIGHT, dynmap);
 
-    //hero start point
-    hero.x=16;
-    hero.y=16;
-
     //Map size
     (*map).data = dynmap;
-    //W: up to 32, min 6
+    //W: up to 32, min 8
     dynmapW = ((UINT8)(rand() & 0x1f));
     dynmapW = MAX(8, dynmapW);
     //H: up to 32 min 8
@@ -200,6 +196,20 @@ void makeRandomSingleRoom(struct map* map){
 
     (*map).tilesW = dynmapW;
     (*map).tilesH = dynmapH;
+
+
+    //hero start point : find a place within the map
+    for(;;){  
+        hero.x = 8 + ((UINT8)(rand() & 0x7f)); //0x7f means max is 128 so always within first half of screen
+        if (hero.x < SCREENWIDTH && hero.x < ((dynmapW -2) * 8))
+            break;
+    }
+    for(;;){  
+        hero.y = 16 + ((UINT8)(rand() & 0x7f)); //0x7f means max is 128 so always within first half of screen
+        if (hero.y < SCREENHEIGHT && hero.y < ((dynmapH -2) * 8))
+            break;
+    }
+
 
     //pick the ground
     switch (rand() & 0x03) {
@@ -387,9 +397,9 @@ void mapTransition(struct map* map){
  */
 void doMapTransition(){
     HIDE_BKG;
-    delay (500);
+    delay (TRANSITIONS_DELAY_MS);
     HIDE_SPRITES;
-    delay (500);
+    delay (TRANSITIONS_DELAY_MS);
 
     //LOAD!
     mapTransition(&currentMap);
@@ -399,10 +409,8 @@ void doMapTransition(){
         bgx=0;
     }
     else {
-
-        bgx = (GRAPHICS_WIDTH - currentMap.tilesW * 8) / 2 ;
-        hero.x += bgx;
-        bgx = 255 - bgx;        
+        //centers the new map horizontally in the screen (no horizontal scroll)
+        bgx = -(GRAPHICS_WIDTH - currentMap.tilesW * 8) / 2 ;
     }
     
     if (currentMap.tilesH >= SCREEN_TILES_HEIGHT) {
@@ -411,16 +419,14 @@ void doMapTransition(){
     }
     else {
         //centers the new map vertically in the screen (no vertical scroll)
-        bgy = (GRAPHICS_HEIGHT - currentMap.tilesH * 8) / 2 ;
-        hero.y += bgy;
-        bgy = 255 - bgy; 
+        bgy = -(GRAPHICS_HEIGHT - currentMap.tilesH * 8) / 2 ;
     }
 
 
     SHOW_SPRITES;
-    delay (500);
+    delay (TRANSITIONS_DELAY_MS);
     SHOW_BKG;
-    delay (500);
+    delay (TRANSITIONS_DELAY_MS);
 
 }
 

@@ -6,6 +6,8 @@
 
 #include "maps.h"
 
+#define TRANSITIONS_DELAY_MS    300
+
 //Returns the background tile at XX,YY
 #define GET_BG_TILE(XX, YY)     (currentMap.data[((YY) / 8) * currentMap.tilesW + ((XX) / 8)])
 
