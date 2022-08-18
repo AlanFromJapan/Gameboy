@@ -43,7 +43,7 @@ clean:
 run:
 	@echo "\e[1;32mRun !!\e[0m"
 #	vba $(ROM_NAME)
-	wine /usr/local/apps/bgb/bgb.exe ./$(ROM_NAME)
+	wine ../../bgb/bgb.exe ./$(ROM_NAME)
 
 full: clean build run
 
