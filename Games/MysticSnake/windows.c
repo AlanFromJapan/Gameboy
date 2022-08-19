@@ -19,8 +19,14 @@ unsigned char _winBuffer[] = {
 
 };
 
-
 unsigned char _wintextBuffer[WINDOW_TEXT_MAXLEN+1];
+
+//HUD size
+#define HUD_WIDTH       20
+#define HUD_HEIGHT      1
+
+//The buffer for HUD window: just 1 line (20 tiles)
+unsigned char _hudBuffer[HUD_WIDTH * HUD_HEIGHT];
 
 
 inline void windowClean(){
@@ -121,10 +127,29 @@ void windowShowText(char* msg, UINT8 timeoutSec){
     HIDE_WIN;
 }
 
-void showHUD(char* msg){
-    windowClean();
+void showHUD(){
+    //init
+    for (UINT8 i = 0; i < HUD_HEIGHT * HUD_WIDTH; i++){
+        _hudBuffer[i] = TILE_EMPTY;
+    }
+    //just for the test, put this somewhere else
+    for (UINT8 i = 0; i < 3; i++){
+        _hudBuffer[i] = TILE_HEART_FULL;
+    }
+    _hudBuffer[3] = TILE_HEART_HALF;
+    _hudBuffer[4] = TILE_HEART_0;
+    _hudBuffer[5] = TILE_HEART_0;
+
+    _hudBuffer[17] = TILE_NUMBER_2;
+    _hudBuffer[18] = TILE_NUMBER_3;
+    _hudBuffer[19] = TILE_NUMBER_4;
+
+
+    set_win_tiles(0,0,HUD_WIDTH,HUD_HEIGHT, _hudBuffer);
 
     SHOW_WIN;
-    //screen bottom
-    move_win(8 * 18 - 8, 0);
+    //screen bottom: align to X=8 to be fit to the border (0 makes strange results) #shrug
+    move_win(8, SCREENHEIGHT - 8);
 }
+
+

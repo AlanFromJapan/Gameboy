@@ -129,6 +129,9 @@ void main() {
     //branch interrup handler for VBlank
     add_VBL(vblint);
 
+    //HUD
+    showHUD();
+
     while(1) {
         INT8 dx = 0;
         INT8 dy = 0;
@@ -264,13 +267,11 @@ void main() {
             }
 
 
-
-
             //Now AI's turn to move
             moveAI();
         }
 
-        //debouncing on the cheap
+        //debouncing on the cheap: replace me with frame skipping if needed
         delay(10);
 
 
