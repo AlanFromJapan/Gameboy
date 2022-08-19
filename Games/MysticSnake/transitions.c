@@ -5,6 +5,9 @@
 #include "Map_Intro.h"
 #include "Map_Room1.h"
 #include "Map_BigRoom1.h"
+#include "Map_Cemetary1.h"
+#include "Map_Chapelle1.h"
+#include "Map_Dedale1.h"
 
 #include "graphics.h"
 #include <gb/drawing.h>
@@ -337,7 +340,34 @@ void mapTransition(struct map* map){
                 Hardcoding now, todo rewrite as a static array of transitions later if more rooms.
             */
             if ((*map).data == Map_Intro){
-                //Intro -> enter in Room1
+                //Intro -> cemetary
+                hero.x=8;
+                hero.y=144-24;
+                (*map).data = Map_Cemetary1;
+                (*map).tilesW = Map_Cemetary1_WIDTH;
+                (*map).tilesH = Map_Cemetary1_HEIGHT;
+                (*map).floorTile = TILE_SAND;
+
+                //mMapTransitionModeFlag = 1; //stay out of the random map loop
+                break;
+            }
+
+            if ((*map).data == Map_Cemetary1){
+                //Cemetary -> enter in Chapelle1
+                hero.x=Map_Chapelle1_WIDTH*8/2;
+                hero.y= (Map_Chapelle1_HEIGHT -1)*8;
+                (*map).data = Map_Chapelle1;
+                (*map).tilesW = Map_Chapelle1_WIDTH;
+                (*map).tilesH = Map_Chapelle1_HEIGHT;
+                (*map).floorTile = TILE_EMPTY;
+
+                //mMapTransitionModeFlag = 1; //stay out of the random map loop
+                break;
+            }
+
+
+            if ((*map).data == Map_Chapelle1){
+                //Cemetary -> enter in Room1
                 hero.x=24;
                 hero.y=40;
                 (*map).data = Map_Room1;
@@ -405,8 +435,13 @@ void doMapTransition(){
     mapTransition(&currentMap);
 
     if (currentMap.tilesW >= SCREEN_TILES_WIDTH) {
-        //if wider than a screen, align left
-        bgx=0;
+        //if wider than a screen, shw the quadrant with the hero
+        if (hero.x < MAP_MAX_TILES_W * 8 / 2){
+            bgx = 0;
+        }
+        else {
+            bgx = (MAP_MAX_TILES_W -2) * 8 /2;
+        }
     }
     else {
         //centers the new map horizontally in the screen (no horizontal scroll)
@@ -414,8 +449,13 @@ void doMapTransition(){
     }
     
     if (currentMap.tilesH >= SCREEN_TILES_HEIGHT) {
-        //if taller than a screen, align top
-        bgy=0;
+        //if taller than a screen, show quadrant with the hero
+        if (hero.y < MAP_MAX_TILES_H * 8 / 2 ){
+            bgy = 0;
+        }
+        else {
+            bgy = (MAP_MAX_TILES_H -2) * 8 /2;
+        }
     }
     else {
         //centers the new map vertically in the screen (no vertical scroll)

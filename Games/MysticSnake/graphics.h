@@ -9,10 +9,16 @@
 #define SCREEN_TILES_HEIGHT 18
 
 
+//A map's maximum width (in tiles)
+#define MAP_MAX_TILES_W  32
+//A map's maximum height (in tiles)
+#define MAP_MAX_TILES_H  32
+
+
 //Dynamic map maximum Width IN TILES
-#define DynMap_MAX_WIDTH   32
+#define DynMap_MAX_WIDTH   MAP_MAX_TILES_W
 //Dynamic map maximum height IN TILES
-#define DynMap_MAX_HEIGHT  32 
+#define DynMap_MAX_HEIGHT  MAP_MAX_TILES_H 
 
 
 extern signed int bgx ;

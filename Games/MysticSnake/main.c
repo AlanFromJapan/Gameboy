@@ -78,6 +78,7 @@ void showTitle(){
 
 
 
+
 /**
  * Move to next screen 
  */
@@ -152,7 +153,7 @@ void main() {
             dy = -1;
             hero.heroLook = HERO_LOOK_UP;
         }
-        if(lastJoypad & J_DOWN && MAP2SCREEN_Y(hero.y) < SCREENH) {
+        if(lastJoypad & J_DOWN && MAP2SCREEN_Y(hero.y) < SCREENH -1) { 
             dy = 1;
             hero.heroLook = HERO_LOOK_DOWN;
         }
