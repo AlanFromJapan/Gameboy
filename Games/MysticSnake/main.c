@@ -30,12 +30,15 @@
 #include "tests.h"
 #endif //RUN_TESTS
 
+//Width of the playable area in pixels
 #define SCREENW         GRAPHICS_WIDTH
-#define SCREENH         GRAPHICS_HEIGHT
+//Height of the playable area in pixels : added a -8 to provision for the bottom HUD that steals 1 line of visibility
+#define SCREENH         (GRAPHICS_HEIGHT -8)
+//Scrolling limits
 #define HSCROLLLEFT         32
 #define HSCROLLRIGHT        (GRAPHICS_WIDTH - 32)
-#define VSCROLLTOP          32
-#define VSCROLLBOTTOM       (GRAPHICS_HEIGHT -32)
+#define VSCROLLTOP          40
+#define VSCROLLBOTTOM       (GRAPHICS_HEIGHT -40)
 
 
 
