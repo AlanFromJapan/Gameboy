@@ -11,9 +11,11 @@
 #include <gb/drawing.h>
 
 #include "maps.h"
-#include "my_lib01.h"
-#include "Map_Intro.h"
-#include "Map_Title.h"
+
+#include "maps/my_lib01.h"
+#include "maps/Map_Intro.h"
+#include "maps/Map_Title.h"
+
 #include "transitions.h"
 #include "graphics.h"
 #include "inputs.h"

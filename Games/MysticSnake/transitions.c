@@ -1,13 +1,13 @@
 
 #include "transitions.h"
 
-#include "my_lib01.h"
-#include "Map_Intro.h"
-#include "Map_Room1.h"
-#include "Map_BigRoom1.h"
-#include "Map_Cemetary1.h"
-#include "Map_Chapelle1.h"
-#include "Map_Dedale1.h"
+#include "maps/my_lib01.h"
+#include "maps/Map_Intro.h"
+#include "maps/Map_Room1.h"
+#include "maps/Map_BigRoom1.h"
+#include "maps/Map_Cemetary1.h"
+#include "maps/Map_Chapelle1.h"
+#include "maps/Map_Dedale1.h"
 
 #include "graphics.h"
 #include <gb/drawing.h>

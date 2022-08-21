@@ -1,5 +1,5 @@
 #include "ai.h"
-#include "my_lib01.h"
+#include "maps/my_lib01.h"
 #include "maps.h"
 #include "graphics.h"
 

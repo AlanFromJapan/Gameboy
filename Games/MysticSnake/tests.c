@@ -1,11 +1,11 @@
 #include "tests.h"
 #include "graphics.h"
-#include "my_lib01.h"
+#include "maps/my_lib01.h"
 #include "inputs.h"
 #include "windows.h"
 #include "transitions.h"
 
-#include "Map_Outside1.h"
+#include "maps/Map_Outside1.h"
 
 
 void test_text(){

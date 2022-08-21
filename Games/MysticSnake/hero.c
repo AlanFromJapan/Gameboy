@@ -1,6 +1,6 @@
 #include "graphics.h"
 #include "hero.h"
-#include "my_lib01.h"
+#include "maps/my_lib01.h"
 #include "transitions.h"
 
 //THE HERO one and unique
