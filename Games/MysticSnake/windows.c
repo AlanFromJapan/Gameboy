@@ -2,7 +2,7 @@
 #include "maps/my_lib01.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include "hero.h"
 #include "graphics.h"
 
 //20 tiles on a screen line, -2 for the borders
@@ -127,29 +127,40 @@ void windowShowText(char* msg, UINT8 timeoutSec){
     HIDE_WIN;
 }
 
+/**
+ * Shows the HUD
+ */
 void showHUD(){
     //init
     for (UINT8 i = 0; i < HUD_HEIGHT * HUD_WIDTH; i++){
         _hudBuffer[i] = TILE_EMPTY;
     }
-    //just for the test, put this somewhere else
-    for (UINT8 i = 0; i < 3; i++){
-        _hudBuffer[i] = TILE_HEART_FULL;
-    }
-    _hudBuffer[3] = TILE_HEART_HALF;
-    _hudBuffer[4] = TILE_HEART_0;
-    _hudBuffer[5] = TILE_HEART_0;
-
-    _hudBuffer[17] = TILE_NUMBER_2;
-    _hudBuffer[18] = TILE_NUMBER_3;
-    _hudBuffer[19] = TILE_NUMBER_4;
-
-
-    set_win_tiles(0,0,HUD_WIDTH,HUD_HEIGHT, _hudBuffer);
+    
+    updateHUD();
 
     SHOW_WIN;
     //screen bottom: align to X=8 to be fit to the border (0 makes strange results) #shrug
     move_win(8, SCREENHEIGHT - 8);
+}
+
+/**
+ * Updates the info displayed on the HUD (hearts, points, ...)
+ */
+void updateHUD(){
+    //fills the heart bar
+    for (UINT8 i = 0; i < hero.lifeMax; i++){
+        _hudBuffer[i] = TILE_HEART_0;
+    }
+    for (UINT8 i = 0; i < hero.life; i++){
+        _hudBuffer[i] = TILE_HEART_FULL;
+    }
+
+    //score or something ... we'll see
+    _hudBuffer[17] = TILE_NUMBER_2;
+    _hudBuffer[18] = TILE_NUMBER_3;
+    _hudBuffer[19] = TILE_NUMBER_4;
+
+    set_win_tiles(0,0,HUD_WIDTH,HUD_HEIGHT, _hudBuffer);
 }
 
 

@@ -13,6 +13,8 @@ struct hero {
     UINT8 y;
     UINT8 stepCount;
     UINT8 heroLook;
+    UINT8 lifeMax;
+    UINT8 life;
 };
 
 extern struct hero hero;

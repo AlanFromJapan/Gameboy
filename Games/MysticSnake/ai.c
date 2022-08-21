@@ -8,6 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Substraction between 2 number in Abs value
+#define ABS_SUB(A,B) ((A) > (B) ? (A) - (B) : (B) - (A))
+#define MAX(A,B) ((A) > (B) ? (A) : (B))
+#define MIN(A,B) ((A) > (B) ? (B) : (A))
+
 
 //HOw many sprites a DMG can show
 #define SPRITE_MAX_COUNT    40
@@ -103,15 +108,17 @@ void setMapAI(struct map* map){
 }
 
 //Moves each AI 
-void moveAI(){
+UINT8 moveAI(){
     if (currentMapAI == NULL || currentMapAICount == 0){
-        return;
+        return AI_NO_HIT;
     }
+
+    UINT8 result = AI_NO_HIT;
 
     //slow down the AIs
     aiThrottleCounter++;
     if (aiThrottleCounter< AI_THROTTLE){
-        return;
+        return AI_NO_HIT;
     }
 
     //Ok time to do something
@@ -144,10 +151,26 @@ void moveAI(){
         //this allows to move along a wall if at least one direction is possible if not both
         currentMapAI[i].x = currentMapAI[i].x + dx;
         currentMapAI[i].y = currentMapAI[i].y + dy;
+
+
+
+        //by chance should we hit?
+        if (ABS_SUB(hero.x, currentMapAI[i].x) < 8){// && ABS_SUB(hero.y, currentMapAI[i].y) < 8){
+            //hit!
+            if (hero.life == 0) {
+                //GAMEOVER
+            }
+            else{
+                hero.life = hero.life -1;
+            }
+            result = AI_HIT_HERO;
+        }
     }
 
     //Move the sprites
     backgroundMoveEventAI ();
+
+    return result;
 }
 
 

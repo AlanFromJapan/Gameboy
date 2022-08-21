@@ -90,6 +90,16 @@ inline void doTransition(){
     setMapAI(&currentMap);
 }
 
+inline void initHero() {
+    //make the hero and move to start point
+    set_sprite_tile(0, TILE_HERO_NW);
+    set_sprite_tile(1, TILE_HERO_NE);
+    
+    MV_HERO();
+
+    hero.lifeMax = 5;
+    hero.life = 3;
+}
 
 /*
  ***********************************************************************************************
@@ -122,11 +132,8 @@ void main() {
     //show the landing map
     showInitialMap();
 
-    //make the hero and move to start point
-    set_sprite_tile(0, TILE_HERO_NW);
-    set_sprite_tile(1, TILE_HERO_NE);
-    
-    MV_HERO();
+    //initialize the hero
+    initHero();
     
     SHOW_BKG;
     SHOW_SPRITES;
@@ -274,7 +281,10 @@ void main() {
 
 
             //Now AI's turn to move
-            moveAI();
+            if (moveAI() == AI_HIT_HERO){
+                //check for death logic
+                updateHUD();
+            }
         }
 
         //debouncing on the cheap: replace me with frame skipping if needed
