@@ -2,7 +2,7 @@
 #ifndef __my_lib01_H__
 #define __my_lib01_H__
 
-#define my_lib01_COUNT   192
+#define my_lib01_COUNT   204
 
 
 #define TILE_SAPIN_NW   0
@@ -197,6 +197,18 @@
 #define TILE_SEA_2   189
 #define TILE_SEA_3   190
 #define TILE_SEA_4   191
+#define TILE_EPEE   192
+#define TILE_HACHE   193
+#define TILE_BOUCLIER   194
+#define TILE_CHAISE_NW   195
+#define TILE_CHAISE_SW   196
+#define TILE_CHAISE_NE   197
+#define TILE_CHAISE_SE   198
+#define TILE_ARBALETTE   199
+#define TILE_FIREBALL_NW   200
+#define TILE_FIREBALL_SW   201
+#define TILE_FIREBALL_NE   202
+#define TILE_FIREBALL_SE   203
 
 
 //declared as const to save compile and execution time/space
