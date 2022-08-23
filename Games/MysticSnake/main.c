@@ -97,8 +97,9 @@ inline void initHero() {
     
     MV_HERO();
 
-    hero.lifeMax = 5;
-    hero.life = 3;
+    //HP are doubled to use half hearts
+    hero.lifeMax = 6 *2;
+    hero.life = 6 *2;
 }
 
 /*
@@ -281,8 +282,20 @@ void main() {
 
 
             //Now AI's turn to move
-            if (moveAI() == AI_HIT_HERO){
+            moveAI();
+            UINT8 dmg = hitPlayerTestAI();
+            
+            if (dmg != 0){
+                //update HP
+                heroDamaged(dmg);
+
                 //check for death logic
+                if (hero.life == 0){
+                    windowShowText("  D E F A I T E", 10);
+                    reset();
+                }
+
+                //update the HUD if still alive
                 updateHUD();
             }
         }

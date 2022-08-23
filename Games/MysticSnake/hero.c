@@ -114,3 +114,17 @@ inline void updateHeroSprite(const UINT8 baseSprite){
         set_sprite_tile(1, baseSprite + 6);
     }
 }
+
+
+//hero was hit by dmg points
+void heroDamaged(UINT8 dmg){
+    //add armor here one day?
+
+    if (hero.life < dmg){
+        hero.life = 0;
+    }
+    else{
+        hero.life -= dmg;
+    }
+
+}

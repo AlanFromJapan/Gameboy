@@ -9,15 +9,12 @@
 #define ENABLE_AI_SEE_RADIUS
 
 
-#define AI_NO_HIT   0
-#define AI_HIT_HERO 1
-
-
 struct ai {
     UINT8 tileID;
     INT8 hp;
     UINT8 x;
     UINT8 y;
+    UINT8 damage;
 };
 
 extern struct ai* currentMapAI;
@@ -28,8 +25,11 @@ void clearAllAI();
 //Inits the currentMapAI with the proper AIs for this map
 void setMapAI(struct map* map);
 
-//Moves each AI and returns if hit with player occured
-UINT8 moveAI();
+//Moves each AI 
+void moveAI();
+
+//AI hit player returns total damage inflicted
+UINT8 hitPlayerTestAI();
 
 //If bg moved on bug map, need to reflect the impact on the sprites visible positions
 void backgroundMoveEventAI ();

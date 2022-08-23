@@ -16,12 +16,16 @@
 
 //HOw many sprites a DMG can show
 #define SPRITE_MAX_COUNT    40
-//SLow down the AI to move/act only onces every nth times (one setting for all for now)
-#define AI_THROTTLE         7
+//SLow down the AI to MOVE only onces every nth times (one setting for all for now)
+#define AI_MOVE_THROTTLE    7
+//SLow down the AI to HIT only onces every nth times (one setting for all for now)
+#define AI_HIT_THROTTLE    14
+
 
 struct ai* currentMapAI = NULL;
 UINT8 currentMapAICount = 0;
-UINT8 aiThrottleCounter = 0;
+UINT8 aiMoveThrottleCounter = 0;
+UINT8 aiHitThrottleCounter = 0;
 
 //Removes all the AI (in memory and onscreen sprites)
 void clearAllAI(){
@@ -93,6 +97,7 @@ void setMapAI(struct map* map){
     for (UINT8 i = 0; i < currentMapAICount; i++){
         currentMapAI[i].hp = 1 + (rand() & 0x0f);
         currentMapAI[i].tileID = TILE_SNAKE_NW;
+        currentMapAI[i].damage = 1;
 
         //set the ai somewhere the floor is free within the room
         setAIRandomPosition (&(currentMapAI[i]), map);
@@ -108,21 +113,19 @@ void setMapAI(struct map* map){
 }
 
 //Moves each AI 
-UINT8 moveAI(){
+void moveAI(){
     if (currentMapAI == NULL || currentMapAICount == 0){
-        return AI_NO_HIT;
+        return;
     }
 
-    UINT8 result = AI_NO_HIT;
-
     //slow down the AIs
-    aiThrottleCounter++;
-    if (aiThrottleCounter< AI_THROTTLE){
-        return AI_NO_HIT;
+    aiMoveThrottleCounter++;
+    if (aiMoveThrottleCounter< AI_MOVE_THROTTLE){
+        return;
     }
 
     //Ok time to do something
-    aiThrottleCounter = 0;
+    aiMoveThrottleCounter = 0;
 
     //Calculate new position : just a simple right line toward player
     for (UINT8 i = 0; i < currentMapAICount; i++){
@@ -151,26 +154,41 @@ UINT8 moveAI(){
         //this allows to move along a wall if at least one direction is possible if not both
         currentMapAI[i].x = currentMapAI[i].x + dx;
         currentMapAI[i].y = currentMapAI[i].y + dy;
-
-
-
-        //by chance should we hit?
-        if (ABS_SUB(hero.x, currentMapAI[i].x) < 8){// && ABS_SUB(hero.y, currentMapAI[i].y) < 8){
-            //hit!
-            if (hero.life == 0) {
-                //GAMEOVER
-            }
-            else{
-                hero.life = hero.life -1;
-            }
-            result = AI_HIT_HERO;
-        }
     }
 
     //Move the sprites
     backgroundMoveEventAI ();
+}
 
-    return result;
+
+//AI hit player returns total damage inflicted
+UINT8 hitPlayerTestAI(){
+    UINT8 dmg = 0;
+
+    if (currentMapAI == NULL || currentMapAICount == 0){
+        return 0;
+    }
+
+
+    //slow down the AIs
+    aiHitThrottleCounter++;
+    if (aiHitThrottleCounter< AI_HIT_THROTTLE){
+        return 0;
+    }
+
+    //Ok time to do something
+    aiHitThrottleCounter = 0;
+
+    //Check which hit and how much damage inflicted
+    for (UINT8 i = 0; i < currentMapAICount; i++){
+        //by chance should we hit?
+        if (ABS_SUB(hero.x, currentMapAI[i].x) < 8 && ABS_SUB(hero.y, currentMapAI[i].y) < 8){
+            //hit!
+            dmg += currentMapAI[i].damage;
+        }
+    }
+
+    return dmg;
 }
 
 

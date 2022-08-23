@@ -13,7 +13,9 @@ struct hero {
     UINT8 y;
     UINT8 stepCount;
     UINT8 heroLook;
+    //life is DOUBLED to use the "half hearts"
     UINT8 lifeMax;
+    //life is DOUBLED to use the "half hearts"
     UINT8 life;
 };
 
@@ -36,5 +38,8 @@ UINT8  checkCollision (UINT8 mapx, UINT8 mapy, INT8 *dx, INT8 *dy, UINT8 checkTr
 
 //Hero tiles have the alternate (left foot / right foot) stored one after the other, so once you have one the rest is just adding offset
 inline void updateHeroSprite(const UINT8 baseSprite);
+
+//hero was hit by dmg points
+void heroDamaged(UINT8 dmg);
 
 #endif // __HERO_H__

@@ -148,11 +148,16 @@ void showHUD(){
  */
 void updateHUD(){
     //fills the heart bar
-    for (UINT8 i = 0; i < hero.lifeMax; i++){
+    //LIFE is DOUBLED to use the half hearts
+    for (UINT8 i = 0; i < hero.lifeMax /2; i++){
         _hudBuffer[i] = TILE_HEART_0;
     }
-    for (UINT8 i = 0; i < hero.life; i++){
+    for (UINT8 i = 0; i < hero.life/2; i++){
         _hudBuffer[i] = TILE_HEART_FULL;
+    }
+    if (hero.life % 2 == 1){
+        //half heart
+        _hudBuffer[hero.life/2] = TILE_HEART_HALF;
     }
 
     //score or something ... we'll see
