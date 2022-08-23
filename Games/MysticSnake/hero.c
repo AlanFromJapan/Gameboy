@@ -120,11 +120,17 @@ inline void updateHeroSprite(const UINT8 baseSprite){
 void heroDamaged(UINT8 dmg){
     //add armor here one day?
 
+    if (hero.invincibleCounter > 0)
+        return;
+        
     if (hero.life < dmg){
         hero.life = 0;
     }
     else{
         hero.life -= dmg;
+
+        //get some invincibility "frames"
+        hero.invincibleCounter = 100;
     }
 
 }

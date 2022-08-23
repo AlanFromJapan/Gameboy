@@ -17,6 +17,8 @@ struct hero {
     UINT8 lifeMax;
     //life is DOUBLED to use the "half hearts"
     UINT8 life;
+    //invincible counter: blink for a time
+    UINT8 invincibleCounter;
 };
 
 extern struct hero hero;

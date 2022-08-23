@@ -19,7 +19,7 @@
 //SLow down the AI to MOVE only onces every nth times (one setting for all for now)
 #define AI_MOVE_THROTTLE    7
 //SLow down the AI to HIT only onces every nth times (one setting for all for now)
-#define AI_HIT_THROTTLE    14
+#define AI_HIT_THROTTLE    25
 
 
 struct ai* currentMapAI = NULL;

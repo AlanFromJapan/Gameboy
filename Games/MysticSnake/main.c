@@ -100,6 +100,7 @@ inline void initHero() {
     //HP are doubled to use half hearts
     hero.lifeMax = 6 *2;
     hero.life = 6 *2;
+    hero.invincibleCounter = 0;
 }
 
 /*
@@ -280,6 +281,29 @@ void main() {
                 }
             }
 
+            /*************************************** BATTLE MGMT ***********************************************/
+
+            //decrease invinvible frame counter if any
+            if (hero.invincibleCounter > 0){
+                hero.invincibleCounter--;
+
+                UINT8 prop;
+                //blink
+                if (hero.invincibleCounter % 2 == 1){
+                    //ODD is off  
+                    prop = get_sprite_prop(0);
+                    set_sprite_prop(0, prop | 0x10);
+                    prop = get_sprite_prop(1);
+                    set_sprite_prop(1, prop | 0x10);
+                }
+                else {
+                    //EVEN is normal
+                    prop = get_sprite_prop(0);
+                    set_sprite_prop(0, prop & 0xef);
+                    prop = get_sprite_prop(1);
+                    set_sprite_prop(1, prop & 0xef);
+                }
+            }
 
             //Now AI's turn to move
             moveAI();
@@ -291,7 +315,12 @@ void main() {
 
                 //check for death logic
                 if (hero.life == 0){
+                    //change to a pile of bones
+                    set_sprite_tile(0, TILE_REMAINS_NW);
+                    set_sprite_tile(1, TILE_REMAINS_NE);
+                    //neg
                     windowShowText("  D E F A I T E", 10);
+                    //rince and repreat
                     reset();
                 }
 
