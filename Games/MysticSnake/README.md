@@ -11,12 +11,15 @@ This will be just a demo of the different capabilities of the framework, without
 - collision detection with respect of pseudo top view
 - transition detection (collision with tiles that trigger the transition to next map)
 - monster ("AI") support with the most basic version of player chasing
+- HUD displaying life etc
 
 ## What it will do (one day)
-- HUD displaying life etc
 - Inventory menu
+- Items, chests, pick it, use it
 - Combat 
-- Some format for describing maps interations (ie: yaml file describing transitions between maps and a small parser to convert to a C file)
+- Weapons (contact/distant)
+- Magic!
+- Some format for describing maps interations (ie: yaml file describing transitions between maps, where to start the hero, enemies, etc. and a small parser to convert to a C file?)
 - NPC with dialog
 - Quests
 - Gold, purchase and sell etc
