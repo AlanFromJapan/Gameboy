@@ -27,3 +27,9 @@ This will be just a demo of the different capabilities of the framework, without
 - Music (don't count on that one)
 - GB Color support
 - Multi-bank support (now mono bank = 32kb max)
+
+## Map ideas
+- a cave, full of crystals
+- a labyrinth
+- sea/seaside
+- a tavern
