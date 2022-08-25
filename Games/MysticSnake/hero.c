@@ -116,12 +116,12 @@ inline void updateHeroSprite(const UINT8 baseSprite){
 }
 
 
-//hero was hit by dmg points
-void heroDamaged(UINT8 dmg){
+//hero was hit by dmg points, and returns how much HP were lost
+UINT8 heroDamaged(UINT8 dmg){
     //add armor here one day?
 
     if (hero.invincibleCounter > 0)
-        return;
+        return 0;
         
     if (hero.life < dmg){
         hero.life = 0;
@@ -133,4 +133,6 @@ void heroDamaged(UINT8 dmg){
         hero.invincibleCounter = 100;
     }
 
+    //for now no armor, take nothing or take all
+    return dmg;
 }

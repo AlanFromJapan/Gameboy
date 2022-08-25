@@ -22,6 +22,7 @@
 #include "windows.h"
 #include "ai.h"
 #include "hero.h"
+#include "sound.h"
 
 //#define SHOW_INTRO
 
@@ -146,6 +147,9 @@ void main() {
 
     //HUD
     showHUD();
+
+    //Sound
+    initSound();
 
     while(1) {
         INT8 dx = 0;
@@ -311,14 +315,17 @@ void main() {
             
             if (dmg != 0){
                 //update HP
-                heroDamaged(dmg);
+                if (heroDamaged(dmg) > 0){
+                    //if really hurt then ouch
+                    playSound(SOUND_HURT);
+                }
 
                 //check for death logic
                 if (hero.life == 0){
                     //change to a pile of bones
                     set_sprite_tile(0, TILE_REMAINS_NW);
                     set_sprite_tile(1, TILE_REMAINS_NE);
-                    //neg
+                    //nag
                     windowShowText("  D E F A I T E", 10);
                     //rince and repreat
                     reset();

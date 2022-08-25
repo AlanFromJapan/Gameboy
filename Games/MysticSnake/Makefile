@@ -26,6 +26,7 @@ CORE_FILES = \
 			$(OBJ_DIR)/ai.rel \
 			$(OBJ_DIR)/maps.rel \
 			$(OBJ_DIR)/hero.rel \
+			$(OBJ_DIR)/sound.rel \
 			$(OBJ_DIR)/main.rel
 
 build: $(CORE_FILES) $(MAP_FILES)

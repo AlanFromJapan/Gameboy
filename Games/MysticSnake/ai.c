@@ -19,7 +19,9 @@
 //SLow down the AI to MOVE only onces every nth times (one setting for all for now)
 #define AI_MOVE_THROTTLE    7
 //SLow down the AI to HIT only onces every nth times (one setting for all for now)
-#define AI_HIT_THROTTLE    25
+#define AI_HIT_THROTTLE     25
+//max distance in pixel an AI should be to hit
+#define HIT_DISTANCE        16
 
 
 struct ai* currentMapAI = NULL;
@@ -180,7 +182,7 @@ UINT8 hitPlayerTestAI(){
     //Check which hit and how much damage inflicted
     for (UINT8 i = 0; i < currentMapAICount; i++){
         //by chance should we hit?
-        if (ABS_SUB(hero.x, currentMapAI[i].x) < 8 && ABS_SUB(hero.y, currentMapAI[i].y) < 8){
+        if (ABS_SUB(hero.x, currentMapAI[i].x) < HIT_DISTANCE && ABS_SUB(hero.y, currentMapAI[i].y) < HIT_DISTANCE){
             //hit!
             dmg += currentMapAI[i].damage;
         }
