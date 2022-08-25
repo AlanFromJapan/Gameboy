@@ -53,8 +53,6 @@ void setAIRandomPosition (struct ai* ai, struct map* map) {
 
         x = rand();
         y = rand();
-        (*ai).x = x;
-        (*ai).y = y;
 
         //in the map (avoid the border for it's most likely a wall)
         if (x > 8 && x < ((*map).tilesW -2) * 8 && y > 8 && y < ((*map).tilesH -2) * 8){
