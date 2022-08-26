@@ -21,7 +21,9 @@ struct hero {
     //invincible counter: blink for a time
     UINT8 invincibleCounter;
     //damage inflicted by the hero (should be weapon dependant one day)
-    UINT8 damageWeapon;
+    UINT8 weaponDamage;
+    //distance max to the which weapon can deal damage in pixels, contact distance == 16
+    UINT8 weaponReach;
 };
 
 extern struct hero hero;

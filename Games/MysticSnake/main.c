@@ -106,7 +106,8 @@ inline void initHero() {
     hero.lifeMax = 6 *2;
     hero.life = 6 *2;
     hero.invincibleCounter = 0;
-    hero.damageWeapon = 2;
+    hero.weaponDamage = 2;
+    hero.weaponReach = 20;
 }
 
 /*

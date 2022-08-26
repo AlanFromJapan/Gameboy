@@ -229,16 +229,6 @@ void hitAITest(){
         return ;
     }
 
-
-    // //slow down the PLAYER!
-    // aiHitThrottleCounter++;
-    // if (aiHitThrottleCounter< AI_HIT_THROTTLE){
-    //     return;
-    // }
-
-    // //Ok time to do something
-    // aiHitThrottleCounter = 0;
-
     //Check which hit and how much damage inflicted
     for (UINT8 i = 0; i < currentMapAICount; i++){
         //skip dead AI
@@ -246,7 +236,7 @@ void hitAITest(){
             continue;
 
         //by chance should we hit?
-        if (ABS_SUB(hero.x, currentMapAI[i].x) < HIT_DISTANCE && ABS_SUB(hero.y, currentMapAI[i].y) < HIT_DISTANCE){
+        if (ABS_SUB(hero.x, currentMapAI[i].x) < hero.weaponReach && ABS_SUB(hero.y, currentMapAI[i].y) < hero.weaponReach){
             //additional condition, player must look in the right direction
             if (
                 (hero.x > currentMapAI[i].x && hero.heroLook == HERO_LOOK_LEFT)
@@ -255,14 +245,14 @@ void hitAITest(){
                 || (hero.y <= currentMapAI[i].y && hero.heroLook == HERO_LOOK_DOWN)
                 ) {
                 //hit!
-                if (hero.damageWeapon >= currentMapAI[i].hp){
+                if (hero.weaponDamage >= currentMapAI[i].hp){
                     //AI death
                     currentMapAI[i].hp = 0;
                     currentMapAI[i].tileID = TILE_REMAINS_NW;
                     updateSpriteTile(i);
                 }
                 else{
-                    currentMapAI[i].hp -= hero.damageWeapon;
+                    currentMapAI[i].hp -= hero.weaponDamage;
                 }
             }
         }
