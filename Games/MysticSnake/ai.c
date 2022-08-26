@@ -82,6 +82,15 @@ void setAIRandomPosition (struct ai* ai, struct map* map) {
 
 }
 
+
+//Updates the sprites
+inline void updateSpriteTile(UINT8 i){
+    //NO CHECK!
+    set_sprite_tile(2 + 2 * i, currentMapAI[i].tileID);
+    set_sprite_tile(2 + 2 * i + 1 , currentMapAI[i].tileID+2); //+2 tile ID since it's stored NW SW NE SE
+}
+
+
 //Inits the currentMapAI with the proper AIs for this map
 void setMapAI(struct map* map){
     //in case
@@ -107,8 +116,7 @@ void setMapAI(struct map* map){
         move_sprite(2 + 2 * i, MAP2SCREEN_X(currentMapAI[i].x), MAP2SCREEN_Y(currentMapAI[i].y));
         move_sprite(2 + 2 * i + 1, MAP2SCREEN_X(currentMapAI[i].x) + 8, MAP2SCREEN_Y(currentMapAI[i].y));
 
-        set_sprite_tile(2 + 2 * i, currentMapAI[i].tileID);
-        set_sprite_tile(2 + 2 * i + 1 , currentMapAI[i].tileID+2); //+2 tile ID since it's stored NW SW NE SE
+        updateSpriteTile(i);
     }
 }
 
@@ -129,6 +137,10 @@ void moveAI(){
 
     //Calculate new position : just a simple right line toward player
     for (UINT8 i = 0; i < currentMapAICount; i++){
+        //skip dead AI
+        if (currentMapAI[i].hp == 0)
+            continue;
+
         INT8 dx, dy;
 
         dx = hero.x < currentMapAI[i].x ? -1 : hero.x == currentMapAI[i].x ? 0 : +1;
@@ -181,6 +193,10 @@ UINT8 hitPlayerTestAI(){
 
     //Check which hit and how much damage inflicted
     for (UINT8 i = 0; i < currentMapAICount; i++){
+        //skip dead AI
+        if (currentMapAI[i].hp == 0)
+            continue;
+
         //by chance should we hit?
         if (ABS_SUB(hero.x, currentMapAI[i].x) < HIT_DISTANCE && ABS_SUB(hero.y, currentMapAI[i].y) < HIT_DISTANCE){
             //hit!
@@ -204,4 +220,53 @@ void backgroundMoveEventAI (){
         move_sprite(2 + 2 * i, MAP2SCREEN_X(currentMapAI[i].x), MAP2SCREEN_Y(currentMapAI[i].y));
         move_sprite(2 + 2 * i + 1, MAP2SCREEN_X(currentMapAI[i].x) + 8, MAP2SCREEN_Y(currentMapAI[i].y));
     }
+}
+
+
+//does player hit AI?
+void hitAITest(){
+    if (currentMapAI == NULL || currentMapAICount == 0){
+        return ;
+    }
+
+
+    // //slow down the PLAYER!
+    // aiHitThrottleCounter++;
+    // if (aiHitThrottleCounter< AI_HIT_THROTTLE){
+    //     return;
+    // }
+
+    // //Ok time to do something
+    // aiHitThrottleCounter = 0;
+
+    //Check which hit and how much damage inflicted
+    for (UINT8 i = 0; i < currentMapAICount; i++){
+        //skip dead AI
+        if (currentMapAI[i].hp == 0)
+            continue;
+
+        //by chance should we hit?
+        if (ABS_SUB(hero.x, currentMapAI[i].x) < HIT_DISTANCE && ABS_SUB(hero.y, currentMapAI[i].y) < HIT_DISTANCE){
+            //additional condition, player must look in the right direction
+            if (
+                (hero.x > currentMapAI[i].x && hero.heroLook == HERO_LOOK_LEFT)
+                || (hero.x <= currentMapAI[i].x && hero.heroLook == HERO_LOOK_RIGHT)
+                || (hero.y > currentMapAI[i].y && hero.heroLook == HERO_LOOK_UP)
+                || (hero.y <= currentMapAI[i].y && hero.heroLook == HERO_LOOK_DOWN)
+                ) {
+                //hit!
+                if (hero.damageWeapon >= currentMapAI[i].hp){
+                    //AI death
+                    currentMapAI[i].hp = 0;
+                    currentMapAI[i].tileID = TILE_REMAINS_NW;
+                    updateSpriteTile(i);
+                }
+                else{
+                    currentMapAI[i].hp -= hero.damageWeapon;
+                }
+            }
+        }
+    }
+
+
 }

@@ -140,7 +140,7 @@ void showHUD(){
 
     SHOW_WIN;
     //screen bottom: align to X=8 to be fit to the border (0 makes strange results) #shrug
-    move_win(8, SCREENHEIGHT - 8);
+    move_win(8, SCREENHEIGHT - (UINT8)8);
 }
 
 /**

@@ -11,7 +11,7 @@
 
 struct ai {
     UINT8 tileID;
-    INT8 hp;
+    UINT8 hp;
     UINT8 x;
     UINT8 y;
     UINT8 damage;
@@ -30,6 +30,9 @@ void moveAI();
 
 //AI hit player returns total damage inflicted
 UINT8 hitPlayerTestAI();
+
+//does player hit AI?
+void hitAITest();
 
 //If bg moved on bug map, need to reflect the impact on the sprites visible positions
 void backgroundMoveEventAI ();

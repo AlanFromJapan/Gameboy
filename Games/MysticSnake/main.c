@@ -44,7 +44,11 @@
 #define VSCROLLBOTTOM       (GRAPHICS_HEIGHT -40)
 
 
-
+/** 
+ * To avoid player sticking finger on hit button and using it as a machine gun, player have to RELEASE the button between every hit
+ * Hitting set the flag to 1, releasing to 0, and hitting can happen if flag = 0
+ * */
+UINT8 joypadRearm = 0;
 
 
 /**
@@ -102,6 +106,7 @@ inline void initHero() {
     hero.lifeMax = 6 *2;
     hero.life = 6 *2;
     hero.invincibleCounter = 0;
+    hero.damageWeapon = 2;
 }
 
 /*
@@ -287,30 +292,27 @@ void main() {
 
             /*************************************** BATTLE MGMT ***********************************************/
 
-            //decrease invinvible frame counter if any
-            if (hero.invincibleCounter > 0){
-                hero.invincibleCounter--;
-
-                UINT8 prop;
-                //blink
-                if (hero.invincibleCounter % 2 == 1){
-                    //ODD is off  
-                    prop = get_sprite_prop(0);
-                    set_sprite_prop(0, prop | 0x10);
-                    prop = get_sprite_prop(1);
-                    set_sprite_prop(1, prop | 0x10);
-                }
-                else {
-                    //EVEN is normal
-                    prop = get_sprite_prop(0);
-                    set_sprite_prop(0, prop & 0xef);
-                    prop = get_sprite_prop(1);
-                    set_sprite_prop(1, prop & 0xef);
-                }
-            }
-
             //Now AI's turn to move
             moveAI();
+
+            //does player hit AI?
+            if (lastJoypad & J_A){
+                //pressed A button
+
+                //if rearmed is ==0 then can hit
+                if ((joypadRearm & J_A) == 0) {
+                    hitAITest();
+                    playSound(SOUND_HIT2);
+                }
+                //set button A flag to 1
+                joypadRearm = joypadRearm | J_A;
+            }
+            else {
+                //reset button A flag to 0
+                joypadRearm = joypadRearm & ~J_A;
+            }
+
+            //does AI hit player?
             UINT8 dmg = hitPlayerTestAI();
             
             if (dmg != 0){
@@ -333,6 +335,29 @@ void main() {
 
                 //update the HUD if still alive
                 updateHUD();
+            }
+        }
+
+
+        //decrease invinvible frame counter if any
+        if (hero.invincibleCounter > 0){
+            hero.invincibleCounter--;
+
+            UINT8 prop;
+            //blink
+            if (hero.invincibleCounter % 2 == 1){
+                //ODD is off  
+                prop = get_sprite_prop(0);
+                set_sprite_prop(0, prop | 0x10);
+                prop = get_sprite_prop(1);
+                set_sprite_prop(1, prop | 0x10);
+            }
+            else {
+                //EVEN is normal
+                prop = get_sprite_prop(0);
+                set_sprite_prop(0, prop & 0xef);
+                prop = get_sprite_prop(1);
+                set_sprite_prop(1, prop & 0xef);
             }
         }
 

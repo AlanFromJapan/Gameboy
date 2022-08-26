@@ -1,8 +1,9 @@
 #include "sound.h"
 
 //First value is the channel number, then is the registers
-const UINT8 SOUND_HURT[] =  {1, 0x29, 0x83, 0x51, 0x5b, 0x86};
-const UINT8 SOUND_HIT[] =   {1, 0x29, 0x83, 0x51, 0x5b, 0x86};
+const UINT8 SOUND_HURT[] =      {4, 0x3a, 0xa1, 0x52, 0xc0};
+const UINT8 SOUND_HIT[] =       {1, 0x29, 0x83, 0x51, 0x5b, 0x86};
+const UINT8 SOUND_HIT2[] =      {1, 0x4a, 0x41, 0x45, 0xba, 0x86};
 
 
 //Call once to init sound generation
@@ -21,13 +22,21 @@ void initSound(){
 
 //Plays a sound 
 void playSound(const UINT8* snd){
-    if (snd[0] == 1){
-        //channel 1
-        NR10_REG=snd[1];
-        NR11_REG=snd[2];
-        NR12_REG=snd[3];
-        NR13_REG=snd[4];
-        NR14_REG=snd[5];        
+    switch (snd[0]){
+        case 1:
+            //channel 1
+            NR10_REG=snd[1];
+            NR11_REG=snd[2];
+            NR12_REG=snd[3];
+            NR13_REG=snd[4];
+            NR14_REG=snd[5];        
+            break;
+        case 4:
+            //channel 4: noise generator
+            NR41_REG=snd[1];
+            NR42_REG=snd[2];
+            NR43_REG=snd[3];
+            NR44_REG=snd[4];
+            break;
     }
-
 }

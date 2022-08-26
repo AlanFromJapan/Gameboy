@@ -7,6 +7,8 @@
 extern const UINT8 SOUND_HURT[];
 //Hero inflict damages
 extern const UINT8 SOUND_HIT[];
+extern const UINT8 SOUND_HIT2[];
+
 
 
 //Call once to init sound generation

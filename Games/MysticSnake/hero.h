@@ -12,6 +12,7 @@ struct hero {
     UINT8 x;
     UINT8 y;
     UINT8 stepCount;
+    //which direction the hero is looking at
     UINT8 heroLook;
     //life is DOUBLED to use the "half hearts"
     UINT8 lifeMax;
@@ -19,6 +20,8 @@ struct hero {
     UINT8 life;
     //invincible counter: blink for a time
     UINT8 invincibleCounter;
+    //damage inflicted by the hero (should be weapon dependant one day)
+    UINT8 damageWeapon;
 };
 
 extern struct hero hero;
