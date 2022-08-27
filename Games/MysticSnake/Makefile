@@ -12,9 +12,14 @@ MAP_FILES = \
 			$(OBJ_DIR)/Map_Title.rel \
 			$(OBJ_DIR)/Map_BigRoom1.rel \
 			$(OBJ_DIR)/Map_Outside1.rel \
-			$(OBJ_DIR)/Map_Cemetary1.rel \
+			$(OBJ_DIR)/Map_bridge1.rel \
+			$(OBJ_DIR)/Map_bridge2.rel \
 			$(OBJ_DIR)/Map_Chapelle1.rel \
-			$(OBJ_DIR)/Map_Dedale1.rel \
+			$(OBJ_DIR)/Map_Foret1.rel \
+			$(OBJ_DIR)/Map_Foret2.rel \
+			$(OBJ_DIR)/Map_MaisonDebut.rel \
+			$(OBJ_DIR)/Map_Tavern1.rel \
+			$(OBJ_DIR)/Map_VilleRuine1.rel \
 			$(OBJ_DIR)/my_lib01.rel 
 
 CORE_FILES = \

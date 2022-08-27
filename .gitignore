@@ -65,3 +65,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+#bgb strange files
+*.sna
+bgb/bgb.ini
+

@@ -5,9 +5,9 @@
 #include "maps/Map_Intro.h"
 #include "maps/Map_Room1.h"
 #include "maps/Map_BigRoom1.h"
-#include "maps/Map_Cemetary1.h"
 #include "maps/Map_Chapelle1.h"
-#include "maps/Map_Dedale1.h"
+#include "maps/Map_VilleRuine1.h"
+#include "maps/Map_bridge1.h"
 
 #include "graphics.h"
 #include <gb/drawing.h>
@@ -340,20 +340,33 @@ void mapTransition(struct map* map){
                 Hardcoding now, todo rewrite as a static array of transitions later if more rooms.
             */
             if ((*map).data == Map_Intro){
-                //Intro -> cemetary
+                //Intro -> bridge1
+                hero.x=8;
+                hero.y=80;
+                (*map).data = Map_bridge1;
+                (*map).tilesW = Map_bridge1_WIDTH;
+                (*map).tilesH = Map_bridge1_HEIGHT;
+                (*map).floorTile = TILE_EMPTY;
+
+                //mMapTransitionModeFlag = 1; //stay out of the random map loop
+                break;
+            }
+
+            if ((*map).data == Map_bridge1){
+                //bridge1 -> ville ruine1
                 hero.x=8;
                 hero.y=144-24;
-                (*map).data = Map_Cemetary1;
-                (*map).tilesW = Map_Cemetary1_WIDTH;
-                (*map).tilesH = Map_Cemetary1_HEIGHT;
+                (*map).data = Map_VilleRuine1;
+                (*map).tilesW = Map_VilleRuine1_WIDTH;
+                (*map).tilesH = Map_VilleRuine1_HEIGHT;
                 (*map).floorTile = TILE_SAND;
 
                 //mMapTransitionModeFlag = 1; //stay out of the random map loop
                 break;
             }
 
-            if ((*map).data == Map_Cemetary1){
-                //Cemetary -> enter in Chapelle1
+            if ((*map).data == Map_VilleRuine1){
+                //ville ruine1 -> enter in Chapelle1
                 hero.x=Map_Chapelle1_WIDTH*8/2;
                 hero.y= (Map_Chapelle1_HEIGHT -1)*8;
                 (*map).data = Map_Chapelle1;

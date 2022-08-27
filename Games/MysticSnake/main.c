@@ -218,12 +218,12 @@ void main() {
                 case HERO_LOOK_RIGHT:
                     //use the LEFT tiles but swapped and then mirrored (next step)
                     if ((hero.stepCount & 0x01) == 0){
-                        set_sprite_tile(0, TILE_HERO_LEFT_NW + 2);
+                        set_sprite_tile(0, TILE_HERO_LEFT_NW + (UINT8)2);
                         set_sprite_tile(1, TILE_HERO_LEFT_NW );
                     }
                     else {
-                        set_sprite_tile(0, TILE_HERO_LEFT_NW + 6);
-                        set_sprite_tile(1, TILE_HERO_LEFT_NW + 4);
+                        set_sprite_tile(0, TILE_HERO_LEFT_NW + (UINT8)6);
+                        set_sprite_tile(1, TILE_HERO_LEFT_NW + (UINT8)4);
                     }
                     break;
             }
