@@ -25,6 +25,7 @@ MAP_FILES = \
 CORE_FILES = \
 			$(OBJ_DIR)/graphics.rel \
 			$(OBJ_DIR)/transitions.rel \
+			$(OBJ_DIR)/transitionsFlow.rel \
 			$(OBJ_DIR)/tests.rel \
 			$(OBJ_DIR)/inputs.rel \
 			$(OBJ_DIR)/windows.rel \

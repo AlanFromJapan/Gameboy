@@ -92,7 +92,7 @@ void showTitle(){
 inline void doTransition(){
     clearAllAI();
     doMapTransition();
-    setMapAI(&currentMap);
+    setMapAI(currentMap);
 }
 
 inline void initHero() {
@@ -265,13 +265,13 @@ void main() {
             } 
 
             //move bg Left ? only on big maps
-            if (dx > 0 && currentMap.tilesW * 8 > SCREENW && bgx < (currentMap.tilesW * 8 - SCREENW) &&  MAP2SCREEN_X(hero.x) > HSCROLLRIGHT) {
+            if (dx > 0 && (*currentMap).tilesW * 8 > SCREENW && bgx < ((*currentMap).tilesW * 8 - SCREENW) &&  MAP2SCREEN_X(hero.x) > HSCROLLRIGHT) {
                 bgx ++;
                 backgroundMoveEventAI();
             }
             else {
                 //move bg Right ? only on big maps
-                if (currentMap.tilesW * 8 > SCREENW && bgx > 0  &&  MAP2SCREEN_X(hero.x) < HSCROLLLEFT) {
+                if ((*currentMap).tilesW * 8 > SCREENW && bgx > 0  &&  MAP2SCREEN_X(hero.x) < HSCROLLLEFT) {
                     bgx --;
                     backgroundMoveEventAI();
                 }
@@ -279,13 +279,13 @@ void main() {
 
 
             //move bg Up ? only on big maps
-            if (dy > 0 && currentMap.tilesH * 8 > SCREENH && bgy < (currentMap.tilesH * 8 - SCREENH) && MAP2SCREEN_Y(hero.y) > VSCROLLBOTTOM) {
+            if (dy > 0 && (*currentMap).tilesH * 8 > SCREENH && bgy < ((*currentMap).tilesH * 8 - SCREENH) && MAP2SCREEN_Y(hero.y) > VSCROLLBOTTOM) {
                 bgy ++;
                 backgroundMoveEventAI();
             }
             else {
                 //move bg Down ? only on big maps
-                if (currentMap.tilesH * 8 > SCREENH && bgy > 0  && MAP2SCREEN_Y(hero.y) < VSCROLLTOP) {
+                if ((*currentMap).tilesH * 8 > SCREENH && bgy > 0  && MAP2SCREEN_Y(hero.y) < VSCROLLTOP) {
                     bgy --;
                     backgroundMoveEventAI();
                 }

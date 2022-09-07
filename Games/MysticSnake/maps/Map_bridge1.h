@@ -1,4 +1,6 @@
 
+#include "../maps.h"
+
 #ifndef __Map_bridge1_H__
 #define __Map_bridge1_H__
 
@@ -6,6 +8,8 @@
 #define Map_bridge1_HEIGHT  14
 
 extern const unsigned char Map_bridge1[];
+
+extern const struct map mapMap_bridge1;
 
 #endif  //__Map_bridge1_H__
 

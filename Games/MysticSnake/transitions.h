@@ -9,13 +9,13 @@
 #define TRANSITIONS_DELAY_MS    300
 
 //Returns the background tile at XX,YY
-#define GET_BG_TILE(XX, YY)     (currentMap.data[((YY) / 8) * currentMap.tilesW + ((XX) / 8)])
+#define GET_BG_TILE(XX, YY)     ((*currentMap).data[((YY) / 8) * (*currentMap).tilesW + ((XX) / 8)])
 
 /**
  * When transition from a given map, by a transition at point x,y (MAP coordinate)
  * 
  */
-void mapTransition(struct map* map);
+struct map* mapTransition(struct map* map);
 void mapMakeVerticalMessage(struct map* map, UINT8 bgTile);
 
 /**

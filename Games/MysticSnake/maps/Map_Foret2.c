@@ -1,6 +1,11 @@
 
 
 #include "Map_Foret2.h"
+#include "../maps.h"
+
+
+// Project libraries
+#include "my_lib01.h"
 
 
 const unsigned char Map_Foret2[] =
@@ -25,6 +30,16 @@ const unsigned char Map_Foret2[] =
 ,0x33,0x35,0x29,0x2A,0x29,0x2B,0x14,0x16,0x21,0x23
 ,0x21,0x23,0x29,0x14,0x16,0x29,0x15,0x17,0x22,0x24
 
+};
+
+//Map object declaration
+const struct map mapMap_Foret2 = {
+    .data = Map_Foret2,
+    .tilesW = Map_Foret2_WIDTH,
+    .tilesH = Map_Foret2_HEIGHT,
+    .floorTile = TILE_EMPTY,
+    .heroStartX = 42,
+    .heroStartY = 16
 };
 
 

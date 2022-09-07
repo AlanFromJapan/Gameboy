@@ -55,8 +55,8 @@ void showBigMapOutside(){
 
     
     set_bkg_tiles(bgx, bgy, Map_Outside1_WIDTH, Map_Outside1_HEIGHT, Map_Outside1);
-    currentMap.data = Map_Outside1;
-    currentMap.tilesW = Map_Outside1_WIDTH;
-    currentMap.tilesH = Map_Outside1_HEIGHT;
-    currentMap.floorTile = TILE_EMPTY;
+    (*currentMap).data = Map_Outside1;
+    (*currentMap).tilesW = Map_Outside1_WIDTH;
+    (*currentMap).tilesH = Map_Outside1_HEIGHT;
+    (*currentMap).floorTile = TILE_EMPTY;
 }
