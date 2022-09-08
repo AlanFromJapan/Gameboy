@@ -356,83 +356,9 @@ struct map* mapTransition(struct map* map){
             */
 
            m = nextMap(map);
+
+           //write here some logic to go to the random mode if you want (like after map XYZ set mode to 1)
            break;
-
-
-/*           
-            if ((*map).data == Map_Intro){
-                //Intro -> bridge1
-                hero.x=8;
-                hero.y=80;
-                (*map).data = mapMap_bridge1.data;
-                (*map).tilesW = mapMap_bridge1.tilesW;
-                (*map).tilesH = mapMap_bridge1.tilesH;
-                (*map).floorTile = mapMap_bridge1.floorTile;
-
-                //mMapTransitionModeFlag = 1; //stay out of the random map loop
-                break;
-            }
-
-            if ((*map).data == Map_bridge1){
-                //bridge1 -> ville ruine1
-                hero.x=8;
-                hero.y=144-24;
-                (*map).data = Map_VilleRuine1;
-                (*map).tilesW = Map_VilleRuine1_WIDTH;
-                (*map).tilesH = Map_VilleRuine1_HEIGHT;
-                (*map).floorTile = TILE_SAND;
-
-                //mMapTransitionModeFlag = 1; //stay out of the random map loop
-                break;
-            }
-
-            if ((*map).data == Map_VilleRuine1){
-                //ville ruine1 -> enter in Chapelle1
-                hero.x=Map_Chapelle1_WIDTH*8/2;
-                hero.y= (Map_Chapelle1_HEIGHT -1)*8;
-                (*map).data = Map_Chapelle1;
-                (*map).tilesW = Map_Chapelle1_WIDTH;
-                (*map).tilesH = Map_Chapelle1_HEIGHT;
-                (*map).floorTile = TILE_EMPTY;
-
-                //mMapTransitionModeFlag = 1; //stay out of the random map loop
-                break;
-            }
-
-
-            if ((*map).data == Map_Chapelle1){
-                //Cemetary -> enter in Room1
-                hero.x=24;
-                hero.y=40;
-                (*map).data = Map_Room1;
-                (*map).tilesW = Map_Room1_WIDTH;
-                (*map).tilesH = Map_Room1_HEIGHT;
-                (*map).floorTile = TILE_SAND;
-
-                //mMapTransitionModeFlag = 1; //stay out of the random map loop
-                break;
-            }
-
-            if ((*map).data == Map_Room1) {
-                //Room1 -> BigRoom1
-                hero.x=24;
-                hero.y=24;
-                (*map).data = Map_BigRoom1;
-                (*map).tilesW = Map_BigRoom1_WIDTH;
-                (*map).tilesH = Map_BigRoom1_HEIGHT;
-                (*map).floorTile = TILE_EMPTY;
-
-                //From that point on move to random maps (set flag to 1)
-                mMapTransitionModeFlag = 1;
-
-                //seed the random generator
-                srand(DIV_REG);
-
-                break;
-            }
-*/
-
-            break;
         /* ---------------------------------------------------------------------------------------------- */
         case 1:
             //make a new map with rooms
@@ -518,16 +444,10 @@ void doMapTransition(){
  * Shows the first map at beginning, after is all transitions
  */
 inline void showInitialMap(){
+    //force map graph reset
+    currentMap = NULL;
+    //and load
     doMapTransition();
-
-    // set_bkg_tiles(bgx, bgy, Map_Intro_WIDTH, Map_Intro_HEIGHT, Map_Intro);
-    // (*currentMap).data = Map_Intro;
-    // (*currentMap).tilesW = Map_Intro_WIDTH;
-    // (*currentMap).tilesH = Map_Intro_HEIGHT;
-    // (*currentMap).floorTile = TILE_EMPTY;
-
-    // hero.x = 20;
-    // hero.y = 20;
 }
 
 
