@@ -2,7 +2,7 @@
 #ifndef __my_lib01_H__
 #define __my_lib01_H__
 
-#define my_lib01_COUNT   246
+#define my_lib01_COUNT   247
 
 
 #define TILE_THE_VOID 		((UINT8)0)
@@ -251,6 +251,7 @@
 #define TILE_PUMPKIN_SE 		((UINT8)243)
 #define TILE_BOOK 		((UINT8)244)
 #define TILE_DRINK 		((UINT8)245)
+#define TILE_TILED_FLOOR 		((UINT8)246)
 
 
 //declared as const to save compile and execution time/space

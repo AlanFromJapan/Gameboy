@@ -20,6 +20,8 @@ MAP_FILES = \
 			$(OBJ_DIR)/Map_MaisonDebut.rel \
 			$(OBJ_DIR)/Map_Tavern1.rel \
 			$(OBJ_DIR)/Map_VilleRuine1.rel \
+			$(OBJ_DIR)/Map_CrystalCave1.rel \
+			$(OBJ_DIR)/Map_court1.rel \
 			$(OBJ_DIR)/my_lib01.rel 
 
 CORE_FILES = \
