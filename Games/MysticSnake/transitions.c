@@ -9,6 +9,7 @@
 #include "maps/Map_Chapelle1.h"
 #include "maps/Map_VilleRuine1.h"
 #include "maps/Map_bridge1.h"
+#include "maps/Map_Title.h"
 
 #include "graphics.h"
 #include <gb/drawing.h>
@@ -396,8 +397,20 @@ void doMapTransition(){
     //LOAD!
     currentMap = mapTransition(currentMap);
 
+
+    //force clear the background data, so that smaller than screen map won't have garbage around
+    if ((*currentMap).tilesW < SCREEN_TILES_WIDTH || (*currentMap).tilesH < SCREEN_TILES_HEIGHT){
+        UINT8 t = TILE_THE_VOID;
+        for (UINT8 x = 0; x < 32; x++){
+            for (UINT8 y = 0; y < 32; y++){
+                set_bkg_tiles(x, y, 1, 1,  &t);        
+            }
+        }
+    }
+
     //load the background of the new map 
     set_bkg_tiles(0, 0, (*currentMap).tilesW, (*currentMap).tilesH, (*currentMap).data );
+
 
     //place the hero
     hero.x=(*currentMap).heroStartX;
