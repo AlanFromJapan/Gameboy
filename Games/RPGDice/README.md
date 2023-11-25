@@ -1,0 +1,1 @@
+A simple RPG dice roller in GameBoy. More an excuse to make some game than anything (seriously just roll the real dices :D )
