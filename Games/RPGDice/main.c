@@ -6,7 +6,8 @@
 #include "my_lib01.h"
 #include "Map_Screen1.h"
 
-
+#include "lib_splash.h"
+#include "Map_splash.h"
 
 
 
@@ -21,12 +22,21 @@ void main() {
 
     SPRITES_8x16;
 
+    //Using different lib of tiles for the sprites and the background
     set_sprite_data(0, TILE_COUNT, my_tiles);
-    set_bkg_data(0, my_lib01_COUNT, my_lib01);
+    set_bkg_data(0, my_lib_splash_COUNT, my_lib_splash);
 
-    set_bkg_tiles(0, 0, Map_Screen1_WIDTH, Map_Screen1_HEIGHT, Map_Screen1);
+    set_bkg_tiles(0, 0, Map_Screen1_WIDTH, Map_splash_HEIGHT, Map_splash);
     
     SHOW_BKG;
+
+    wait_vbl_done();
+    while(joypad() == 0x00){delay(10);}//wait for user to press a button
+
+    //load the normal BG and change the tile lib
+    set_bkg_data(0, my_lib01_COUNT, my_lib01);
+    set_bkg_tiles(0, 0, Map_Screen1_WIDTH, Map_Screen1_HEIGHT, Map_Screen1);
+    
     SHOW_SPRITES;
 
 
