@@ -14,6 +14,16 @@
 #define SPRITE_MONSTER_RIGHT (SPRITE_MONSTER_LEFT+1)
 
 
+
+/**
+ * Set a background tile to the tile in parameter
+ */
+void putTile(UINT8 tile, UINT8 x, UINT8 y){
+    //NOT inline so tile is a byte in the call stack so you can ref its address
+    set_bkg_tiles(x, y, 1, 1, &tile);
+
+}
+
 /*
  ***********************************************************************************************
  * MAIN method
@@ -54,6 +64,7 @@ void main() {
     move_sprite(SPRITE_DICE_LEFT, X, Y);
     move_sprite(SPRITE_DICE_RIGHT, X+8, Y);
 
+    putTile(TILE_DIGIT_6, 4, 8);
 
     wait_vbl_done();
 
