@@ -26,7 +26,7 @@ void main() {
     set_sprite_data(0, TILE_COUNT, my_tiles);
     set_bkg_data(0, my_lib_splash_COUNT, my_lib_splash);
 
-    set_bkg_tiles(0, 0, Map_Screen1_WIDTH, Map_splash_HEIGHT, Map_splash);
+    set_bkg_tiles(0, 0, Map_splash_WIDTH, Map_splash_HEIGHT, Map_splash);
     
     SHOW_BKG;
 
