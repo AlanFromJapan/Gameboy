@@ -64,6 +64,7 @@ void main() {
     move_sprite(SPRITE_DICE_LEFT, X, Y);
     move_sprite(SPRITE_DICE_RIGHT, X+8, Y);
 
+    //Write the default dice value of 6
     putTile(TILE_DIGIT_6, 4, 8);
 
     wait_vbl_done();
