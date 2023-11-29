@@ -5,10 +5,13 @@
 #include "rolling_dice.h"
 #include "my_lib01.h"
 #include "Map_Screen1.h"
-
-#include "lib_splash.h"
 #include "Map_splash.h"
 
+
+#define SPRITE_DICE_LEFT     2
+#define SPRITE_DICE_RIGHT    (SPRITE_DICE_LEFT+1)
+#define SPRITE_MONSTER_LEFT  4
+#define SPRITE_MONSTER_RIGHT (SPRITE_MONSTER_LEFT+1)
 
 
 /*
@@ -24,7 +27,7 @@ void main() {
 
     //Using different lib of tiles for the sprites and the background
     set_sprite_data(0, TILE_COUNT, my_tiles);
-    set_bkg_data(0, my_lib_splash_COUNT, my_lib_splash);
+    set_bkg_data(0, my_lib01_COUNT, my_lib01);
 
     set_bkg_tiles(0, 0, Map_splash_WIDTH, Map_splash_HEIGHT, Map_splash);
     
@@ -47,14 +50,9 @@ void main() {
 
     SPRITE_FRAME=0;
 
-    set_sprite_tile(0, SPRITE_1);
-    set_sprite_tile(1, SPRITE_1+2);
-    move_sprite(0, 20, 20);
-    move_sprite(1, 20+8, 20);
 
-
-    move_sprite(2, X, Y);
-    move_sprite(3, X+8, Y);
+    move_sprite(SPRITE_DICE_LEFT, X, Y);
+    move_sprite(SPRITE_DICE_RIGHT, X+8, Y);
 
 
     wait_vbl_done();
@@ -88,16 +86,16 @@ void main() {
         if (Y <= (8+16) || Y >= ((18-1) *8) )
             dy=-dy;
 
-        move_sprite(2, X, Y);
-        move_sprite(3, X+8, Y);
+        move_sprite(SPRITE_DICE_LEFT, X, Y);
+        move_sprite(SPRITE_DICE_RIGHT, X+8, Y);
 
         //rotate sprite
         SPRITE_FRAME = (SPRITE_FRAME + 1) % 3;
         UINT8 s = 4 + 4 * SPRITE_FRAME;
 
             
-        set_sprite_tile(2, s);
-        set_sprite_tile(3, s+2);
+        set_sprite_tile(SPRITE_DICE_LEFT, s);
+        set_sprite_tile(SPRITE_DICE_RIGHT, s+2);
         delay(150);
     }
 }
