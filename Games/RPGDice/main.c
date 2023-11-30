@@ -2,12 +2,18 @@
 #include <gb/gb.h>
 #include <gb/drawing.h>
 
+//for rand()
+#include <stdlib.h>
+
 #include "rolling_dice.h"
 #include "my_lib01.h"
 #include "Map_Screen1.h"
 #include "Map_splash.h"
 
+//available dice types
+const UINT8 DiceTypes[] = {4, 6, 8, 10, 12, 20, 100};
 
+//Sprites constants
 #define SPRITE_DICE_LEFT     2
 #define SPRITE_DICE_RIGHT    (SPRITE_DICE_LEFT+1)
 #define SPRITE_MONSTER_LEFT  4
@@ -17,7 +23,7 @@
 #define TILE_DIGIT_0 TILE_LETTER_15
 #define TILE_EMPTY   0
 
-
+//Digit value to tile index
 const UINT8 Digits2Tile[] = {
     TILE_DIGIT_0, TILE_DIGIT_1, TILE_DIGIT_2, TILE_DIGIT_3, TILE_DIGIT_4, TILE_DIGIT_5, TILE_DIGIT_6, TILE_DIGIT_7, TILE_DIGIT_8, TILE_DIGIT_9
 };
@@ -83,7 +89,7 @@ void bgShowDiceValue(UINT8 val){
  ***********************************************************************************************
  */
 void main() {
-    UINT8 diceX, diceY, monsterX, monsterY, framecounter;
+    UINT8 diceX, diceY, monsterX, monsterY, framecounter, diceTypeIdx;
     INT8 dx, dy;
 
     SPRITES_8x16;
@@ -98,6 +104,9 @@ void main() {
 
     wait_vbl_done();
     while(joypad() == 0x00){delay(10);}//wait for user to press a button
+
+    //init random seed
+    srand(DIV_REG);
 
     //load the normal BG and change the tile lib
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
@@ -122,8 +131,9 @@ void main() {
     move_sprite(SPRITE_MONSTER_LEFT, monsterX, monsterY);
     move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
 
-    //Write the default dice value of 6
-    setDiceType(123);
+    //Write the default dice value of 6 (index 1 in the DiceTypes array)
+    diceTypeIdx = 1;
+    bgShowDiceType(DiceTypes[diceTypeIdx]);
 
     wait_vbl_done();
 
@@ -131,17 +141,30 @@ void main() {
     while(1) {
 
         wait_vbl_done();
-        if (joypad() & J_UP){
-            dy--;
+        UINT8 joypadState = joypad();
+        if (joypadState & J_LEFT || joypadState & J_DOWN){
+            diceTypeIdx--;
+            if (diceTypeIdx >= sizeof(DiceTypes)){
+                diceTypeIdx = 0;
+            }
+
+            bgShowDiceType(DiceTypes[diceTypeIdx]);
+            bgShowDiceValue(0);
         }
-        if (joypad() & J_DOWN){
-            dy++;
+        if (joypadState & J_RIGHT || joypadState & J_UP){
+            diceTypeIdx++;
+            if (diceTypeIdx >= sizeof(DiceTypes)){
+                diceTypeIdx = sizeof(DiceTypes)-1;
+            }
+
+            bgShowDiceType(DiceTypes[diceTypeIdx]);
+            bgShowDiceValue(0);
         }
-        if (joypad() & J_LEFT){
-            dx--;
-        }
-        if (joypad() & J_RIGHT){
-            dx++;
+
+
+        if (joypadState & J_A){
+            UINT8 diceValue = (rand() % (DiceTypes[diceTypeIdx])) + 1;
+            bgShowDiceValue(diceValue);
         }
 
 
