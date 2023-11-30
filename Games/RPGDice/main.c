@@ -30,8 +30,8 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y){
  ***********************************************************************************************
  */
 void main() {
-    UINT8 diceX, diceY, monsterX, monsterY;
-    INT8 dx, dy, SPRITE_FRAME, framecounter;
+    UINT8 diceX, diceY, monsterX, monsterY, framecounter;
+    INT8 dx, dy;
 
     SPRITES_8x16;
 
@@ -60,9 +60,6 @@ void main() {
     monsterY = 144;
     dx = 0;
     dy = 0;
-
-    SPRITE_FRAME=0;
-
 
     move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
     move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
@@ -110,11 +107,14 @@ void main() {
         move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
         move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
 
-        //rotate sprite
-        SPRITE_FRAME = (SPRITE_FRAME + 1) % 3;
-        UINT8 s = 4 + 4 * SPRITE_FRAME;
 
-            
+        //------------------------------------------------
+        //Dice
+        //------------------------------------------------
+
+        //rotate dice sprite
+        // skip first 4 tiles, then 4 tiles per sprite, animation is over 3 sprites (frame)
+        UINT8 s = 4 + 4 * (framecounter % 3); 
         set_sprite_tile(SPRITE_DICE_LEFT, s);
         set_sprite_tile(SPRITE_DICE_RIGHT, s+2);
 
@@ -134,8 +134,10 @@ void main() {
         move_sprite(SPRITE_MONSTER_LEFT, monsterX, monsterY);
         move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
 
+        //------------------------------------------------
+        // End of frame
+        //------------------------------------------------
         delay(150);
-
         framecounter++;
     }
 }
