@@ -30,8 +30,8 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y){
  ***********************************************************************************************
  */
 void main() {
-    UINT8 X,Y ;
-    INT8 dx, dy, SPRITE_FRAME;
+    UINT8 diceX, diceY, monsterX, monsterY;
+    INT8 dx, dy, SPRITE_FRAME, framecounter;
 
     SPRITES_8x16;
 
@@ -53,22 +53,31 @@ void main() {
     SHOW_SPRITES;
 
 
-    X = 100;
-    Y = 100;
+    diceX = 100;
+    diceY = 100;
+    //Remember that the sprite is 16x16 so the X and Y are the BOTTOM-MIDDLE of the sprite
+    monsterX = 160 -8;
+    monsterY = 144;
     dx = 0;
     dy = 0;
 
     SPRITE_FRAME=0;
 
 
-    move_sprite(SPRITE_DICE_LEFT, X, Y);
-    move_sprite(SPRITE_DICE_RIGHT, X+8, Y);
+    move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
+    move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
+
+    set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_A);
+    set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_A+2);
+    move_sprite(SPRITE_MONSTER_LEFT, monsterX, monsterY);
+    move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
 
     //Write the default dice value of 6
     putTile(TILE_DIGIT_6, 4, 8);
 
     wait_vbl_done();
 
+    framecounter = 0;
     while(1) {
 
         wait_vbl_done();
@@ -86,20 +95,20 @@ void main() {
         }
 
 
-        X = X + dx;
-        Y = Y + dy;
+        diceX = diceX + dx;
+        diceY = diceY + dy;
 
         //TODO: fix this it's copy pasted from other project that was for 16x16 sprites
         //X is the MIDDLE of the 16x16 sprite
-        if (X <= (8+8) || X >= ((20-1) * 8 -8) )
+        if (diceX <= (8+8) || diceX >= ((20-1) * 8 -8) )
             dx=-dx;
 
         //Y is the BOTTOM of the 16x16 sprite
-        if (Y <= (8+16) || Y >= ((18-1) *8) )
+        if (diceY <= (8+16) || diceY >= ((18-1) *8) )
             dy=-dy;
 
-        move_sprite(SPRITE_DICE_LEFT, X, Y);
-        move_sprite(SPRITE_DICE_RIGHT, X+8, Y);
+        move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
+        move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
 
         //rotate sprite
         SPRITE_FRAME = (SPRITE_FRAME + 1) % 3;
@@ -108,7 +117,26 @@ void main() {
             
         set_sprite_tile(SPRITE_DICE_LEFT, s);
         set_sprite_tile(SPRITE_DICE_RIGHT, s+2);
+
+        //------------------------------------------------
+        //Monster
+        //------------------------------------------------
+        if (framecounter % 2 == 0){
+            set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_A);
+            set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_A+2);
+        }
+        else {
+            set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_B);
+            set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_B+2);
+        }
+
+        monsterX -= 2;
+        move_sprite(SPRITE_MONSTER_LEFT, monsterX, monsterY);
+        move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
+
         delay(150);
+
+        framecounter++;
     }
 }
 

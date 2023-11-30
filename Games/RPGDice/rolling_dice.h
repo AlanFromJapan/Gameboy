@@ -2,7 +2,7 @@
 #ifndef __my_tiles_H__
 #define __my_tiles_H__
 
-#define TILE_COUNT		40
+#define TILE_COUNT		48
 
 #define SPRITE_1		0
 #define SPRITE_2		4
@@ -14,6 +14,9 @@
 #define SPRITE_8		28
 #define SPRITE_9		32
 #define SPRITE_10		36
+
+#define MONSTER_A       40
+#define MONSTER_B       44
 
 
 
