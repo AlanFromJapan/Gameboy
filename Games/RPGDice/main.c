@@ -19,6 +19,15 @@ const UINT8 DiceTypes[] = {4, 6, 8, 10, 12, 20, 100};
 #define SPRITE_MONSTER_LEFT  4
 #define SPRITE_MONSTER_RIGHT (SPRITE_MONSTER_LEFT+1)
 
+//frame divider
+#define FRAME_DIVIDER 10
+
+//button temporization
+#define BUTTON_TEMPORISATION 15
+
+//main loop temporization (ms)
+#define MAIN_LOOP_TEMPORISATION 5
+
 //Some tiles defintions
 #define TILE_DIGIT_0 TILE_LETTER_15
 #define TILE_EMPTY   0
@@ -89,7 +98,7 @@ void bgShowDiceValue(UINT8 val){
  ***********************************************************************************************
  */
 void main() {
-    UINT8 diceX, diceY, monsterX, monsterY, framecounter, diceTypeIdx;
+    UINT8 diceX, diceY, monsterX, monsterY, framecounter, framedivider, diceTypeIdx, buttonTemporisation;
     INT8 dx, dy;
 
     SPRITES_8x16;
@@ -138,11 +147,20 @@ void main() {
     wait_vbl_done();
 
     framecounter = 0;
+    framedivider = 0;
+    buttonTemporisation = 0;
     while(1) {
 
         wait_vbl_done();
+
+        //tempo
+        if (buttonTemporisation > 0){
+            buttonTemporisation--;
+        }
+
+        // read joypad
         UINT8 joypadState = joypad();
-        if (joypadState & J_LEFT || joypadState & J_DOWN){
+        if (buttonTemporisation == 0 && (joypadState & J_LEFT || joypadState & J_DOWN)){
             diceTypeIdx--;
             if (diceTypeIdx >= sizeof(DiceTypes)){
                 diceTypeIdx = 0;
@@ -150,8 +168,11 @@ void main() {
 
             bgShowDiceType(DiceTypes[diceTypeIdx]);
             bgShowDiceValue(0);
+
+            //tempo
+            buttonTemporisation = BUTTON_TEMPORISATION;
         }
-        if (joypadState & J_RIGHT || joypadState & J_UP){
+        if (buttonTemporisation == 0 && (joypadState & J_RIGHT || joypadState & J_UP)){
             diceTypeIdx++;
             if (diceTypeIdx >= sizeof(DiceTypes)){
                 diceTypeIdx = sizeof(DiceTypes)-1;
@@ -159,12 +180,18 @@ void main() {
 
             bgShowDiceType(DiceTypes[diceTypeIdx]);
             bgShowDiceValue(0);
+
+            //tempo
+            buttonTemporisation = BUTTON_TEMPORISATION;
         }
 
 
-        if (joypadState & J_A){
+        if (buttonTemporisation == 0 && joypadState & J_A){
             UINT8 diceValue = (rand() % (DiceTypes[diceTypeIdx])) + 1;
             bgShowDiceValue(diceValue);
+
+            //tempo
+            buttonTemporisation = BUTTON_TEMPORISATION;
         }
 
 
@@ -183,38 +210,43 @@ void main() {
         move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
         move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
 
+        framedivider++;
+        if (framedivider > FRAME_DIVIDER) {
+            framedivider = 0;
 
-        //------------------------------------------------
-        //Dice
-        //------------------------------------------------
+            //------------------------------------------------
+            //Dice
+            //------------------------------------------------
 
-        //rotate dice sprite
-        // skip first 4 tiles, then 4 tiles per sprite, animation is over 3 sprites (frame)
-        UINT8 s = 4 + 4 * (framecounter % 3); 
-        set_sprite_tile(SPRITE_DICE_LEFT, s);
-        set_sprite_tile(SPRITE_DICE_RIGHT, s+2);
+            //rotate dice sprite
+            // skip first 4 tiles, then 4 tiles per sprite, animation is over 3 sprites (frame)
+            UINT8 s = 4 + 4 * (framecounter % 3); 
+            set_sprite_tile(SPRITE_DICE_LEFT, s);
+            set_sprite_tile(SPRITE_DICE_RIGHT, s+2);
 
-        //------------------------------------------------
-        //Monster
-        //------------------------------------------------
-        if (framecounter % 2 == 0){
-            set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_A);
-            set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_A+2);
+            //------------------------------------------------
+            //Monster
+            //------------------------------------------------
+            if (framecounter % 2 == 0){
+                set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_A);
+                set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_A+2);
+            }
+            else {
+                set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_B);
+                set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_B+2);
+            }
+
+            monsterX -= 2;
+            move_sprite(SPRITE_MONSTER_LEFT, monsterX, monsterY);
+            move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
+
+            framecounter++;
         }
-        else {
-            set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_B);
-            set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_B+2);
-        }
-
-        monsterX -= 2;
-        move_sprite(SPRITE_MONSTER_LEFT, monsterX, monsterY);
-        move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
 
         //------------------------------------------------
         // End of frame
         //------------------------------------------------
-        delay(150);
-        framecounter++;
+        delay(MAIN_LOOP_TEMPORISATION);
     }
 }
 
