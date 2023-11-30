@@ -13,7 +13,22 @@
 #define SPRITE_MONSTER_LEFT  4
 #define SPRITE_MONSTER_RIGHT (SPRITE_MONSTER_LEFT+1)
 
+//Some tiles defintions
+#define TILE_DIGIT_0 TILE_LETTER_15
+#define TILE_EMPTY   0
 
+
+const UINT8 Digits2Tile[] = {
+    TILE_DIGIT_0, TILE_DIGIT_1, TILE_DIGIT_2, TILE_DIGIT_3, TILE_DIGIT_4, TILE_DIGIT_5, TILE_DIGIT_6, TILE_DIGIT_7, TILE_DIGIT_8, TILE_DIGIT_9
+};
+
+//rightmost digit of the dice type X,Y position
+#define DICE_TYPE_MOST_X 4
+#define DICE_TYPE_MOST_Y 8
+
+//rightmost digit of the dice value X,Y position
+#define DICE_VALUE_MOST_X 10
+#define DICE_VALUE_MOST_Y 7
 
 /**
  * Set a background tile to the tile in parameter
@@ -21,8 +36,46 @@
 void putTile(UINT8 tile, UINT8 x, UINT8 y){
     //NOT inline so tile is a byte in the call stack so you can ref its address
     set_bkg_tiles(x, y, 1, 1, &tile);
-
 }
+
+/**
+ * Shows a 3 digits number on the background
+ */
+void bgShow3Digits(const UINT8 val, const UINT8 tileX, const UINT8 tileY) {
+    //clear
+    putTile(TILE_EMPTY, tileX, tileY);
+    putTile(TILE_EMPTY, tileX-1, tileY);
+    putTile(TILE_EMPTY, tileX-2, tileY);
+
+    //display
+    UINT8 d = val;
+    putTile(Digits2Tile[d % 10], tileX, tileY);
+
+    d = d / (UINT8)10;
+    if (d > 0){
+        putTile(Digits2Tile[d % 10], tileX -1, tileY);
+    }
+
+    d = d / (UINT8)10;
+    if (d > 0){
+        putTile(Digits2Tile[d % 10], tileX -2, tileY);
+    }
+}
+
+/**
+ * Updates the displayed dice type
+ */
+void bgShowDiceType(UINT8 dice){
+    bgShow3Digits(dice, DICE_TYPE_MOST_X, DICE_TYPE_MOST_Y);
+}
+
+/**
+ * Updates the displayed dice result
+ */
+void bgShowDiceValue(UINT8 val){
+    bgShow3Digits(val, DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
+}
+
 
 /*
  ***********************************************************************************************
@@ -70,7 +123,7 @@ void main() {
     move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
 
     //Write the default dice value of 6
-    putTile(TILE_DIGIT_6, 4, 8);
+    setDiceType(123);
 
     wait_vbl_done();
 
