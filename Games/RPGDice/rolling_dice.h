@@ -15,9 +15,8 @@
 #define SPRITE_9		32
 #define SPRITE_10		36
 
-#define MONSTER_A       40
-#define MONSTER_B       44
-
+//hack insert the patch and redef constant
+#include "rolling_dice.patch.h"
 
 
 //declared as const to save compile and execution time/space
