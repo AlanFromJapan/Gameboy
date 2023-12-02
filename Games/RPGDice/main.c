@@ -54,13 +54,21 @@ void putTile(UINT8 tile, UINT8 x, UINT8 y){
 }
 
 /**
- * Shows a 3 digits number on the background
+ * Clears the 3 digits number on the background
  */
-void bgShow3Digits(const UINT8 val, const UINT8 tileX, const UINT8 tileY) {
+void bgClearDigits(const UINT8 tileX, const UINT8 tileY){
     //clear
     putTile(TILE_EMPTY, tileX, tileY);
     putTile(TILE_EMPTY, tileX-1, tileY);
     putTile(TILE_EMPTY, tileX-2, tileY);
+}
+
+/**
+ * Shows a 3 digits number on the background
+ */
+void bgShow3Digits(const UINT8 val, const UINT8 tileX, const UINT8 tileY) {
+    //clear
+    bgClearDigits(tileX, tileY);
 
     //display
     UINT8 d = val;
@@ -131,7 +139,7 @@ void main() {
     monsterY = 144;
     dx = 0;
     dy = 0;
-
+    
     move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
     move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
 
@@ -188,6 +196,10 @@ void main() {
 
         if (buttonTemporisation == 0 && joypadState & J_A){
             UINT8 diceValue = (rand() % (DiceTypes[diceTypeIdx])) + 1;
+            
+            //clear and display the value, little blink to show it was updated
+            bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
+            delay(50);
             bgShowDiceValue(diceValue);
 
             //tempo
