@@ -11,7 +11,7 @@
 #include "Map_splash.h"
 
 //available dice types
-const UINT8 DiceTypes[] = {4, 6, 8, 10, 12, 20, 100};
+const UINT8 DiceTypes[] = {2, 4, 6, 8, 10, 12, 20, 100};
 
 //Sprites constants
 #define SPRITE_DICE_LEFT     2
@@ -22,6 +22,9 @@ const UINT8 DiceTypes[] = {4, 6, 8, 10, 12, 20, 100};
 //frame divider
 #define FRAME_DIVIDER 10
 
+//bouncing
+const UINT8 DICE_BOUNCE_ACCELERATION[] = {3,2,1};
+#define BOUNCE_MAX 3
 //button temporization
 #define BUTTON_TEMPORISATION 15
 
@@ -99,6 +102,13 @@ void bgShowDiceValue(UINT8 val){
     bgShow3Digits(val, DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
 }
 
+/**
+ * Hides a 16x16 sprite (2 consequent sprites in fact)
+ */
+void hide_sprite(const UINT8 spriteId){
+    move_sprite(spriteId, 200, 0);
+    move_sprite(spriteId+1, 200, 0);
+}
 
 /*
  ***********************************************************************************************
@@ -106,8 +116,8 @@ void bgShowDiceValue(UINT8 val){
  ***********************************************************************************************
  */
 void main() {
-    UINT8 diceX, diceY, monsterX, monsterY, framecounter, framedivider, diceTypeIdx, buttonTemporisation;
-    INT8 dx, dy;
+    UINT8 diceX, diceY, monsterX, monsterY, framecounter, framedivider, diceTypeIdx, buttonTemporisation, bounceRound;
+    INT8 dx, dy, ydirection;
 
     SPRITES_8x16;
 
@@ -138,18 +148,22 @@ void main() {
     monsterX = 160 -8;
     monsterY = 144;
     dx = 0;
-    dy = 0;
-    
+    dy = -3; //DICE_BOUNCE_ACCELERATION[0];
+    ydirection = -1;
+
     move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
     move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
+
+    hide_sprite(SPRITE_DICE_LEFT);
 
     set_sprite_tile(SPRITE_MONSTER_LEFT, MONSTER_A);
     set_sprite_tile(SPRITE_MONSTER_RIGHT, MONSTER_A+2);
     move_sprite(SPRITE_MONSTER_LEFT, monsterX, monsterY);
     move_sprite(SPRITE_MONSTER_RIGHT, monsterX+8, monsterY);
 
-    //Write the default dice value of 6 (index 1 in the DiceTypes array)
-    diceTypeIdx = 1;
+    
+    //Write the default dice value of 6 (index 2 in the DiceTypes array)
+    diceTypeIdx = 2;
     bgShowDiceType(DiceTypes[diceTypeIdx]);
 
     wait_vbl_done();
@@ -157,6 +171,7 @@ void main() {
     framecounter = 0;
     framedivider = 0;
     buttonTemporisation = 0;
+    bounceRound = 0;
     while(1) {
 
         wait_vbl_done();
@@ -207,20 +222,6 @@ void main() {
         }
 
 
-        diceX = diceX + dx;
-        diceY = diceY + dy;
-
-        //TODO: fix this it's copy pasted from other project that was for 16x16 sprites
-        //X is the MIDDLE of the 16x16 sprite
-        if (diceX <= (8+8) || diceX >= ((20-1) * 8 -8) )
-            dx=-dx;
-
-        //Y is the BOTTOM of the 16x16 sprite
-        if (diceY <= (8+16) || diceY >= ((18-1) *8) )
-            dy=-dy;
-
-        move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
-        move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
 
         framedivider++;
         if (framedivider > FRAME_DIVIDER) {
@@ -229,13 +230,64 @@ void main() {
             //------------------------------------------------
             //Dice
             //------------------------------------------------
+/*
+            if (bounceRound < BOUNCE_MAX){
+                // if (ydirection > 0){ 
+                //     //descelerate
+                //     //dy = dy + DICE_BOUNCE_ACCELERATION[bounceRound];
+                //     if (dy == 0){
+                //         ydirection = -ydirection;       
+                //     }
+                // }
+                // else 
+                //     if (ydirection < 0){
+                //         if (dy >= DICE_BOUNCE_ACCELERATION[bounceRound]) {
+                //             //dy = dy - DICE_BOUNCE_ACCELERATION[bounceRound]; 
+                //             ;
+                //         } 
+                //         else {
+                //             dy = 0; 
+                //         }
+                //     }
 
-            //rotate dice sprite
-            // skip first 4 tiles, then 4 tiles per sprite, animation is over 3 sprites (frame)
-            UINT8 s = 4 + 4 * (framecounter % 3); 
-            set_sprite_tile(SPRITE_DICE_LEFT, s);
-            set_sprite_tile(SPRITE_DICE_RIGHT, s+2);
 
+                //X is the MIDDLE of the 16x16 sprite
+                if (diceX <= (8+8) || diceX >= ((20-1) * 8 -8) )
+                    dx=-dx;
+
+                //Y is the BOTTOM of the 16x16 sprite
+                if (ydirection < 0 && dy + (INT8)16 < 0){
+                    //bounce
+                    dy=-dy;
+                    diceY = 16 ; // it's the BOTTOM of the sprite
+
+                    ydirection = -ydirection;
+                }
+                //move
+                diceY = diceY + dy;
+
+
+                move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
+                move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
+
+
+                //rotate dice sprite
+                // skip first 4 tiles, then 4 tiles per sprite, animation is over 3 sprites (frame)
+                UINT8 s = 4 + 4 * (framecounter % 3); 
+                set_sprite_tile(SPRITE_DICE_LEFT, s);
+                set_sprite_tile(SPRITE_DICE_RIGHT, s+2);
+
+
+                
+
+                if (bounceRound >= BOUNCE_MAX){
+                    //hide dice
+                    dx =0;
+                    dy=0;
+                    hide_sprite(SPRITE_DICE_LEFT);
+                }
+            }
+*/
             //------------------------------------------------
             //Monster
             //------------------------------------------------
