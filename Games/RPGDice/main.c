@@ -141,13 +141,15 @@ void main() {
     SHOW_SPRITES;
 
 
-    diceX = 100;
-    diceY = 50;
+
     //Remember that the sprite is 16x16 so the X and Y are the BOTTOM-MIDDLE of the sprite
     monsterX = 160 -8;
     monsterY = 144;
     dx = -3;
     dy = 1;
+    diceX = 100;
+    diceY = 50;
+    bounceRound = BOUNCE_MAX;
 
     move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
     move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
@@ -169,7 +171,6 @@ void main() {
     framecounter = 0;
     framedivider = 0;
     buttonTemporisation = 0;
-    bounceRound = 0;
     while(1) {
 
         wait_vbl_done();
@@ -214,6 +215,13 @@ void main() {
             bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
             delay(50);
             bgShowDiceValue(diceValue);
+
+            //Dice animation
+            diceX = rand(); if (diceX > SCREENWIDTH-8) diceX = SCREENWIDTH-10;if (diceX -8 > SCREENWIDTH) diceX = 10;
+            diceY = 40 + (rand() & 0x1F);
+            dx = -4 + (INT8)(rand() & 0x07);
+            dy = 1;
+            bounceRound = 0;
 
             //tempo
             buttonTemporisation = BUTTON_TEMPORISATION;
