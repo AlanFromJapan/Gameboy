@@ -117,7 +117,7 @@ void hide_sprite(const UINT8 spriteId){
  */
 void main() {
     UINT8 diceX, diceY, monsterX, monsterY, framecounter, framedivider, diceTypeIdx, buttonTemporisation, bounceRound;
-    INT8 dx, dy, ydirection;
+    INT8 dx, dy;
 
     SPRITES_8x16;
 
@@ -148,8 +148,7 @@ void main() {
     monsterX = 160 -8;
     monsterY = 144;
     dx = 0;
-    dy = -3; //DICE_BOUNCE_ACCELERATION[0];
-    ydirection = -1;
+    dy = 3; //DICE_BOUNCE_ACCELERATION[0];
 
     move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
     move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
@@ -230,41 +229,32 @@ void main() {
             //------------------------------------------------
             //Dice
             //------------------------------------------------
-/*
             if (bounceRound < BOUNCE_MAX){
-                // if (ydirection > 0){ 
-                //     //descelerate
-                //     //dy = dy + DICE_BOUNCE_ACCELERATION[bounceRound];
-                //     if (dy == 0){
-                //         ydirection = -ydirection;       
-                //     }
-                // }
-                // else 
-                //     if (ydirection < 0){
-                //         if (dy >= DICE_BOUNCE_ACCELERATION[bounceRound]) {
-                //             //dy = dy - DICE_BOUNCE_ACCELERATION[bounceRound]; 
-                //             ;
-                //         } 
-                //         else {
-                //             dy = 0; 
-                //         }
-                //     }
 
+
+                //move
+                diceY = diceY + dy;
 
                 //X is the MIDDLE of the 16x16 sprite
                 if (diceX <= (8+8) || diceX >= ((20-1) * 8 -8) )
                     dx=-dx;
 
                 //Y is the BOTTOM of the 16x16 sprite
-                if (ydirection < 0 && dy + (INT8)16 < 0){
+                //check if the top of the dice is out of the screen (overflow to bottom of the screen)
+                if (dy < 0 && (diceY - (INT8)16 > SCREENHEIGHT)){
                     //bounce
                     dy=-dy;
                     diceY = 16 ; // it's the BOTTOM of the sprite
 
-                    ydirection = -ydirection;
+                    bounceRound++;
                 }
-                //move
-                diceY = diceY + dy;
+                //is the bottom of the dice going too low?
+                if (diceY >= SCREENHEIGHT){
+                    //bounce
+                    dy=-dy;
+                    diceY = SCREENHEIGHT; // it's the BOTTOM of the sprite
+                    bounceRound++;
+                }
 
 
                 move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
@@ -287,7 +277,7 @@ void main() {
                     hide_sprite(SPRITE_DICE_LEFT);
                 }
             }
-*/
+
             //------------------------------------------------
             //Monster
             //------------------------------------------------
