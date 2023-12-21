@@ -15,6 +15,13 @@
 #include "game.h"
 
 
+inline void initSound(){
+    NR52_REG = 0x80;
+    NR50_REG = 0xFF;
+    NR51_REG = 0xFF;
+}
+
+
 void main() {
     //stick to bank 0 for GB DMG compatibility
     VBK_REG = 0;
@@ -32,7 +39,9 @@ void main() {
 
     SHOW_BKG;
     SHOW_SPRITES;
+    
 
+    initSound();
     
     wait_vbl_done();
 
