@@ -23,8 +23,7 @@ const UINT8 DiceTypes[] = {2, 4, 6, 8, 10, 12, 20, 100};
 #define FRAME_DIVIDER 10
 
 //bouncing
-const UINT8 DICE_BOUNCE_ACCELERATION[] = {3,2,1};
-#define BOUNCE_MAX 3
+#define BOUNCE_MAX 20
 //button temporization
 #define BUTTON_TEMPORISATION 15
 
@@ -143,12 +142,12 @@ void main() {
 
 
     diceX = 100;
-    diceY = 100;
+    diceY = 50;
     //Remember that the sprite is 16x16 so the X and Y are the BOTTOM-MIDDLE of the sprite
     monsterX = 160 -8;
     monsterY = 144;
-    dx = 0;
-    dy = 3; //DICE_BOUNCE_ACCELERATION[0];
+    dx = -3;
+    dy = 1;
 
     move_sprite(SPRITE_DICE_LEFT, diceX, diceY);
     move_sprite(SPRITE_DICE_RIGHT, diceX+8, diceY);
@@ -231,27 +230,30 @@ void main() {
             //------------------------------------------------
             if (bounceRound < BOUNCE_MAX){
 
-
                 //move
                 diceY = diceY + dy;
+                diceX = diceX + dx;
+
+                //gravity: if falling (dy > 0) then accelerate it, otherwise decelerate it
+                dy ++;
 
                 //X is the MIDDLE of the 16x16 sprite
-                if (diceX <= (8+8) || diceX >= ((20-1) * 8 -8) )
+                if ((diceX - 8) > SCREENWIDTH || (diceX + 8) > SCREENWIDTH)
+                    //overflow to the left or crossing border to the right
                     dx=-dx;
 
                 //Y is the BOTTOM of the 16x16 sprite
-                //check if the top of the dice is out of the screen (overflow to bottom of the screen)
-                if (dy < 0 && (diceY - (INT8)16 > SCREENHEIGHT)){
-                    //bounce
-                    dy=-dy;
-                    diceY = 16 ; // it's the BOTTOM of the sprite
+                //GOING UP : check if the top of the dice is out of the TOP of screen (overflow to bottom of the screen)
+                //... don't care, won't make it bounce that high
 
-                    bounceRound++;
-                }
-                //is the bottom of the dice going too low?
+                //GOING DOWN: is the bottom of the dice going too low?
                 if (diceY >= SCREENHEIGHT){
                     //bounce
-                    dy=-dy;
+                    //was going DOWN so dy is positive => make it negative and reduce it by a factor and a constant amount
+                    dy = -(dy * 3 / 4 - 1);
+                    if (dy > 0)
+                        dy = 0;
+
                     diceY = SCREENHEIGHT; // it's the BOTTOM of the sprite
                     bounceRound++;
                 }
