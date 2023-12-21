@@ -218,8 +218,12 @@ void main() {
 
             //Dice animation
             diceX = rand(); if (diceX > SCREENWIDTH-8) diceX = SCREENWIDTH-10;if (diceX -8 > SCREENWIDTH) diceX = 10;
+            dx = (rand() & 0x03) +1;
+            //if the dice is on the right side of the screen, make it go left otherwise it will go right
+            if (diceX > SCREENWIDTH/2)
+                dx = -dx;
+
             diceY = 40 + (rand() & 0x1F);
-            dx = -4 + (INT8)(rand() & 0x07);
             dy = 1;
             bounceRound = 0;
 
