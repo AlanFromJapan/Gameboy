@@ -16,6 +16,7 @@
 
 //available dice types
 const UINT8 DiceTypes[] = {2, 4, 6, 8, 10, 12, 20, 100};
+volatile UINT8 lastVal = 0;
 
 //Sprites constants
 #define SPRITE_DICE_LEFT     2
@@ -111,9 +112,9 @@ void sendSerialByte(UINT8 byte){
     //byte to send
     SB_REG = byte;
     //start transfer (normal speed, internal clock)
-    SC_REG = 0x81;
+    SC_REG = 0x80;
 
-    while(SC_REG & 0x81){
+    while(SC_REG & 0x80){
         //wait for transfer to complete
         ;
     }
@@ -124,7 +125,7 @@ UINT8 receiveSerialByte(){
     //byte to send
     SB_REG = 0x00;
     //start transfer (normal speed, EXTERNAL clock)
-    SC_REG = 0x80;
+    SC_REG = 0x81;
 
     while(SC_REG & 0x80){
         //wait for transfer to complete
@@ -133,6 +134,10 @@ UINT8 receiveSerialByte(){
 
     return SB_REG;
 }   
+
+void sioInt() {
+    lastVal = _io_in;    
+}
 
 /*
  ***********************************************************************************************
@@ -158,8 +163,9 @@ void main() {
     
     SHOW_SPRITES;
 
+    add_SIO(sioInt);
 
-
+    
     //Remember that the sprite is 16x16 so the X and Y are the BOTTOM-MIDDLE of the sprite
 
 
@@ -191,9 +197,11 @@ void main() {
             bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
             bgShowDiceValue(111);
 
-            UINT8 diceValue = receiveSerialByte();
+            // UINT8 diceValue = receiveSerialByte();
 
-            bgShowDiceValue(diceValue);
+            // bgShowDiceValue(diceValue);
+
+            receive_byte();
             
             //tempo
             buttonTemporisation = BUTTON_TEMPORISATION;
@@ -206,7 +214,9 @@ void main() {
             delay(50);
             bgShowDiceValue(222);
 
-            sendSerialByte(diceValue);
+            // sendSerialByte(diceValue);
+            _io_out = diceValue;
+            send_byte();
 
             bgShowDiceValue(diceValue);
 
@@ -229,6 +239,7 @@ void main() {
 
 
 
+        bgShowDiceValue(lastVal);
         
         //------------------------------------------------
         // End of frame
