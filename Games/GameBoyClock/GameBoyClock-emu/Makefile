@@ -39,7 +39,9 @@ run:
 run2:
 	@echo "\e[1;32mRun 2 instances connected with BGB !!\e[0m"
 	wine ../../../bgb/bgb.exe ./$(ROM_NAME).$(ROM_EXT) -listen 55555 &
-	sleep 2s; wine ../../../bgb/bgb.exe ./$(ROM_NAME).$(ROM_EXT) -connect 55555 &
+	sleep 2s
+#	connect BGB need to have the IP of the host also (otherwise can't connect on Linux)
+	wine ../../../bgb/bgb.exe ./$(ROM_NAME).$(ROM_EXT) -connect 127.0.0.1:55555 &
 
 full: clean build run
 
