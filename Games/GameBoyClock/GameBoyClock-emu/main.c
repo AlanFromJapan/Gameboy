@@ -14,8 +14,7 @@
 #include "my_lib01.h"
 #include "Map_Screen1.h"
 
-//available dice types
-const UINT8 DiceTypes[] = {2, 4, 6, 8, 10, 12, 20, 100};
+
 volatile UINT8 lastVal = 0;
 
 //Sprites constants
@@ -37,9 +36,6 @@ const UINT8 Digits2Tile[] = {
     TILE_DIGIT_0, TILE_DIGIT_1, TILE_DIGIT_2, TILE_DIGIT_3, TILE_DIGIT_4, TILE_DIGIT_5, TILE_DIGIT_6, TILE_DIGIT_7, TILE_DIGIT_8, TILE_DIGIT_9
 };
 
-//rightmost digit of the dice type X,Y position
-#define DICE_TYPE_MOST_X 4
-#define DICE_TYPE_MOST_Y 8
 
 //rightmost digit of the dice value X,Y position
 #define DICE_VALUE_MOST_X 10
@@ -85,12 +81,6 @@ void bgShow3Digits(const UINT8 val, const UINT8 tileX, const UINT8 tileY) {
     }
 }
 
-/**
- * Updates the displayed dice type
- */
-void bgShowDiceType(UINT8 dice){
-    bgShow3Digits(dice, DICE_TYPE_MOST_X, DICE_TYPE_MOST_Y);
-}
 
 /**
  * Updates the displayed dice result
@@ -99,44 +89,9 @@ void bgShowDiceValue(UINT8 val){
     bgShow3Digits(val, DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
 }
 
-/**
- * Hides a 16x16 sprite (2 consequent sprites in fact)
- */
-void hide_sprite(const UINT8 spriteId){
-    move_sprite(spriteId, 200, 0);
-    move_sprite(spriteId+1, 200, 0);
-}
-
-void sendSerialByte(UINT8 byte){
-    //https://gbdev.gg8.se/wiki/articles/Serial_Data_Transfer_(Link_Cable)
-    //byte to send
-    SB_REG = byte;
-    //start transfer (normal speed, internal clock)
-    SC_REG = 0x80;
-
-    while(SC_REG & 0x80){
-        //wait for transfer to complete
-        ;
-    }
-} 
-
-UINT8 receiveSerialByte(){
-    //https://gbdev.gg8.se/wiki/articles/Serial_Data_Transfer_(Link_Cable)
-    //byte to send
-    SB_REG = 0x00;
-    //start transfer (normal speed, EXTERNAL clock)
-    SC_REG = 0x81;
-
-    while(SC_REG & 0x80){
-        //wait for transfer to complete
-        ;
-    }
-
-    return SB_REG;
-}   
-
 void sioInt() {
     lastVal = _io_in;    
+    bgShowDiceValue(lastVal);
 }
 
 /*
@@ -145,12 +100,9 @@ void sioInt() {
  ***********************************************************************************************
  */
 void main() {
-    UINT8  framecounter, framedivider, diceTypeIdx, buttonTemporisation;
+    UINT8  framecounter, framedivider, buttonTemporisation;
 
     SPRITES_8x16;
-
-  
-    SHOW_BKG;
 
     wait_vbl_done();
  
@@ -161,23 +113,15 @@ void main() {
     set_bkg_data(0, my_lib01_COUNT, my_lib01);
     set_bkg_tiles(0, 0, Map_Screen1_WIDTH, Map_Screen1_HEIGHT, Map_Screen1);
     
+    SHOW_BKG;
     SHOW_SPRITES;
 
+    //handle serial transfer completion
     add_SIO(sioInt);
 
     
-    //Remember that the sprite is 16x16 so the X and Y are the BOTTOM-MIDDLE of the sprite
-
-
-   
-    //Write the default dice value of 6 (index 2 in the DiceTypes array)
-    diceTypeIdx = 2;
-    bgShowDiceType(DiceTypes[diceTypeIdx]);
-
     wait_vbl_done();
 
-    framecounter = 0;
-    framedivider = 0;
     buttonTemporisation = 0;
     while(1) {
 
@@ -191,15 +135,19 @@ void main() {
         // read joypad
         UINT8 joypadState = joypad();
         if (buttonTemporisation == 0 && (joypadState & J_LEFT || joypadState & J_DOWN)){
-                        //RECEIVE
+            //RECEIVE
+
+            //R-C-V
+            putTile(TILE_LETTER_18, 0, 0);  
+            putTile(TILE_LETTER_3, 1, 0);  
+            putTile(TILE_LETTER_22, 2, 0);  
+            putTile(TILE_EMPTY, 3, 0);   
+
+
 
             //clear and display the value, little blink to show it was updated
             bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
-            bgShowDiceValue(111);
-
-            // UINT8 diceValue = receiveSerialByte();
-
-            // bgShowDiceValue(diceValue);
+            
 
             receive_byte();
             
@@ -208,11 +156,17 @@ void main() {
         }
         if (buttonTemporisation == 0 && (joypadState & J_RIGHT || joypadState & J_UP)){
             //SEND
-            UINT8 diceValue = (rand() % (DiceTypes[diceTypeIdx])) + 1;
+
+            //S-E-N-D
+            putTile(TILE_LETTER_19, 0, 0);  
+            putTile(TILE_LETTER_5, 1, 0);  
+            putTile(TILE_LETTER_14, 2, 0);  
+            putTile(TILE_LETTER_4, 3, 0);   
+
+
+            UINT8 diceValue = (rand() % 100) + 1;
             //clear and display the value, little blink to show it was updated
             bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
-            delay(50);
-            bgShowDiceValue(222);
 
             // sendSerialByte(diceValue);
             _io_out = diceValue;
@@ -225,21 +179,9 @@ void main() {
         }
 
 
-        if (buttonTemporisation == 0 && joypadState & J_A){
-            UINT8 diceValue = (rand() % (DiceTypes[diceTypeIdx])) + 1;
-            
-            //clear and display the value, little blink to show it was updated
-            bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
-            delay(50);
-            bgShowDiceValue(diceValue);
-
-            //tempo
-            buttonTemporisation = BUTTON_TEMPORISATION;
-        }
 
 
 
-        bgShowDiceValue(lastVal);
         
         //------------------------------------------------
         // End of frame
