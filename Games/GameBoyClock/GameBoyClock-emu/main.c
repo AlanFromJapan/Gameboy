@@ -14,8 +14,13 @@
 #include "my_lib01.h"
 #include "Map_Screen1.h"
 
+#define MODE_SINGLE 0
+#define MODE_CONTINUOUS_RCV 1
+#define MODE_CONTINUOUS_SEND 2
 
 volatile UINT8 lastVal = 0;
+volatile UINT8 currentMode = MODE_SINGLE; 
+volatile UINT8 continuousReceiveModeCounter = 0;
 
 //Sprites constants
 #define SPRITE_DICE_LEFT     2
@@ -91,7 +96,30 @@ void bgShowDiceValue(UINT8 val){
 
 void sioInt() {
     lastVal = _io_in;    
-    bgShowDiceValue(lastVal);
+
+    if (currentMode == MODE_CONTINUOUS_RCV){
+        bgShow3Digits(lastVal, DICE_VALUE_MOST_X + 4*continuousReceiveModeCounter, DICE_VALUE_MOST_Y);
+        continuousReceiveModeCounter++;
+        if (continuousReceiveModeCounter == 2){
+            continuousReceiveModeCounter = 0;
+        }
+
+        //wait for next byte
+        receive_byte();
+    }
+    if (currentMode == MODE_CONTINUOUS_SEND){
+        //send next byte        
+        UINT8 diceValue = (rand() % 100) + 1;
+
+        //clear and display the value, little blink to show it was updated
+        bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
+        _io_out = diceValue;
+        send_byte();
+
+        bgShowDiceValue(diceValue);
+        delay(500);
+    }
+    
 }
 
 /*
@@ -134,7 +162,7 @@ void main() {
 
         // read joypad
         UINT8 joypadState = joypad();
-        if (buttonTemporisation == 0 && (joypadState & J_LEFT || joypadState & J_DOWN)){
+        if (buttonTemporisation == 0 && (joypadState & J_LEFT )){
             //RECEIVE
 
             //R-C-V
@@ -149,12 +177,13 @@ void main() {
             bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
             
 
+            currentMode = MODE_SINGLE;
             receive_byte();
             
             //tempo
             buttonTemporisation = BUTTON_TEMPORISATION;
         }
-        if (buttonTemporisation == 0 && (joypadState & J_RIGHT || joypadState & J_UP)){
+        if (buttonTemporisation == 0 && (joypadState & J_RIGHT )){
             //SEND
 
             //S-E-N-D
@@ -168,7 +197,7 @@ void main() {
             //clear and display the value, little blink to show it was updated
             bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
 
-            // sendSerialByte(diceValue);
+            currentMode = MODE_SINGLE;
             _io_out = diceValue;
             send_byte();
 
@@ -178,6 +207,49 @@ void main() {
             buttonTemporisation = BUTTON_TEMPORISATION;
         }
 
+        if (buttonTemporisation == 0 && (joypadState & J_B )){
+            //RECEIVE continuous
+
+            //R-C-V-2
+            putTile(TILE_LETTER_18, 0, 0);  
+            putTile(TILE_LETTER_3, 1, 0);  
+            putTile(TILE_LETTER_22, 2, 0);  
+            putTile(TILE_DIGIT_2, 3, 0);   
+
+
+            //clear and display the value, little blink to show it was updated
+            bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
+            
+            currentMode = MODE_CONTINUOUS_RCV;
+            receive_byte();
+            
+            //tempo
+            buttonTemporisation = BUTTON_TEMPORISATION;
+        }
+
+        if (buttonTemporisation == 0 && (joypadState & J_A )){
+            //SEND continuous
+
+            //S-N-D-2
+            putTile(TILE_LETTER_19, 0, 0); 
+            putTile(TILE_LETTER_14, 1, 0);  
+            putTile(TILE_LETTER_4, 2, 0);   
+            putTile(TILE_DIGIT_2, 3, 0);   
+
+
+            UINT8 diceValue = (rand() % 100) + 1;
+            //clear and display the value, little blink to show it was updated
+            bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
+
+            currentMode = MODE_CONTINUOUS_SEND;
+            _io_out = diceValue;
+            send_byte();
+
+            bgShowDiceValue(diceValue);
+
+            //tempo
+            buttonTemporisation = BUTTON_TEMPORISATION;
+        }
 
 
 
