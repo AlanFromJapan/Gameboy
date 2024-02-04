@@ -22,6 +22,9 @@ volatile UINT8 lastVal = 0;
 volatile UINT8 currentMode = MODE_SINGLE; 
 volatile UINT8 continuousReceiveModeCounter = 0;
 
+
+UINT8 constantSendValue = 0;
+
 //Sprites constants
 #define SPRITE_DICE_LEFT     2
 #define SPRITE_DICE_RIGHT    (SPRITE_DICE_LEFT+1)
@@ -109,14 +112,17 @@ void sioInt() {
     }
     if (currentMode == MODE_CONTINUOUS_SEND){
         //send next byte        
-        UINT8 diceValue = (rand() % 100) + 1;
+        constantSendValue++;
+        if (constantSendValue > 100){
+            constantSendValue = 0;
+        }
 
         //clear and display the value, little blink to show it was updated
         bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
-        _io_out = diceValue;
+        _io_out = constantSendValue;
         send_byte();
 
-        bgShowDiceValue(diceValue);
+        bgShowDiceValue(constantSendValue);
         delay(500);
     }
     
@@ -236,16 +242,13 @@ void main() {
             putTile(TILE_LETTER_4, 2, 0);   
             putTile(TILE_DIGIT_2, 3, 0);   
 
-
-            UINT8 diceValue = (rand() % 100) + 1;
+            currentMode = MODE_CONTINUOUS_SEND;
             //clear and display the value, little blink to show it was updated
             bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
-
-            currentMode = MODE_CONTINUOUS_SEND;
-            _io_out = diceValue;
+            _io_out = constantSendValue;
             send_byte();
 
-            bgShowDiceValue(diceValue);
+            bgShowDiceValue(constantSendValue);
 
             //tempo
             buttonTemporisation = BUTTON_TEMPORISATION;
