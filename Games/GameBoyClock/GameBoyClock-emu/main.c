@@ -128,6 +128,26 @@ void sioInt() {
     
 }
 
+
+
+void initialConstantSend()
+{
+    // S-N-D-2
+    putTile(TILE_LETTER_19, 0, 0);
+    putTile(TILE_LETTER_14, 1, 0);
+    putTile(TILE_LETTER_4, 2, 0);
+    putTile(TILE_DIGIT_2, 3, 0);
+
+    constantSendValue = 0;
+    currentMode = MODE_CONTINUOUS_SEND;
+    // clear and display the value, little blink to show it was updated
+    bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
+    _io_out = constantSendValue;
+    send_byte();
+
+    bgShowDiceValue(constantSendValue);
+}
+
 /*
  ***********************************************************************************************
  * MAIN method
@@ -155,6 +175,9 @@ void main() {
 
     
     wait_vbl_done();
+
+    //start as auto-send
+    initialConstantSend();
 
     buttonTemporisation = 0;
     while(1) {
@@ -236,19 +259,7 @@ void main() {
         if (buttonTemporisation == 0 && (joypadState & J_A )){
             //SEND continuous
 
-            //S-N-D-2
-            putTile(TILE_LETTER_19, 0, 0); 
-            putTile(TILE_LETTER_14, 1, 0);  
-            putTile(TILE_LETTER_4, 2, 0);   
-            putTile(TILE_DIGIT_2, 3, 0);   
-
-            currentMode = MODE_CONTINUOUS_SEND;
-            //clear and display the value, little blink to show it was updated
-            bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
-            _io_out = constantSendValue;
-            send_byte();
-
-            bgShowDiceValue(constantSendValue);
+            initialConstantSend();
 
             //tempo
             buttonTemporisation = BUTTON_TEMPORISATION;
@@ -264,5 +275,6 @@ void main() {
         delay(MAIN_LOOP_TEMPORISATION);
     }
 }
+
 
 
