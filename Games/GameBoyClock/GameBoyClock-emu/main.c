@@ -113,9 +113,6 @@ void sioInt() {
     if (currentMode == MODE_CONTINUOUS_SEND){
         //send next byte        
         constantSendValue++;
-        if (constantSendValue > 100){
-            constantSendValue = 0;
-        }
 
         //clear and display the value, little blink to show it was updated
         bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
@@ -130,8 +127,7 @@ void sioInt() {
 
 
 
-void initialConstantSend()
-{
+void initialConstantSend() {
     // S-N-D-2
     putTile(TILE_LETTER_19, 0, 0);
     putTile(TILE_LETTER_14, 1, 0);
@@ -146,6 +142,21 @@ void initialConstantSend()
     send_byte();
 
     bgShowDiceValue(constantSendValue);
+}
+
+void initialConstantReceive() {
+    //R-C-V-2
+    putTile(TILE_LETTER_18, 0, 0);  
+    putTile(TILE_LETTER_3, 1, 0);  
+    putTile(TILE_LETTER_22, 2, 0);  
+    putTile(TILE_DIGIT_2, 3, 0);   
+
+
+    //clear and display the value, little blink to show it was updated
+    bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
+
+    currentMode = MODE_CONTINUOUS_RCV;
+    receive_byte();
 }
 
 /*
@@ -176,8 +187,8 @@ void main() {
     
     wait_vbl_done();
 
-    //start as auto-send
-    initialConstantSend();
+    //start as auto-receive
+    initialConstantReceive();
 
     buttonTemporisation = 0;
     while(1) {
@@ -239,18 +250,7 @@ void main() {
         if (buttonTemporisation == 0 && (joypadState & J_B )){
             //RECEIVE continuous
 
-            //R-C-V-2
-            putTile(TILE_LETTER_18, 0, 0);  
-            putTile(TILE_LETTER_3, 1, 0);  
-            putTile(TILE_LETTER_22, 2, 0);  
-            putTile(TILE_DIGIT_2, 3, 0);   
-
-
-            //clear and display the value, little blink to show it was updated
-            bgClearDigits(DICE_VALUE_MOST_X, DICE_VALUE_MOST_Y);
-            
-            currentMode = MODE_CONTINUOUS_RCV;
-            receive_byte();
+            initialConstantReceive();
             
             //tempo
             buttonTemporisation = BUTTON_TEMPORISATION;
