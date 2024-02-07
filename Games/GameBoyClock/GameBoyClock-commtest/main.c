@@ -54,7 +54,6 @@ void bgClearDigits(const UINT8 tileX, const UINT8 tileY){
     //clear
     putTile(TILE_EMPTY, tileX, tileY);
     putTile(TILE_EMPTY, tileX-1, tileY);
-    putTile(TILE_EMPTY, tileX-2, tileY);
 }
 
 /**
@@ -69,23 +68,19 @@ void bgShow3Digits(const UINT8 val, const UINT8 tileX, const UINT8 tileY) {
     putTile(Digits2Tile[d % 10], tileX, tileY);
 
     d = d / (UINT8)10;
-    if (d > 0){
-        putTile(Digits2Tile[d % 10], tileX -1, tileY);
-    }
+    putTile(Digits2Tile[d % 10], tileX -1, tileY);
+    
 
-    d = d / (UINT8)10;
-    if (d > 0){
-        putTile(Digits2Tile[d % 10], tileX -2, tileY);
-    }
+
 }
 
 
 void showTime(){
     bgClearDigits(TIME_VALUE_MOST_X, TIME_VALUE_MOST_Y);
-    bgClearDigits(TIME_VALUE_MOST_X + 4, TIME_VALUE_MOST_Y);
+    bgClearDigits(TIME_VALUE_MOST_X + 3, TIME_VALUE_MOST_Y);
 
     bgShow3Digits(_hours, TIME_VALUE_MOST_X, TIME_VALUE_MOST_Y);
-    bgShow3Digits(_minutes, TIME_VALUE_MOST_X + 4, TIME_VALUE_MOST_Y);
+    bgShow3Digits(_minutes, TIME_VALUE_MOST_X + 3, TIME_VALUE_MOST_Y);
 }
 
 void sioInt() {
@@ -138,6 +133,15 @@ void main() {
         if (buttonTemporisation == 0){
             //show time
             showTime();
+
+            _minutes++;
+            if (_minutes >= 60){
+                _minutes = 0;
+                _hours++;
+                if (_hours >= 24){
+                    _hours = 0;
+                }
+            }
 
             //tempo
             buttonTemporisation = BUTTON_TEMPORISATION;
