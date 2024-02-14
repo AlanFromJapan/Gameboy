@@ -17,9 +17,7 @@
 
 
 //main loop temporization (ms)
-#define MAIN_LOOP_TEMPORISATION 20
-//button temporization
-#define BUTTON_TEMPORISATION 10
+#define MAIN_LOOP_TEMPORISATION 500
 
 
 //Some tiles defintions
@@ -36,8 +34,18 @@ const UINT8 Digits2Tile[] = {
 #define TIME_VALUE_MOST_X 3
 #define TIME_VALUE_MOST_Y 7
 
-UINT8 _hours = 12;
-UINT8 _minutes = 34;
+volatile UINT8 _hours = 12;
+volatile UINT8 _minutes = 34;
+
+//flag
+#define FLAG_X  1
+#define FLAG_Y  1
+
+//state of the communication
+#define STATE_ASK_HOURS 0
+#define STATE_ASK_MINUTES 1
+#define STATE_ASK_END 2
+volatile UINT8 _state = STATE_ASK_HOURS;
 
 /**
  * Set a background tile to the tile in parameter
@@ -70,8 +78,6 @@ void bgShow3Digits(const UINT8 val, const UINT8 tileX, const UINT8 tileY) {
     d = d / (UINT8)10;
     putTile(Digits2Tile[d % 10], tileX -1, tileY);
     
-
-
 }
 
 
@@ -83,8 +89,95 @@ void showTime(){
     bgShow3Digits(_minutes, TIME_VALUE_MOST_X + 3, TIME_VALUE_MOST_Y);
 }
 
-void sioInt() {
+void receptionFlagON(){
+    putTile(TILE_CROIX, FLAG_X, FLAG_Y);
+}
+void receptionFlagOFF(){
+    putTile(TILE_EMPTY, FLAG_X, FLAG_Y);
+}
+
+/**
+ * Serial reception start BUT using the INTERNAL clock of the GB
+ */
+void receive_byte_self_clock(){
+    ///modified version of _receive_byte() in serial.s to use *INTERNAL* clock of the GB
+    __asm__(
+
+"LD	A,#0x02   ;.IO_RECEIVING\n"
+"LD	(__io_status),A ; Store status\n"
+"LD	A,#0x01             ; <== CHANGED from XOR A\n" 
+"LDH	(0x02),A		; Use ***INTERNAL*** clock\n"
+"LD	A,#0x55    ;.DT_RECEIVING\n"
+"LDH	(0x01),A		; Send RECEIVING byte\n"
+"LD	A,#0x81             ; <== CHANGED HERE from 0x80\n"
+"LDH	(0x02),A		; Use ***INTERNAL*** clock\n"
+
+
+    );
+
+
+}
+
+/**
+ * Get the time from the RTC via Link data cable
+ */
+void getTime(){
+
+    switch (_state)
+    {
+        case STATE_ASK_HOURS:
+            //send the hours
+            receptionFlagON();
+
+            _state = STATE_ASK_MINUTES;
+            _io_out = 'H';
+            receive_byte_self_clock();
+            break;
+        case STATE_ASK_MINUTES: 
+            //send the minutes
+            _state = STATE_ASK_END;
+            _io_out = 'M';
+            receive_byte_self_clock();
+            break;
+        case STATE_ASK_END:
+            //show time
+            showTime();
+            
+            receptionFlagOFF();
+
+            //end of communication
+            _state = STATE_ASK_HOURS;
+            break;
     
+    }
+
+
+}
+
+/**
+ * Serial transfer completion (vector interrupt)
+ */
+void sioInt() {
+
+    switch (_state)
+    {
+        case STATE_ASK_MINUTES:
+            //got the hours
+            _hours = _io_in;
+            //get the mins
+            getTime();
+            break;
+        case STATE_ASK_END:
+            //got the minutes
+            __asm__(
+                "LD     A,(0x01)    ;put SB (buffer) in A\n"
+                "LD	    (__io_in),A ;put the A in __io_in\n"
+            );
+            _minutes = _io_in;
+            //show time
+            getTime();
+            break;
+    }
 }
 
 
@@ -96,7 +189,6 @@ void sioInt() {
  ***********************************************************************************************
  */
 void main() {
-    UINT8  framecounter, framedivider, buttonTemporisation;
 
     SPRITES_8x16;
 
@@ -117,38 +209,27 @@ void main() {
     wait_vbl_done();
 
 
-    buttonTemporisation = BUTTON_TEMPORISATION;
     while(1) {
 
         wait_vbl_done();
 
-        //tempo
-        if (buttonTemporisation > 0){
-            buttonTemporisation--;
-        }
-
-        // read joypad
-        UINT8 joypadState = joypad();
-
-        if (buttonTemporisation == 0){
-            //show time
-            showTime();
-
-            _minutes++;
-            if (_minutes >= 60){
-                _minutes = 0;
-                _hours++;
-                if (_hours >= 24){
-                    _hours = 0;
-                }
-            }
-
-            //tempo
-            buttonTemporisation = BUTTON_TEMPORISATION;
-        }
+        //get time
+        getTime();
 
 
-        
+        // _minutes++;
+        // if (_minutes >= 60){
+        //     _minutes = 0;
+        //     _hours++;
+        //     if (_hours >= 24){
+        //         _hours = 0;
+        //     }
+        // }
+
+
+
+
+    
         //------------------------------------------------
         // End of frame
         //------------------------------------------------
