@@ -34,8 +34,8 @@ const UINT8 Digits2Tile[] = {
 #define TIME_VALUE_MOST_X 3
 #define TIME_VALUE_MOST_Y 7
 
-volatile UINT8 _hours = 12;
-volatile UINT8 _minutes = 34;
+#define MAX_SHOWN_VALUE     8
+volatile UINT8 _counter = 0;
 
 //flag
 #define FLAG_X  1
@@ -81,12 +81,21 @@ void bgShow3Digits(const UINT8 val, const UINT8 tileX, const UINT8 tileY) {
 }
 
 
-void showTime(){
-    bgClearDigits(TIME_VALUE_MOST_X, TIME_VALUE_MOST_Y);
-    bgClearDigits(TIME_VALUE_MOST_X + 3, TIME_VALUE_MOST_Y);
+void clearDisplay(){
+    for (UINT8 i = 0; i < MAX_SHOWN_VALUE; i++){
+        bgClearDigits(TIME_VALUE_MOST_X, TIME_VALUE_MOST_Y+i);
+        bgClearDigits(TIME_VALUE_MOST_X + 3, TIME_VALUE_MOST_Y +i);
+        bgClearDigits(TIME_VALUE_MOST_X + 6, TIME_VALUE_MOST_Y +i);
 
-    bgShow3Digits(_hours, TIME_VALUE_MOST_X, TIME_VALUE_MOST_Y);
-    bgShow3Digits(_minutes, TIME_VALUE_MOST_X + 3, TIME_VALUE_MOST_Y);
+        bgShow3Digits(i, TIME_VALUE_MOST_X, TIME_VALUE_MOST_Y+i);
+    }
+}
+
+void showValue (UINT8 val){
+    bgShow3Digits(val, TIME_VALUE_MOST_X + 3, TIME_VALUE_MOST_Y + _counter);
+
+    val = val + TILE_LETTER_1;
+    putTile(val, TIME_VALUE_MOST_X + 6, TIME_VALUE_MOST_Y + _counter);
 }
 
 void receptionFlagON(){
@@ -119,37 +128,12 @@ void receive_byte_self_clock(){
 }
 
 /**
- * Get the time from the RTC via Link data cable
+ * Get one byte from the serial port
  */
-void getTime(){
+void getByte(){
 
-    switch (_state)
-    {
-        case STATE_ASK_HOURS:
-            //send the hours
-            receptionFlagON();
-
-            _state = STATE_ASK_MINUTES;
-            _io_out = 'H';
-            receive_byte_self_clock();
-            break;
-        case STATE_ASK_MINUTES: 
-            //send the minutes
-            _state = STATE_ASK_END;
-            _io_out = 'M';
-            receive_byte_self_clock();
-            break;
-        case STATE_ASK_END:
-            //show time
-            showTime();
-            
-            receptionFlagOFF();
-
-            //end of communication
-            _state = STATE_ASK_HOURS;
-            break;
-    
-    }
+    receptionFlagON();
+    receive_byte_self_clock();
 
 
 }
@@ -158,26 +142,11 @@ void getTime(){
  * Serial transfer completion (vector interrupt)
  */
 void sioInt() {
+    UINT8 v = _io_in;
 
-    switch (_state)
-    {
-        case STATE_ASK_MINUTES:
-            //got the hours
-            _hours = _io_in;
-            //get the mins
-            getTime();
-            break;
-        case STATE_ASK_END:
-            //got the minutes
-            __asm__(
-                "LD     A,(0x01)    ;put SB (buffer) in A\n"
-                "LD	    (__io_in),A ;put the A in __io_in\n"
-            );
-            _minutes = _io_in;
-            //show time
-            getTime();
-            break;
-    }
+    showValue(v);
+
+    receptionFlagOFF();
 }
 
 
@@ -208,32 +177,21 @@ void main() {
     
     wait_vbl_done();
 
-
     while(1) {
 
-        wait_vbl_done();
+        clearDisplay();
 
-        //get time
-        getTime();
+        for (_counter = 0; _counter < MAX_SHOWN_VALUE; _counter++){
+            wait_vbl_done();
 
-
-        // _minutes++;
-        // if (_minutes >= 60){
-        //     _minutes = 0;
-        //     _hours++;
-        //     if (_hours >= 24){
-        //         _hours = 0;
-        //     }
-        // }
+            //get time
+            getByte();
 
 
+            delay(MAIN_LOOP_TEMPORISATION);
+        }
 
-
-    
-        //------------------------------------------------
-        // End of frame
-        //------------------------------------------------
-        delay(MAIN_LOOP_TEMPORISATION);
+        delay(MAIN_LOOP_TEMPORISATION * 3);        
     }
 }
 
