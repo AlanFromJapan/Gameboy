@@ -2,7 +2,7 @@
 #ifndef __my_tiles_H__
 #define __my_tiles_H__
 
-#define TILE_COUNT		32
+#define TILE_COUNT		64
 
 #define TILE_1		0
 #define TILE_2		4
@@ -36,6 +36,38 @@
 #define TILE_30		116
 #define TILE_31		120
 #define TILE_32		124
+#define TILE_33		128
+#define TILE_34		132
+#define TILE_35		136
+#define TILE_36		140
+#define TILE_37		144
+#define TILE_38		148
+#define TILE_39		152
+#define TILE_40		156
+#define TILE_41		160
+#define TILE_42		164
+#define TILE_43		168
+#define TILE_44		172
+#define TILE_45		176
+#define TILE_46		180
+#define TILE_47		184
+#define TILE_48		188
+#define TILE_49		192
+#define TILE_50		196
+#define TILE_51		200
+#define TILE_52		204
+#define TILE_53		208
+#define TILE_54		212
+#define TILE_55		216
+#define TILE_56		220
+#define TILE_57		224
+#define TILE_58		228
+#define TILE_59		232
+#define TILE_60		236
+#define TILE_61		240
+#define TILE_62		244
+#define TILE_63		248
+#define TILE_64		252
 
 
 

@@ -47,7 +47,7 @@ const UINT8 DigitsClearTiles[] = {
     0x01, 0x08, 0x00, 0x02, 0x10, 0x12, 0x18, 0x19, 0x06, 0x07, 0x0E, 0x0F
 };
 const UINT8 DigitsDarkTiles[] = {
-    0x04, 0x0B, 0x03, 0x05, 0x13, 0x15, 0x1B, 0x1C, 0x06, 0x07, 0x0E, 0x0F
+    0x04, 0x0B, 0x03, 0x05, 0x13, 0x15, 0x1B, 0x1C, 0x20, 0x21, 0x28, 0x29
 };
 
 volatile UINT8 _waiting = 0;
@@ -362,17 +362,18 @@ void main() {
     wait_vbl_done();
 
     //draw the digits
+    const UINT8 *tiles = DigitsDarkTiles;
 
-    bgDrawDigit(0, 1, 1, DigitsClearTiles);
-    bgDrawDigit(1, 4, 1, DigitsClearTiles);
-    bgDrawDigit(2, 8, 1, DigitsClearTiles);
-    bgDrawDigit(3, 12, 1, DigitsClearTiles);
-    bgDrawDigit(4, 16, 1, DigitsClearTiles);
-    bgDrawDigit(5, 1, 6, DigitsClearTiles);
-    bgDrawDigit(6, 4, 6, DigitsClearTiles);
-    bgDrawDigit(7, 8, 6, DigitsClearTiles);
-    bgDrawDigit(8, 12, 6, DigitsClearTiles);
-    bgDrawDigit(9, 16, 6, DigitsClearTiles);
+    bgDrawDigit(0, 1, 1, tiles);
+    bgDrawDigit(1, 4, 1, tiles);
+    bgDrawDigit(2, 8, 1, tiles);
+    bgDrawDigit(3, 12, 1, tiles);
+    bgDrawDigit(4, 16, 1, tiles);
+    bgDrawDigit(5, 1, 6, tiles);
+    bgDrawDigit(6, 4, 6, tiles);
+    bgDrawDigit(7, 8, 6, tiles);
+    bgDrawDigit(8, 12, 6, tiles);
+    bgDrawDigit(9, 16, 6, tiles);
 
     while(1) {
         wait_vbl_done();
