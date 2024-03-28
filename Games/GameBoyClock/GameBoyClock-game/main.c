@@ -26,6 +26,7 @@
 
 //tile definitions
 #define TILE_EMPTY      0x0C
+#define TILE_DOT        0x09
 #define TILE_REFRESH    0x1a
 
 
@@ -50,6 +51,9 @@ const UINT8 DigitsDarkTiles[] = {
     0x04, 0x0B, 0x03, 0x05, 0x13, 0x15, 0x1B, 0x1C, 0x20, 0x21, 0x28, 0x29
 };
 
+UINT8 *currentTiles = DigitsClearTiles;
+
+// Link port Serial related
 volatile UINT8 _waiting = 0;
 
 
@@ -280,6 +284,26 @@ void bgDrawDigit(const UINT8 digit, const UINT8 x, const UINT8 y, const UINT8 *t
     }
 }
 
+
+/**
+ * Shows the time centered on the background in current selected tileset
+*/
+void bgShowTime (const UINT8 h, const UINT8 m) {
+    //clear the screen
+    bgClearScreen();
+
+    //draw the time    
+    bgDrawDigit(h/10, 2, 5, currentTiles);
+    bgDrawDigit(h%10, 2 +3 +1, 5, currentTiles);
+    
+    putTile(TILE_DOT, 10, 5+1);
+    putTile(TILE_DOT, 10, 5+3);
+
+    bgDrawDigit(m/10, 11, 5, currentTiles);
+    bgDrawDigit(m%10, 11 +3 +1, 5, currentTiles);
+}
+
+
 void receptionFlagON(){
     putTile(TILE_REFRESH, REFRESH_X, REFRESH_Y);
 }
@@ -308,6 +332,7 @@ void receive_byte_self_clock(){
 
 
 }
+
 
 /**
  * Get one byte from the serial port
@@ -348,7 +373,6 @@ void main() {
 
     wait_vbl_done();
  
-
     //load the normal BG and change the tile lib
     set_bkg_data(0, TILE_COUNT, my_tiles);
     bgClearScreen();
@@ -361,22 +385,22 @@ void main() {
     
     wait_vbl_done();
 
-    //draw the digits
-    const UINT8 *tiles = DigitsDarkTiles;
-
-    bgDrawDigit(0, 1, 1, tiles);
-    bgDrawDigit(1, 4, 1, tiles);
-    bgDrawDigit(2, 8, 1, tiles);
-    bgDrawDigit(3, 12, 1, tiles);
-    bgDrawDigit(4, 16, 1, tiles);
-    bgDrawDigit(5, 1, 6, tiles);
-    bgDrawDigit(6, 4, 6, tiles);
-    bgDrawDigit(7, 8, 6, tiles);
-    bgDrawDigit(8, 12, 6, tiles);
-    bgDrawDigit(9, 16, 6, tiles);
+    UINT8 h = 9;
+    UINT8 m = 45;
 
     while(1) {
         wait_vbl_done();
+
+        //show time
+        m++;
+        if (m == 60){
+            m = 0;
+            h++;
+            if (h == 24){
+                h = 0;
+            }
+        }
+        bgShowTime(h, m);
 
         //get time
         getByte();
