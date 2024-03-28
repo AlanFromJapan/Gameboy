@@ -1,0 +1,3 @@
+#the makefile for the project copies them from the resources/ folder to here so no need to commit these
+BG-sprites.c
+BG-sprites.h
