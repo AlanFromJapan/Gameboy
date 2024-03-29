@@ -446,6 +446,20 @@ void main() {
     while(1) {
         wait_vbl_done();
 
+        UINT8 lastJoypad = joypad();
+        if (lastJoypad & J_A){
+            currentTiles = DigitsDarkTiles;
+            //force refresh
+            oldh = 255;
+            oldm = 255;
+        } 
+        if (lastJoypad & J_B){
+            currentTiles = DigitsClearTiles;
+            //force refresh
+            oldh = 255;
+            oldm = 255;
+        } 
+
         //show time
         m++;
         if (m == 60){
@@ -455,7 +469,6 @@ void main() {
                 h = 0;
             }
         }
-        //bgShowTime(h, m);
 
         //get time
         getByte();
