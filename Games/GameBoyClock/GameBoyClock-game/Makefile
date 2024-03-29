@@ -45,7 +45,7 @@ bgb:
 	@echo "\e[1;32mRun in BGB !!\e[0m"
 	wine ../../../bgb/bgb.exe ./$(ROM_NAME).$(ROM_EXT)
 
-full: clean build run
+full: clean build bgb
 
 flash:
 	sudo $(FLASHER)/ems-flasher --bank 1 --verbose --write $(ROM_NAME).$(ROM_EXT)

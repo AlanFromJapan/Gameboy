@@ -51,12 +51,20 @@ const UINT8 DigitsDarkTiles[] = {
     0x04, 0x0B, 0x03, 0x05, 0x13, 0x15, 0x1B, 0x1C, 0x20, 0x21, 0x28, 0x29
 };
 
+const UINT8 LogoTiles[] = {0x1D, 0x1e, 0x1f};
+const UINT8 UrlTiles[] = {0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e};
+
 UINT8 *currentTiles = DigitsClearTiles;
 
 // Link port Serial related
 volatile UINT8 _waiting = 0;
 
+//the time
+volatile UINT8 h = 0;
+volatile UINT8 m = 0;
 
+volatile UINT8 oldh = 255;
+volatile UINT8 oldm = 255;
 
 /**
  * Set a background tile to the tile in parameter
@@ -82,6 +90,19 @@ void bgClearScreen (){
     for (UINT8 i = 0; i < 18; i++){
         bgClearRow(i);
     }
+
+    //add the dots
+    putTile(TILE_DOT, 10, 5+1);
+    putTile(TILE_DOT, 10, 5+3);
+
+    //add the title
+    for (UINT8 i = 0; i < 3; i++){
+        putTile(LogoTiles[i], 9 + i, 18-2);
+    }
+    //add the URL
+    for (UINT8 i = 0; i < 7; i++){
+        putTile(UrlTiles[i], 7 + i, 18-1);
+    }    
 }
 
 /**
@@ -280,27 +301,51 @@ void bgDrawDigit(const UINT8 digit, const UINT8 x, const UINT8 y, const UINT8 *t
         break;
 
     default:
+        //CLEARS the digit (= fill with empty)
+        putTile(TILE_EMPTY, x, y);
+        putTile(TILE_EMPTY, x+1, y);
+        putTile(TILE_EMPTY, x+2, y);
+
+        putTile(TILE_EMPTY, x, y+1);
+        putTile(TILE_EMPTY, x+2, y+1);
+
+        putTile(TILE_EMPTY, x, y+2);
+        putTile(TILE_EMPTY, x+1, y+2);
+        putTile(TILE_EMPTY, x+2, y+2);
+
+        putTile(TILE_EMPTY, x, y+3);
+        putTile(TILE_EMPTY, x+2, y+3);
+
+        putTile(TILE_EMPTY, x, y+4);
+        putTile(TILE_EMPTY, x+1, y+4);
+        putTile(TILE_EMPTY, x+2, y+4);        
         break;
     }
 }
 
 
+inline void bgShowTimeDigit (const UINT8 old, const UINT8 new, const UINT8 x, const UINT8 y){
+    if (old != new){
+        //if changed clear and rewrite
+        bgDrawDigit(255, x, y, currentTiles);
+        bgDrawDigit(new, x, y, currentTiles);
+    }
+}
+
 /**
  * Shows the time centered on the background in current selected tileset
 */
 void bgShowTime (const UINT8 h, const UINT8 m) {
-    //clear the screen
-    bgClearScreen();
 
-    //draw the time    
-    bgDrawDigit(h/10, 2, 5, currentTiles);
-    bgDrawDigit(h%10, 2 +3 +1, 5, currentTiles);
-    
-    putTile(TILE_DOT, 10, 5+1);
-    putTile(TILE_DOT, 10, 5+3);
+    bgShowTimeDigit(oldh/10, h/10, 2, 5);
+    bgShowTimeDigit(oldh%10, h%10, 2 +3 +1, 5);
 
-    bgDrawDigit(m/10, 11, 5, currentTiles);
-    bgDrawDigit(m%10, 11 +3 +1, 5, currentTiles);
+    bgShowTimeDigit(oldm/10, m/10, 11, 5);
+    bgShowTimeDigit(oldm%10, m%10, 11 +3 +1, 5);
+
+    oldh = h;
+    oldm = m;
+
 }
 
 
@@ -359,7 +404,14 @@ void sioInt() {
     _waiting = 0;
 }
 
+/**
+ * Vertical blank interrupt: where we "draw" memory while screen is not updated
+ */
+void vblint(){
 
+    bgShowTime(h, m);
+
+}
 
 
 /*
@@ -368,6 +420,10 @@ void sioInt() {
  ***********************************************************************************************
  */
 void main() {
+
+    //init time 
+    h = 9;
+    m = 45;
 
     SPRITES_8x16;
 
@@ -384,9 +440,8 @@ void main() {
     add_SIO(sioInt);
     
     wait_vbl_done();
-
-    UINT8 h = 9;
-    UINT8 m = 45;
+    //branch interrup handler for VBlank
+    add_VBL(vblint);
 
     while(1) {
         wait_vbl_done();
@@ -400,7 +455,7 @@ void main() {
                 h = 0;
             }
         }
-        bgShowTime(h, m);
+        //bgShowTime(h, m);
 
         //get time
         getByte();
