@@ -24,12 +24,14 @@
 #define REFRESH_Y 0
 
 
+//////////////////////////////////////////////
 //tile definitions
 #define TILE_EMPTY      0x0C
 #define TILE_DOT        0x09
 #define TILE_REFRESH    0x1a
 
 
+//////////////////////////////////////////////
 //tiles for the digits : horizontal, vertical, top left, top right,  bottom left, bottom right, mid-left, mid-right
 #define DIGIT_H 0
 #define DIGIT_V 1
@@ -56,10 +58,20 @@ const UINT8 UrlTiles[] = {0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e};
 
 UINT8 *currentTiles = DigitsClearTiles;
 
+//////////////////////////////////////////////
 // Link port Serial related
-volatile UINT8 _waiting = 0;
+
+//give a little time to the daughter board to get ready (though way faster than present GB)
+#define SERIAL_REQUEST_RESPONSE_BUFFER_MS 5
+//different states of waiting
+#define WAITING_NOTHING 0
+#define WAITING_RECEIVE 1
+#define WAITING_SEND 2
+volatile UINT8 _waiting = WAITING_NOTHING;
 volatile UINT8 _toggle_horm = 0;
 
+
+//////////////////////////////////////////////
 //the time
 volatile UINT8 h = 0;
 volatile UINT8 m = 0;
@@ -379,12 +391,29 @@ void receive_byte_self_clock(){
 
 }
 
+/**
+ * SEND one byte from the serial port
+ */
+void sendByte(){
+    _waiting = WAITING_SEND;
+
+    receptionFlagON();
+
+    if (_toggle_horm){
+        _io_out= (UINT8)'H';
+    } else {
+        _io_out= (UINT8)'M';
+    }
+
+    //send
+    send_byte();
+}
 
 /**
  * Get one byte from the serial port
  */
 void getByte(){
-    _waiting = 1;
+    _waiting = WAITING_RECEIVE;
 
     receptionFlagON();
 
@@ -397,17 +426,21 @@ void getByte(){
 void sioInt() {
     UINT8 v = _io_in;
 
-    if (_toggle_horm){
-        h = v;
-    } else {
-        m = v;
+    if (_waiting == WAITING_RECEIVE){
+        if (_toggle_horm){
+            h = v;
+        } else {
+            m = v;
+        }
+
+        //got it, next time ask the other one
+        _toggle_horm = !_toggle_horm;
     }
-    _toggle_horm = !_toggle_horm;
 
     receptionFlagOFF();
 
     //stop waiting
-    _waiting = 0;
+    _waiting = WAITING_NOTHING;
 }
 
 /**
@@ -466,7 +499,16 @@ void main() {
             oldm = 255;
         } 
 
-        //get time
+        //send a byte to ask for H or M
+        sendByte();
+
+        //WAIT
+        while(_waiting) ;
+
+        //give time to the daughter board to get ready
+        delay(SERIAL_REQUEST_RESPONSE_BUFFER_MS);
+
+        //get the time info
         getByte();
 
         //WAIT
