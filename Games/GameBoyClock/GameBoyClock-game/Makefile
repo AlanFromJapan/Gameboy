@@ -48,4 +48,4 @@ bgb:
 full: clean build bgb
 
 flash:
-	sudo $(FLASHER)/ems-flasher --bank 1 --verbose --write $(ROM_NAME).$(ROM_EXT)
+	$(FLASHER)/ems-flasher --bank 1 --verbose --write $(ROM_NAME).$(ROM_EXT)
