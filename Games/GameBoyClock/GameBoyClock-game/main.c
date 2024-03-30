@@ -16,7 +16,7 @@
 
 
 //main loop temporization (ms)
-#define MAIN_LOOP_TEMPORISATION 1000
+#define MAIN_LOOP_TEMPORISATION 200
 
 
 //UI
@@ -58,6 +58,7 @@ UINT8 *currentTiles = DigitsClearTiles;
 
 // Link port Serial related
 volatile UINT8 _waiting = 0;
+volatile UINT8 _toggle_horm = 0;
 
 //the time
 volatile UINT8 h = 0;
@@ -396,7 +397,12 @@ void getByte(){
 void sioInt() {
     UINT8 v = _io_in;
 
-    //showValue(v);
+    if (_toggle_horm){
+        h = v;
+    } else {
+        m = v;
+    }
+    _toggle_horm = !_toggle_horm;
 
     receptionFlagOFF();
 
@@ -422,8 +428,8 @@ void vblint(){
 void main() {
 
     //init time 
-    h = 9;
-    m = 45;
+    h = 0;
+    m = 0;
 
     SPRITES_8x16;
 
@@ -459,16 +465,6 @@ void main() {
             oldh = 255;
             oldm = 255;
         } 
-
-        //show time
-        m++;
-        if (m == 60){
-            m = 0;
-            h++;
-            if (h == 24){
-                h = 0;
-            }
-        }
 
         //get time
         getByte();
