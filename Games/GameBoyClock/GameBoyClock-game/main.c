@@ -16,7 +16,7 @@
 
 
 //main loop temporization (ms)
-#define MAIN_LOOP_TEMPORISATION 200
+#define MAIN_LOOP_TEMPORISATION 500
 
 
 //UI
