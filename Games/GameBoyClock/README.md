@@ -1,16 +1,26 @@
 # Games/Tools
 
-## GameBoyClock-emu
+## GameBoyClock-game 🎉🥳
 
-Just a helper tool for testing/debuging. Send/Receive one byte of data, byte per byte or continuously. 
+That is the **main program** that fetches time from the PCB and shows it.
+
+See https://github.com/AlanFromJapan/GameboyClock 
 
 ## GameBoyClock-commtest
 
 Closer to target: allows to get data regularily from the Serial port, using the GB as master clock. Still just a helper tool, mainly for testing the SoftSPI library.
 
+## GameBoyClock-emu
+
+Just a helper tool for testing/debuging. Send/Receive one byte of data, byte per byte or continuously. 
+
 ## GameBoyClock-rcvdbg
 
 Needed a little more help to debug the reception part: this one shows the received bytes in detail.
+
+## GameBoyClock-snddbg
+
+Needed a little more help to debug the sending part.
 
 # Links
 

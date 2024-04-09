@@ -16,7 +16,7 @@
 
 
 //main loop temporization (ms)
-#define MAIN_LOOP_TEMPORISATION 500
+#define MAIN_LOOP_TEMPORISATION 100
 
 
 //UI
@@ -32,7 +32,7 @@
 
 
 //////////////////////////////////////////////
-//tiles for the digits : horizontal, vertical, top left, top right,  bottom left, bottom right, mid-left, mid-right
+//tiles for the BIG digits : horizontal, vertical, top left, top right,  bottom left, bottom right, mid-left, mid-right
 #define DIGIT_H 0
 #define DIGIT_V 1
 #define DIGIT_TL 2
@@ -53,6 +53,13 @@ const UINT8 DigitsDarkTiles[] = {
     0x04, 0x0B, 0x03, 0x05, 0x13, 0x15, 0x1B, 0x1C, 0x20, 0x21, 0x28, 0x29
 };
 
+
+//////////////////////////////////////////////
+// Tiles for seconds
+#define DIGIT_SECONDS_0 0x2e
+
+//////////////////////////////////////////////
+// Tiles for logo and URL
 const UINT8 LogoTiles[] = {0x1D, 0x1e, 0x1f};
 const UINT8 UrlTiles[] = {0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e};
 
@@ -68,16 +75,22 @@ UINT8 *currentTiles = DigitsClearTiles;
 #define WAITING_RECEIVE 1
 #define WAITING_SEND 2
 volatile UINT8 _waiting = WAITING_NOTHING;
-volatile UINT8 _toggle_horm = 0;
+
+#define WAITING_FOR_H 'H'
+#define WAITING_FOR_M 'M'
+#define WAITING_FOR_S 'S'
+volatile UINT8 _waiting_for = WAITING_FOR_H;
 
 
 //////////////////////////////////////////////
 //the time
 volatile UINT8 h = 0;
 volatile UINT8 m = 0;
+volatile UINT8 s = 0;
 
 volatile UINT8 oldh = 255;
 volatile UINT8 oldm = 255;
+volatile UINT8 olds = 255;
 
 /**
  * Set a background tile to the tile in parameter
@@ -96,6 +109,19 @@ void bgClearRow(const UINT8 tileY){
     }
 }
 
+
+void blinkDots(){
+    //add the dots
+    if (s % 2 == 0){
+        putTile(TILE_DOT, 8, 5+1);
+        putTile(TILE_DOT, 8, 5+3);
+    } else {
+        putTile(TILE_EMPTY, 8, 5+1);
+        putTile(TILE_EMPTY, 8, 5+3);
+    }
+}
+
+
 /**
  * Clears the screen
 */
@@ -105,8 +131,7 @@ void bgClearScreen (){
     }
 
     //add the dots
-    putTile(TILE_DOT, 10, 5+1);
-    putTile(TILE_DOT, 10, 5+3);
+    blinkDots();
 
     //add the title
     for (UINT8 i = 0; i < 3; i++){
@@ -337,6 +362,8 @@ void bgDrawDigit(const UINT8 digit, const UINT8 x, const UINT8 y, const UINT8 *t
 }
 
 
+//Checks if the digit has changed and redraws it if needed (to avoid flickering)
+// ie: time moved from --:34 to --:35, only the last digit should be redrawn
 inline void bgShowTimeDigit (const UINT8 old, const UINT8 new, const UINT8 x, const UINT8 y){
     if (old != new){
         //if changed clear and rewrite
@@ -348,16 +375,30 @@ inline void bgShowTimeDigit (const UINT8 old, const UINT8 new, const UINT8 x, co
 /**
  * Shows the time centered on the background in current selected tileset
 */
-void bgShowTime (const UINT8 h, const UINT8 m) {
+void bgShowTime () {
+#define TIME_Y 5
+#define TIME_X 2
 
-    bgShowTimeDigit(oldh/10, h/10, 2, 5);
-    bgShowTimeDigit(oldh%10, h%10, 2 +3 +1, 5);
+    if (oldh != h){
+        bgShowTimeDigit(oldh/10, h/10, TIME_X, TIME_Y);
+        bgShowTimeDigit(oldh%10, h%10, TIME_X +3 , TIME_Y);
+    }
 
-    bgShowTimeDigit(oldm/10, m/10, 11, 5);
-    bgShowTimeDigit(oldm%10, m%10, 11 +3 +1, 5);
+    if (oldm != m){
+        bgShowTimeDigit(oldm/10, m/10, TIME_X+ 3 + 4, TIME_Y);
+        bgShowTimeDigit(oldm%10, m%10, TIME_X+ 3 + 4 +3, TIME_Y);
+    }
+
+    if (olds != s){
+        putTile(DIGIT_SECONDS_0 + s/10, TIME_X+ 3 + 4 +3 + 4, TIME_Y +4);
+        putTile(DIGIT_SECONDS_0 + s%10, TIME_X+ 3 + 4 +3 + 4 +1, TIME_Y +4);
+
+        blinkDots();
+    }
 
     oldh = h;
     oldm = m;
+    olds = s;
 
 }
 
@@ -384,11 +425,7 @@ void receive_byte_self_clock(){
 "LDH	(0x01),A		; Send RECEIVING byte\n"
 "LD	A,#0x81             ; <== CHANGED HERE from 0x80\n"
 "LDH	(0x02),A		; Use ***INTERNAL*** clock\n"
-
-
     );
-
-
 }
 
 /**
@@ -399,11 +436,8 @@ void sendByte(){
 
     receptionFlagON();
 
-    if (_toggle_horm){
-        _io_out= (UINT8)'H';
-    } else {
-        _io_out= (UINT8)'M';
-    }
+    //_waiting_for is already the CHAR to send (NEXT time component to get)
+    _io_out = (UINT8)_waiting_for;
 
     //send
     send_byte();
@@ -427,14 +461,22 @@ void sioInt() {
     UINT8 v = _io_in;
 
     if (_waiting == WAITING_RECEIVE){
-        if (_toggle_horm){
-            h = v;
-        } else {
-            m = v;
+        //store the value, then prepare to wait for the next one
+        switch (_waiting_for)
+        {
+            case WAITING_FOR_H:
+                h = v;
+                _waiting_for = WAITING_FOR_M;
+                break;
+            case WAITING_FOR_M:
+                m = v;
+                _waiting_for = WAITING_FOR_S;
+                break;
+            case WAITING_FOR_S:
+                s = v;
+                _waiting_for = WAITING_FOR_H;
+                break;
         }
-
-        //got it, next time ask the other one
-        _toggle_horm = !_toggle_horm;
     }
 
     receptionFlagOFF();
@@ -448,7 +490,7 @@ void sioInt() {
  */
 void vblint(){
 
-    bgShowTime(h, m);
+    bgShowTime();
 
 }
 
@@ -463,6 +505,7 @@ void main() {
     //init time 
     h = 0;
     m = 0;
+    s = 0;
 
     SPRITES_8x16;
 
@@ -491,15 +534,17 @@ void main() {
             //force refresh
             oldh = 255;
             oldm = 255;
+            olds = 255;
         } 
         if (lastJoypad & J_B){
             currentTiles = DigitsClearTiles;
             //force refresh
             oldh = 255;
             oldm = 255;
+            olds = 255;
         } 
 
-        //send a byte to ask for H or M
+        //send a byte to ask for H or M or S
         sendByte();
 
         //WAIT
